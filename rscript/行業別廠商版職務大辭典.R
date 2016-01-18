@@ -1,7 +1,5 @@
 ##source('C:\\Users\\abc\\Desktop\\廠商版職務大辭典\\rscript\\廠商版職務大辭典.R', print.eval  = TRUE)
 
-#C:\Users\abc\Desktop\廠商版職務大辭典
-
 ##廠商版職務大辭典
 rm(list = ls()) #去除工作空間中所有物件
 gc() #記憶體釋放
@@ -77,6 +75,12 @@ source(paste0(path,'\\rscript\\function\\jobwiki_text_mining.R'), print.eval  = 
 output_path<-paste0(path,"\\分行業別output")
 setwd(output_path)
 
+
+
+
+
+
+
 ##取出要處理的資料
 job <- data_processing_job()
 
@@ -85,10 +89,6 @@ job_discription()
 
 ##附加條件
 other_needs()
-
-##
-##證照相關樣本可能過少，如過少是否剔除行業別的篩選?
-##
 
 ##取出要處理的資料
 job_only <- data_processing_job_only()
@@ -99,18 +99,20 @@ conputer_skills()
 ##專業憑證
 pro_certificate()
 
-path<-"C:\\Users\\abc\\Desktop\\廠商版職務大辭典\\分行業別output\\專業憑證"
-setwd(path)
-files = list.files(pattern="*.csv")
+##整體工作說明
+all_job_discription()
 
-temp <- lapply(files, fread, sep=",")
-
-
-path<-"C:\\Users\\abc\\Desktop\\廠商版職務大辭典\\分行業別output"
-setwd(path)
+##整體附加條件
+all_other_needs()
 
 ##職務類別
 ##找出各職務的詞
 ##找出整體高頻詞
 ##將各職務的詞去除高頻詞 >0.5?
 ##再找出各職務的高頻詞 >0.5?
+
+#系統時間
+end.time <- Sys.time()
+#記錄一段程序結束執行時間
+run.time <- end.time - start.time
+run.time
