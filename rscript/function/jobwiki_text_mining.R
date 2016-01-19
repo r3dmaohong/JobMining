@@ -135,8 +135,8 @@ job_discription <-function(){
         
         if(toString(job.describe)!=''){
           
-          ##抓1~3大的公司的描述
-          job.describe <- job.describe[1:3]
+          ##抓1~5大的公司的描述
+          job.describe <- job.describe[1:5]
           
           job.describe <- as.data.frame(job.describe)
           job.describe$word <- word.to.handle
@@ -266,8 +266,8 @@ other_needs <-function(){
         
         if(toString(job.describe)!=''){
           
-          ##抓1~3大的公司的描述
-          job.describe <- job.describe[1:3]
+          ##抓1~5大的公司的描述
+          job.describe <- job.describe[1:5]
           
           job.describe <- as.data.frame(job.describe)
           job.describe$word <- word.to.handle
@@ -520,8 +520,8 @@ all_job_discription <-function(){
         
         if(toString(job.describe)!=''){
           
-          ##抓1~3大的公司的描述
-          job.describe <- job.describe[1:3]
+          ##抓1~5大的公司的描述
+          job.describe <- job.describe[1:5]
           
           job.describe <- as.data.frame(job.describe)
           job.describe$word <- word.to.handle
@@ -646,8 +646,8 @@ all_other_needs <-function(){
         
         if(toString(job.describe)!=''){
           
-          ##抓1~3大的公司的描述
-          job.describe <- job.describe[1:3]
+          ##抓1~5大的公司的描述
+          job.describe <- job.describe[1:5]
           
           job.describe <- as.data.frame(job.describe)
           job.describe$word <- word.to.handle
