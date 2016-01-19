@@ -92,7 +92,7 @@ job_discription <-function(){
       v <- sort(rowSums(m1), decreasing = TRUE)
       d <- data.frame(word = names(v), freq = v)
       d$word <- as.character(d$word)
-      d$percentage <- d$freq/sum(d$freq)
+      d$percentage <- d$freq/nrow(people_sep)
       
       delete.word.vector <- c('null','以上','年以上','經驗','工作','公司','企業','加班','負責','配合','完成','地區','相關','與','完成','work','experience','進行','擔任','will','能力','基本','興趣','主要','具有','具備','面試','下班','上班','內容','薪資','完整','優先','自行','統一')
       for(delete.word.index in 1:length(delete.word.vector)){
@@ -223,7 +223,7 @@ other_needs <-function(){
       v <- sort(rowSums(m1), decreasing = TRUE)
       d <- data.frame(word = names(v), freq = v)
       d$word <- as.character(d$word)
-      d$percentage <- d$freq/sum(d$freq)
+      d$percentage <- d$freq/nrow(people_sep)
       
       delete.word.vector <- c('以上','年以上','經驗','工作','公司','企業','加班','負責','配合','完成','地區','相關','與','完成','work','experience','進行','擔任','will','能力','基本','興趣','主要','具有','具備','面試','下班','上班','內容','薪資','完整','優先','自行','統一')
       for(delete.word.index in 1:length(delete.word.vector)){
@@ -477,7 +477,7 @@ all_job_discription <-function(){
       v <- sort(rowSums(m1), decreasing = TRUE)
       d <- data.frame(word = names(v), freq = v)
       d$word <- as.character(d$word)
-      d$percentage <- d$freq/sum(d$freq)
+      d$percentage <- d$freq/nrow(people_sep)
       
       delete.word.vector <- c('null','以上','年以上','經驗','工作','公司','企業','加班','負責','配合','完成','地區','相關','與','完成','work','experience','進行','擔任','will','能力','基本','興趣','主要','具有','具備','面試','下班','上班','內容','薪資','完整','優先','自行','統一')
       for(delete.word.index in 1:length(delete.word.vector)){
@@ -603,7 +603,7 @@ all_other_needs <-function(){
       v <- sort(rowSums(m1), decreasing = TRUE)
       d <- data.frame(word = names(v), freq = v)
       d$word <- as.character(d$word)
-      d$percentage <- d$freq/sum(d$freq)
+      d$percentage <- d$freq/nrow(people_sep)
       
       delete.word.vector <- c('以上','年以上','經驗','工作','公司','企業','加班','負責','配合','完成','地區','相關','與','完成','work','experience','進行','擔任','will','能力','基本','興趣','主要','具有','具備','面試','下班','上班','內容','薪資','完整','優先','自行','統一')
       for(delete.word.index in 1:length(delete.word.vector)){

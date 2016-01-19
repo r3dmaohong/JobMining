@@ -2,7 +2,7 @@
 
 ##廠商版職務大辭典
 rm(list = ls()) #去除工作空間中所有物件
-gc() #記憶體釋放
+gc() #記憶體釋放 
 
 path<-"C:\\Users\\abc\\Desktop\\廠商版職務大辭典"
 #讀取多個csv至df
