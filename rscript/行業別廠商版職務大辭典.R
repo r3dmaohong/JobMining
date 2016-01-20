@@ -1,21 +1,21 @@
-##source('C:\\Users\\abc\\Desktop\\¼t°Óª©Â¾°È¤jÃã¨å\\rscript\\¼t°Óª©Â¾°È¤jÃã¨å.R', print.eval  = TRUE)
+##source('C:\\Users\\abc\\Desktop\\å» å•†ç‰ˆè·å‹™å¤§è¾­å…¸\\rscript\\å» å•†ç‰ˆè·å‹™å¤§è¾­å…¸.R', print.eval  = TRUE)
 
-##¼t°Óª©Â¾°È¤jÃã¨å
-rm(list = ls()) #¥h°£¤u§@ªÅ¶¡¤¤©Ò¦³ª«¥ó
-gc() #°O¾ĞÅéÄÀ©ñ 
+##å» å•†ç‰ˆè·å‹™å¤§è¾­å…¸
+rm(list = ls()) #å»é™¤å·¥ä½œç©ºé–“ä¸­æ‰€æœ‰ç‰©ä»¶
+gc() #è¨˜æ†¶é«”é‡‹æ”¾ 
 
-path<-"C:\\Users\\abc\\Desktop\\¼t°Óª©Â¾°È¤jÃã¨å"
-#Åª¨ú¦h­Ócsv¦Üdf
-data_path<-paste0(path,"\\¼´¨ú¸ê®Æ")
+path<-"C:\\Users\\abc\\Desktop\\å» å•†ç‰ˆè·å‹™å¤§è¾­å…¸"
+#è®€å–å¤šå€‹csvè‡³df
+data_path<-paste0(path,"\\æ’ˆå–è³‡æ–™")
 setwd(data_path)
 library(data.table)  
 files = list.files(pattern="*.csv")
-print('Åª¨ú¸ê®Æ¤¤')
+print('è®€å–è³‡æ–™ä¸­')
 temp <- lapply(files, fread, sep=",")
 people <- rbindlist(temp)
-print('Åª¨ú¸ê®Æ§¹²¦')
+print('è®€å–è³‡æ–™å®Œç•¢')
 ##text mining
-#path<-"C:\\Users\\abc\\Desktop\\¼t°Óª©Â¾°È¤jÃã¨å"
+#path<-"C:\\Users\\abc\\Desktop\\å» å•†ç‰ˆè·å‹™å¤§è¾­å…¸"
 setwd(path)
 start.time<-Sys.time()
 
@@ -29,16 +29,16 @@ library(SnowballC)
 library(cluster)   
 library(ggplot2) 
 
-job_type <- as.data.frame(table(people$Â¾°È¤pÃş),stringsAsFactors=F)
+job_type <- as.data.frame(table(people$è·å‹™å°é¡),stringsAsFactors=F)
 job_type <- job_type[order(rank(-job_type$Freq)),]
 
-industry_list <- read.csv('²£·~¤¤Ãş¦WºÙ.csv',stringsAsFactors=F)
+industry_list <- read.csv('ç”¢æ¥­ä¸­é¡åç¨±.csv',stringsAsFactors=F)
 industry_list <- industry_list[order(industry_list[,1]),]
 industry_list <- c(industry_list)
 
-error_industry <- as.data.frame(table(people$¦æ·~§O),stringsAsFactors=F)
+error_industry <- as.data.frame(table(people$è¡Œæ¥­åˆ¥),stringsAsFactors=F)
 
-##¨â­Ó¶¥¬q³B²z¤ñ³æ¤@forª½±µ³B²z¸û§Ö
+##å…©å€‹éšæ®µè™•ç†æ¯”å–®ä¸€forç›´æ¥è™•ç†è¼ƒå¿«
 for(i in 1:nrow(error_industry)){
   for(j in 1:length(industry_list)){
     if(grepl(industry_list[j],error_industry$Var1[i])){
@@ -47,32 +47,32 @@ for(i in 1:nrow(error_industry)){
     }
   }
   
-  print(paste0('¦æ·~§OÂà´«¶¥¬q¤@ ²Ä',i,'µ§¡A',round(i/nrow(error_industry)*100,3),' %'))
+  print(paste0('è¡Œæ¥­åˆ¥è½‰æ›éšæ®µä¸€ ç¬¬',i,'ç­†ï¼Œ',round(i/nrow(error_industry)*100,3),' %'))
 }
 
 
-people$²£·~¤¤Ãş <- people$¦æ·~§O
+people$ç”¢æ¥­ä¸­é¡ <- people$è¡Œæ¥­åˆ¥
 
 for(i in 1:nrow(error_industry)){
-  people$²£·~¤¤Ãş[which(people$²£·~¤¤Ãş==error_industry$Var1[i])]=error_industry$Var2[i]
-  print(paste0('¦æ·~§OÂà´«¶¥¬q¤G ²Ä',i,'µ§¡A',round(i/nrow(error_industry)*100,3),' %'))
+  people$ç”¢æ¥­ä¸­é¡[which(people$ç”¢æ¥­ä¸­é¡==error_industry$Var1[i])]=error_industry$Var2[i]
+  print(paste0('è¡Œæ¥­åˆ¥è½‰æ›éšæ®µäºŒ ç¬¬',i,'ç­†ï¼Œ',round(i/nrow(error_industry)*100,3),' %'))
 }
 
-##Á×§K±×½u¿é¥XÀÉ®×¿ù»~
-people$Â¾°È¤pÃş <- gsub('/','¡ş',people$Â¾°È¤pÃş)
-people$¦æ·~»PÂ¾°È = paste0(people$Â¾°È¤pÃş,' - ',people$²£·~¤¤Ãş)
+##é¿å…æ–œç·šè¼¸å‡ºæª”æ¡ˆéŒ¯èª¤
+people$è·å‹™å°é¡ <- gsub('/','ï¼',people$è·å‹™å°é¡)
+people$è¡Œæ¥­èˆ‡è·å‹™ = paste0(people$è·å‹™å°é¡,' - ',people$ç”¢æ¥­ä¸­é¡)
 
-print('¦æ·~§O³B²z§¹¦¨')
+print('è¡Œæ¥­åˆ¥è™•ç†å®Œæˆ')
 
 ##
-##­×¥¿termdocumentmatrix°İÃD¥Î
+##ä¿®æ­£termdocumentmatrixå•é¡Œç”¨
 source(paste0(path,'\\rscript\\function\\error_solve_termdocumentmatrix.R'), print.eval  = TRUE)
-##¤ÀªR¬ÛÃöfunction
+##åˆ†æç›¸é—œfunction
 source(paste0(path,'\\rscript\\function\\jobwiki_text_mining.R'), print.eval  = TRUE)
 
 
-##±q³o³]©wÀx¦s¦ì¸m¦n¤F
-output_path<-paste0(path,"\\¤À¦æ·~§Ooutput")
+##å¾é€™è¨­å®šå„²å­˜ä½ç½®å¥½äº†
+output_path<-paste0(path,"\\åˆ†è¡Œæ¥­åˆ¥output")
 setwd(output_path)
 
 
@@ -81,38 +81,38 @@ setwd(output_path)
 
 
 
-##¨ú¥X­n³B²zªº¸ê®Æ
+##å–å‡ºè¦è™•ç†çš„è³‡æ–™
 job <- data_processing_job()
 
-##¤u§@»¡©ú
+##å·¥ä½œèªªæ˜
 job_discription()
 
-##ªş¥[±ø¥ó
+##é™„åŠ æ¢ä»¶
 other_needs()
 
-##¨ú¥X­n³B²zªº¸ê®Æ
+##å–å‡ºè¦è™•ç†çš„è³‡æ–™
 job_only <- data_processing_job_only()
-##¹q¸£±Mªø
-##§ï¥ı§ì¦@¦P°ªªº¡A§â³o¨Ç´À°£¡A±ÀÂË¯S®íªº
+##é›»è…¦å°ˆé•·
+##æ”¹å…ˆæŠ“å…±åŒé«˜çš„ï¼ŒæŠŠé€™äº›æ›¿é™¤ï¼Œæ¨è–¦ç‰¹æ®Šçš„
 conputer_skills()
 
-##±M·~¾ÌÃÒ
+##å°ˆæ¥­æ†‘è­‰
 pro_certificate()
 
-##¾ãÅé¤u§@»¡©ú
+##æ•´é«”å·¥ä½œèªªæ˜
 all_job_discription()
 
-##¾ãÅéªş¥[±ø¥ó
+##æ•´é«”é™„åŠ æ¢ä»¶
 all_other_needs()
 
-##Â¾°ÈÃş§O
-##§ä¥X¦UÂ¾°Èªºµü
-##§ä¥X¾ãÅé°ªÀWµü
-##±N¦UÂ¾°Èªºµü¥h°£°ªÀWµü >0.5?
-##¦A§ä¥X¦UÂ¾°Èªº°ªÀWµü >0.5?
+##è·å‹™é¡åˆ¥
+##æ‰¾å‡ºå„è·å‹™çš„è©
+##æ‰¾å‡ºæ•´é«”é«˜é »è©
+##å°‡å„è·å‹™çš„è©å»é™¤é«˜é »è© >0.5?
+##å†æ‰¾å‡ºå„è·å‹™çš„é«˜é »è© >0.5?
 
-#¨t²Î®É¶¡
+#ç³»çµ±æ™‚é–“
 end.time <- Sys.time()
-#°O¿ı¤@¬qµ{§Çµ²§ô°õ¦æ®É¶¡
+#è¨˜éŒ„ä¸€æ®µç¨‹åºçµæŸåŸ·è¡Œæ™‚é–“
 run.time <- end.time - start.time
 run.time

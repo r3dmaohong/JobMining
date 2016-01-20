@@ -1,49 +1,59 @@
-##¼t°Óª©Â¾°È¤j»`¯µ
+#å» å•†ç‰ˆè·å‹™å¤§è’ç§˜
 
-
-##³]©wªùÂe­È
+##è¨­å®šé–€æª»å€¼
 min_n_sample = 100
 
 # returns string w/o leading or trailing whitespace
 trim <- function (x) gsub("^\\s+|\\s+$", "", x)
 
-##¬D¥X­n³B²zªº¸ê®Æ
+#gc
+jgc <- function()
+{
+  gc()
+  .jcall("java/lang/System", method = "gc")
+}  
+
+##æŒ‘å‡ºè¦è™•ç†çš„è³‡æ–™
 data_processing_job <- function(){
-  ##¦æ·~§O»PÂ¾°È
-  job_and_undustry = as.data.frame(table(people$¦æ·~»PÂ¾°È),stringsAsFactors=F)
+  jgc()
+  ##è¡Œæ¥­åˆ¥èˆ‡è·å‹™
+  job_and_undustry = as.data.frame(table(people$è¡Œæ¥­èˆ‡è·å‹™),stringsAsFactors=F)
   
   high_Freq_job_industry <- job_and_undustry[which(job_and_undustry$Freq>=100),]
   job <- c(high_Freq_job_industry$Var1)
-  print(paste0('¤£¦P¦æ·~§O Â¾°È¤pÃş¼Ë¥»¼Æ¤j©ó100ªÌ³Ñ ',length(job),' µ§'))
+  print(paste0('ä¸åŒè¡Œæ¥­åˆ¥ è·å‹™å°é¡æ¨£æœ¬æ•¸å¤§æ–¼100è€…å‰© ',length(job),' ç­†'))
   
   return(job)
 }
-##¬D¥X­n³B²zªº¸ê®Æ
+##æŒ‘å‡ºè¦è™•ç†çš„è³‡æ–™
 data_processing_job_only <- function(){
+  jgc()
   
-  ##¯ÂÂ¾°È
-  job_only = as.data.frame(table(people$Â¾°È¤pÃş),stringsAsFactors=F)
+  ##ç´”è·å‹™
+  job_only = as.data.frame(table(people$è·å‹™å°é¡),stringsAsFactors=F)
   
   high_Freq_job_only <- job_only[which(job_only$Freq>=min_n_sample),]
   job_only <- c(job_only$Var1)
   job_only <- job_only[-which(job_only=='NULL')]
-  print(paste0('Â¾°È¤pÃş¼Ë¥»¼Æ¤j©ó',min_n_sample,'ªÌ³Ñ ',length(job_only),' µ§'))
+  print(paste0('è·å‹™å°é¡æ¨£æœ¬æ•¸å¤§æ–¼',min_n_sample,'è€…å‰© ',length(job_only),' ç­†'))
   return(job_only)
   
 }
 
-##¤u§@»¡©ú
+##å·¥ä½œèªªæ˜
 job_discription <-function(){
   
+  
   for(job_i in 1:length(job)){
-    print(paste0(job[job_i],' ¶i¦æ¤u§@»¡©ú¤å¦r±´°É»P­pºâ¤¤'))
-    people_sep <- people[which(people$¦æ·~»PÂ¾°È==job[job_i]),]
+    jgc()
+    print(paste0(job[job_i],' é€²è¡Œå·¥ä½œèªªæ˜æ–‡å­—æ¢å‹˜èˆ‡è¨ˆç®—ä¸­'))
+    people_sep <- people[which(people$è¡Œæ¥­èˆ‡è·å‹™==job[job_i]),]
     
-    people_sep$¤u§@»¡©ú = gsub('\x9e','  ', people_sep$¤u§@»¡©ú)
-    ##¥h°£­^¤å¤u§@»¡©ú
+    people_sep$å·¥ä½œèªªæ˜ = gsub('\x9e','  ', people_sep$å·¥ä½œèªªæ˜)
+    ##å»é™¤è‹±æ–‡å·¥ä½œèªªæ˜
     en_remove_index <-{}
-    for(en.remove in 1:length(people_sep$¤u§@»¡©ú)){
-      if(length(gregexpr(pattern ='[a-z]',people_sep$¤u§@»¡©ú)[[en.remove]])/nchar(people_sep$¤u§@»¡©ú[en.remove])>0.5){
+    for(en.remove in 1:length(people_sep$å·¥ä½œèªªæ˜)){
+      if(length(gregexpr(pattern ='[a-z]',people_sep$å·¥ä½œèªªæ˜)[[en.remove]])/nchar(people_sep$å·¥ä½œèªªæ˜[en.remove])>0.5){
         en_remove_index <- c(en_remove_index,en.remove)
       }
     }
@@ -53,19 +63,19 @@ job_discription <-function(){
       people_sep <- people_sep[-en_remove_index,]
     }
     job_all_name = substr(job[job_i],1,unlist(gregexpr(' - ',job[job_i]))-1)
-    #min_nrow = mean(as.data.frame(table(people[which(people$Â¾°È¤pÃş==job_all_name)]$¦æ·~»PÂ¾°È))$Freq)-2*sd(as.factor(people[which(people$Â¾°È¤pÃş==job_all_name)]$¦æ·~»PÂ¾°È))
+    #min_nrow = mean(as.data.frame(table(people[which(people$è·å‹™å°é¡==job_all_name)]$è¡Œæ¥­èˆ‡è·å‹™))$Freq)-2*sd(as.factor(people[which(people$è·å‹™å°é¡==job_all_name)]$è¡Œæ¥­èˆ‡è·å‹™))
     
     if(nrow(people_sep)>min_n_sample){
-      review_text <- paste(people_sep$¤u§@»¡©ú, collapse=" ")
-      #review_text =people_sep$¤u§@»¡©ú
+      review_text <- paste(people_sep$å·¥ä½œèªªæ˜, collapse=" ")
+      #review_text =people_sep$å·¥ä½œèªªæ˜
       review_text <- gsub("[\n]", "  ", review_text)
-      #review_text = unlist(strsplit(review_text, "[¡A,¡C¡´;¡F]"))
-      #review_text = unlist(strsplit(review_text, "[¡C¡´;¡F]"))
+      #review_text = unlist(strsplit(review_text, "[ï¼Œ,ã€‚â—;ï¼›]"))
+      #review_text = unlist(strsplit(review_text, "[ã€‚â—;ï¼›]"))
       #review_text = unlist(strsplit(review_text, "  "))
       #review_text = unlist(strsplit(review_text  , "[(][0-9][)]"))
-      #rreview_text = unlist(strsplit(review_text  , "[¡]][0-9][¡^]"))
+      #rreview_text = unlist(strsplit(review_text  , "[ï¼ˆ][0-9][ï¼‰]"))
       #review_text = unlist(strsplit(review_text  , "[0-9][.]"))
-      #review_text = unlist(strsplit(review_text  , "[0-9][¡B]"))
+      #review_text = unlist(strsplit(review_text  , "[0-9][ã€]"))
       
       review_source <- VectorSource(review_text)
       d.corpus <- Corpus(review_source)
@@ -78,14 +88,14 @@ job_discription <-function(){
       })
       
       
-      #°İÃD¦b³o
+      #å•é¡Œåœ¨é€™
       d.corpus <- tm_map(d.corpus, segmentCN, nature = TRUE)
       
-      myStopWords <- c(stopwordsCN(), "½s¿è", "®É¶¡", "¼ĞÃD", "µo«H", "¹ê·~", "§@ªÌ","¸ê®Æ®wºŞ²z")
+      myStopWords <- c(stopwordsCN(), "ç·¨è¼¯", "æ™‚é–“", "æ¨™é¡Œ", "ç™¼ä¿¡", "å¯¦æ¥­", "ä½œè€…","è³‡æ–™åº«ç®¡ç†")
       d.corpus <- tm_map(d.corpus, removeWords, myStopWords)
       d.corpus <- tm_map(d.corpus, removeWords, stopwords("english")) 
       d.corpus <- tm_map(d.corpus, PlainTextDocument)
-      ##­×§ï¨ú¥X¤å¦rªø«×
+      ##ä¿®æ”¹å–å‡ºæ–‡å­—é•·åº¦
       tdm <- TermDocumentMatrixCN(d.corpus, control = list(wordLengths = c(2, Inf)))
       
       m1 <- as.matrix(tdm)
@@ -94,7 +104,7 @@ job_discription <-function(){
       d$word <- as.character(d$word)
       d$percentage <- d$freq/nrow(people_sep)
       
-      delete.word.vector <- c('null','¥H¤W','¦~¥H¤W','¸gÅç','¤u§@','¤½¥q','¥ø·~','¥[¯Z','­t³d','°t¦X','§¹¦¨','¦a°Ï','¬ÛÃö','»P','§¹¦¨','work','experience','¶i¦æ','¾á¥ô','will','¯à¤O','°ò¥»','¿³½ì','¥D­n','¨ã¦³','¨ã³Æ','­±¸Õ','¤U¯Z','¤W¯Z','¤º®e','Á~¸ê','§¹¾ã','Àu¥ı','¦Û¦æ','²Î¤@')
+      delete.word.vector <- c('null','ä»¥ä¸Š','å¹´ä»¥ä¸Š','ç¶“é©—','å·¥ä½œ','å…¬å¸','ä¼æ¥­','åŠ ç­','è² è²¬','é…åˆ','å®Œæˆ','åœ°å€','ç›¸é—œ','èˆ‡','å®Œæˆ','work','experience','é€²è¡Œ','æ“”ä»»','will','èƒ½åŠ›','åŸºæœ¬','èˆˆè¶£','ä¸»è¦','å…·æœ‰','å…·å‚™','é¢è©¦','ä¸‹ç­','ä¸Šç­','å…§å®¹','è–ªè³‡','å®Œæ•´','å„ªå…ˆ','è‡ªè¡Œ','çµ±ä¸€')
       for(delete.word.index in 1:length(delete.word.vector)){
         if(toString(which(d$word==delete.word.vector[delete.word.index]))!=''){
           d <- d[-which(d$word==delete.word.vector[delete.word.index]),]
@@ -102,9 +112,9 @@ job_discription <-function(){
         
       }
       
-      write.csv(d,paste0('¤u§@»¡©ú\\',job[job_i],'¤u§@»¡©ú¤å¦rFreq.csv'),row.names=F)
+      write.csv(d,paste0('å·¥ä½œèªªæ˜\\',job[job_i],'å·¥ä½œèªªæ˜æ–‡å­—Freq.csv'),row.names=F)
       
-      png(paste0(output_path,'\\','¤u§@»¡©ú\\',job[job_i],'_¤u§@»¡©úwordcloud.png'), width=800,height=800)
+      png(paste0(output_path,'\\','å·¥ä½œèªªæ˜\\',job[job_i],'_å·¥ä½œèªªæ˜wordcloud.png'), width=800,height=800)
       
       if(length(d$freq)>=100){
         wordcloud(d$word[1:100], d$freq[1:100], random.order = F, scale=c(10, .5), colors=brewer.pal(6, "Dark2"))
@@ -114,20 +124,20 @@ job_discription <-function(){
       dev.off()
       
       
-      ##§ì¥X«e10¦W¦r¦ê¹ïÀ³¦Ü¤u§@»¡©ú
+      ##æŠ“å‡ºå‰10åå­—ä¸²å°æ‡‰è‡³å·¥ä½œèªªæ˜
       for(i in 1:10){
         word.to.handle <- d$word[i]
-        people_sep$¤u§@»¡©ú³B²z¹L <- people_sep$¤u§@»¡©ú
-        people_sep$¤u§@»¡©ú³B²z¹L <- tolower(people_sep$¤u§@»¡©ú³B²z¹L)
+        people_sep$å·¥ä½œèªªæ˜è™•ç†é <- people_sep$å·¥ä½œèªªæ˜
+        people_sep$å·¥ä½œèªªæ˜è™•ç†é <- tolower(people_sep$å·¥ä½œèªªæ˜è™•ç†é)
         
-        people_sep <- people_sep[order(-as.numeric(people_sep$¸ê¥»ª÷ÃB),-as.numeric(people_sep$­û¤u¤H¼Æ)),]
-        job_description <- people_sep$¤u§@»¡©ú³B²z¹L
-        job_description = unlist(strsplit(job_description, "[¡C¡´;¡F]"))
+        people_sep <- people_sep[order(-as.numeric(people_sep$è³‡æœ¬é‡‘é¡),-as.numeric(people_sep$å“¡å·¥äººæ•¸)),]
+        job_description <- people_sep$å·¥ä½œèªªæ˜è™•ç†é
+        job_description = unlist(strsplit(job_description, "[ã€‚â—;ï¼›]"))
         job_description = unlist(strsplit(job_description, "  "))
         job_description = unlist(strsplit(job_description  , "[(][0-9][)]"))
-        job_description = unlist(strsplit(job_description  , "[¡]][0-9][¡^]"))
+        job_description = unlist(strsplit(job_description  , "[ï¼ˆ][0-9][ï¼‰]"))
         job_description = unlist(strsplit(job_description  , "[0-9][.]"))
-        job_description = unlist(strsplit(job_description  , "[0-9][¡B]"))
+        job_description = unlist(strsplit(job_description  , "[0-9][ã€]"))
         job_description = trim(job_description)
         
         job.describe.df <- job_description[which(grepl(word.to.handle,job_description))]
@@ -135,7 +145,7 @@ job_discription <-function(){
         
         if(toString(job.describe)!=''){
           
-          ##§ì1~5¤jªº¤½¥qªº´y­z
+          ##æŠ“1~5å¤§çš„å…¬å¸çš„æè¿°
           job.describe <- job.describe[1:5]
           
           job.describe <- as.data.frame(job.describe)
@@ -143,19 +153,19 @@ job_discription <-function(){
           job.describe <- job.describe[,c('word','job.describe')]
           
           if(i==1){
-            write.table(job.describe, paste0('¤u§@»¡©ú\\',job[job_i],'¤u§@»¡©úµü·J»P¤º®e¹ïÀ³µ²ªG.csv'), row.names=F, col.names=TRUE, sep=",")
+            write.table(job.describe, paste0('å·¥ä½œèªªæ˜\\',job[job_i],'å·¥ä½œèªªæ˜è©å½™èˆ‡å…§å®¹å°æ‡‰çµæœ.csv'), row.names=F, col.names=TRUE, sep=",")
             
           }else{
-            write.table(job.describe, paste0('¤u§@»¡©ú\\',job[job_i],'¤u§@»¡©úµü·J»P¤º®e¹ïÀ³µ²ªG.csv'), row.names=F,col.names=F, sep=",", append=TRUE)
+            write.table(job.describe, paste0('å·¥ä½œèªªæ˜\\',job[job_i],'å·¥ä½œèªªæ˜è©å½™èˆ‡å…§å®¹å°æ‡‰çµæœ.csv'), row.names=F,col.names=F, sep=",", append=TRUE)
             
           }
         }
       }
       
       print(paste0(format(round(job_i/length(job)*100,2),2),'%'))
-      print(paste0(job[job_i],' ­pºâ§¹¦¨'))
+      print(paste0(job[job_i],' è¨ˆç®—å®Œæˆ'))
     }else{
-      print(paste0(job[job_i],' ¼Ë¥»¤£¨¬',min_n_sample,'¡A¤£¤©­pºâ'))
+      print(paste0(job[job_i],' æ¨£æœ¬ä¸è¶³',min_n_sample,'ï¼Œä¸äºˆè¨ˆç®—'))
     }
     
     
@@ -163,23 +173,24 @@ job_discription <-function(){
   
 }
 
-##ªş¥[±ø¥ó
+##é™„åŠ æ¢ä»¶
 other_needs <-function(){
-  #job_and_undustry = as.data.frame(table(people$¦æ·~»PÂ¾°È),stringsAsFactors=F)
+  #job_and_undustry = as.data.frame(table(people$è¡Œæ¥­èˆ‡è·å‹™),stringsAsFactors=F)
   
   #high_Freq_job_industry <- job_and_undustry[which(job_and_undustry$Freq>=100),]
   #job <- c(high_Freq_job_industry$Var1)
-  #print(paste0('¤£¦P¦æ·~§O Â¾°È¤pÃş¼Ë¥»¼Æ¤j©ó100ªÌ³Ñ ',length(job),' µ§'))
+  #print(paste0('ä¸åŒè¡Œæ¥­åˆ¥ è·å‹™å°é¡æ¨£æœ¬æ•¸å¤§æ–¼100è€…å‰© ',length(job),' ç­†'))
   
   for(job_i in 1:length(job)){
-    print(paste0(job[job_i],' ¶i¦æªş¥[±ø¥ó¤å¦r±´°É»P­pºâ¤¤'))
-    people_sep <- people[which(people$¦æ·~»PÂ¾°È==job[job_i]),]
+    jgc()
+    print(paste0(job[job_i],' é€²è¡Œé™„åŠ æ¢ä»¶æ–‡å­—æ¢å‹˜èˆ‡è¨ˆç®—ä¸­'))
+    people_sep <- people[which(people$è¡Œæ¥­èˆ‡è·å‹™==job[job_i]),]
     
-    people_sep$ªş¥[±ø¥ó = gsub('\x9e','  ', people_sep$ªş¥[±ø¥ó)
-    ##¥h°£­^¤åªºªş¥[±ø¥ó
+    people_sep$é™„åŠ æ¢ä»¶ = gsub('\x9e','  ', people_sep$é™„åŠ æ¢ä»¶)
+    ##å»é™¤è‹±æ–‡çš„é™„åŠ æ¢ä»¶
     en_remove_index <-{}
-    for(en.remove in 1:length(people_sep$ªş¥[±ø¥ó)){
-      if(length(gregexpr(pattern ='[a-z]',people_sep$ªş¥[±ø¥ó)[[en.remove]])/nchar(people_sep$ªş¥[±ø¥ó[en.remove])>0.5){
+    for(en.remove in 1:length(people_sep$é™„åŠ æ¢ä»¶)){
+      if(length(gregexpr(pattern ='[a-z]',people_sep$é™„åŠ æ¢ä»¶)[[en.remove]])/nchar(people_sep$é™„åŠ æ¢ä»¶[en.remove])>0.5){
         en_remove_index <- c(en_remove_index,en.remove)
       }
     }
@@ -190,16 +201,16 @@ other_needs <-function(){
     }
     
     if(nrow(people_sep)>min_n_sample){
-      review_text <- paste(people_sep$ªş¥[±ø¥ó, collapse=" ")
-      #review_text <- people_sep$ªş¥[±ø¥ó
+      review_text <- paste(people_sep$é™„åŠ æ¢ä»¶, collapse=" ")
+      #review_text <- people_sep$é™„åŠ æ¢ä»¶
       review_text <- gsub("[\n]", "  ", review_text)
-      #review_text = unlist(strsplit(review_text, "[¡A,¡C¡´;¡F]"))
-      #review_text = unlist(strsplit(review_text, "[¡C¡´;¡F]"))
+      #review_text = unlist(strsplit(review_text, "[ï¼Œ,ã€‚â—;ï¼›]"))
+      #review_text = unlist(strsplit(review_text, "[ã€‚â—;ï¼›]"))
       #review_text = unlist(strsplit(review_text, "  "))
       #review_text = unlist(strsplit(review_text  , "[(][0-9][)]"))
-      #review_text = unlist(strsplit(review_text  , "[¡]][0-9][¡^]"))
+      #review_text = unlist(strsplit(review_text  , "[ï¼ˆ][0-9][ï¼‰]"))
       #review_text = unlist(strsplit(review_text  , "[0-9][.]"))
-      #review_text = unlist(strsplit(review_text  , "[0-9][¡B]"))
+      #review_text = unlist(strsplit(review_text  , "[0-9][ã€]"))
       
       review_source <- VectorSource(review_text)
       d.corpus <- Corpus(review_source)
@@ -213,7 +224,7 @@ other_needs <-function(){
       
       d.corpus <- tm_map(d.corpus, segmentCN, nature = TRUE)
       
-      myStopWords <- c(stopwordsCN(), "½s¿è", "®É¶¡", "¼ĞÃD", "µo«H", "¹ê·~", "§@ªÌ","¸ê®Æ®wºŞ²z")
+      myStopWords <- c(stopwordsCN(), "ç·¨è¼¯", "æ™‚é–“", "æ¨™é¡Œ", "ç™¼ä¿¡", "å¯¦æ¥­", "ä½œè€…","è³‡æ–™åº«ç®¡ç†")
       d.corpus <- tm_map(d.corpus, removeWords, myStopWords)
       d.corpus <- tm_map(d.corpus, removeWords, stopwords("english")) 
       d.corpus <- tm_map(d.corpus, PlainTextDocument)
@@ -225,7 +236,7 @@ other_needs <-function(){
       d$word <- as.character(d$word)
       d$percentage <- d$freq/nrow(people_sep)
       
-      delete.word.vector <- c('¥H¤W','¦~¥H¤W','¸gÅç','¤u§@','¤½¥q','¥ø·~','¥[¯Z','­t³d','°t¦X','§¹¦¨','¦a°Ï','¬ÛÃö','»P','§¹¦¨','work','experience','¶i¦æ','¾á¥ô','will','¯à¤O','°ò¥»','¿³½ì','¥D­n','¨ã¦³','¨ã³Æ','­±¸Õ','¤U¯Z','¤W¯Z','¤º®e','Á~¸ê','§¹¾ã','Àu¥ı','¦Û¦æ','²Î¤@')
+      delete.word.vector <- c('ä»¥ä¸Š','å¹´ä»¥ä¸Š','ç¶“é©—','å·¥ä½œ','å…¬å¸','ä¼æ¥­','åŠ ç­','è² è²¬','é…åˆ','å®Œæˆ','åœ°å€','ç›¸é—œ','èˆ‡','å®Œæˆ','work','experience','é€²è¡Œ','æ“”ä»»','will','èƒ½åŠ›','åŸºæœ¬','èˆˆè¶£','ä¸»è¦','å…·æœ‰','å…·å‚™','é¢è©¦','ä¸‹ç­','ä¸Šç­','å…§å®¹','è–ªè³‡','å®Œæ•´','å„ªå…ˆ','è‡ªè¡Œ','çµ±ä¸€')
       for(delete.word.index in 1:length(delete.word.vector)){
         if(toString(which(d$word==delete.word.vector[delete.word.index]))!=''){
           d <- d[-which(d$word==delete.word.vector[delete.word.index]),]
@@ -233,9 +244,9 @@ other_needs <-function(){
         
       }
       
-      write.csv(d,paste0('ªş¥[±ø¥ó\\',job[job_i],'ªş¥[±ø¥ó¤å¦rFreq.csv'),row.names=F)
+      write.csv(d,paste0('é™„åŠ æ¢ä»¶\\',job[job_i],'é™„åŠ æ¢ä»¶æ–‡å­—Freq.csv'),row.names=F)
       
-      png(paste0(output_path,'\\','ªş¥[±ø¥ó\\',job[job_i],'_ªş¥[±ø¥ówordcloud.png'), width=800,height=800)
+      png(paste0(output_path,'\\','é™„åŠ æ¢ä»¶\\',job[job_i],'_é™„åŠ æ¢ä»¶wordcloud.png'), width=800,height=800)
       
       if(length(d$freq)>=100){
         wordcloud(d$word[1:100], d$freq[1:100], random.order = F, scale=c(10, .5), colors=brewer.pal(6, "Dark2"))
@@ -245,20 +256,20 @@ other_needs <-function(){
       dev.off()
       
       
-      ##§ì¥X«e10¦W¦r¦ê¹ïÀ³¦Üªş¥[±ø¥ó
+      ##æŠ“å‡ºå‰10åå­—ä¸²å°æ‡‰è‡³é™„åŠ æ¢ä»¶
       for(i in 1:10){
         word.to.handle <- d$word[i]
-        people_sep$ªş¥[±ø¥ó³B²z¹L <- people_sep$ªş¥[±ø¥ó
-        people_sep$ªş¥[±ø¥ó³B²z¹L <- tolower(people_sep$ªş¥[±ø¥ó³B²z¹L)
+        people_sep$é™„åŠ æ¢ä»¶è™•ç†é <- people_sep$é™„åŠ æ¢ä»¶
+        people_sep$é™„åŠ æ¢ä»¶è™•ç†é <- tolower(people_sep$é™„åŠ æ¢ä»¶è™•ç†é)
         
-        people_sep <- people_sep[order(-as.numeric(people_sep$¸ê¥»ª÷ÃB),-as.numeric(people_sep$­û¤u¤H¼Æ)),]
-        job_description <- people_sep$ªş¥[±ø¥ó³B²z¹L
-        job_description = unlist(strsplit(job_description, "[¡C¡´;¡F]"))
+        people_sep <- people_sep[order(-as.numeric(people_sep$è³‡æœ¬é‡‘é¡),-as.numeric(people_sep$å“¡å·¥äººæ•¸)),]
+        job_description <- people_sep$é™„åŠ æ¢ä»¶è™•ç†é
+        job_description = unlist(strsplit(job_description, "[ã€‚â—;ï¼›]"))
         job_description = unlist(strsplit(job_description, "  "))
         job_description = unlist(strsplit(job_description  , "[(][0-9][)]"))
-        job_description = unlist(strsplit(job_description  , "[¡]][0-9][¡^]"))
+        job_description = unlist(strsplit(job_description  , "[ï¼ˆ][0-9][ï¼‰]"))
         job_description = unlist(strsplit(job_description  , "[0-9][.]"))
-        job_description = unlist(strsplit(job_description  , "[0-9][¡B]"))
+        job_description = unlist(strsplit(job_description  , "[0-9][ã€]"))
         
         job_description = trim(job_description)
         job.describe.df <- job_description[which(grepl(word.to.handle,job_description))]
@@ -266,7 +277,7 @@ other_needs <-function(){
         
         if(toString(job.describe)!=''){
           
-          ##§ì1~5¤jªº¤½¥qªº´y­z
+          ##æŠ“1~5å¤§çš„å…¬å¸çš„æè¿°
           job.describe <- job.describe[1:5]
           
           job.describe <- as.data.frame(job.describe)
@@ -274,19 +285,19 @@ other_needs <-function(){
           job.describe <- job.describe[,c('word','job.describe')]
           
           if(i==1){
-            write.table(job.describe, paste0('ªş¥[±ø¥ó\\',job[job_i],'ªş¥[±ø¥óµü·J»P¤º®e¹ïÀ³µ²ªG.csv'), row.names=F, col.names=TRUE, sep=",")
+            write.table(job.describe, paste0('é™„åŠ æ¢ä»¶\\',job[job_i],'é™„åŠ æ¢ä»¶è©å½™èˆ‡å…§å®¹å°æ‡‰çµæœ.csv'), row.names=F, col.names=TRUE, sep=",")
             
           }else{
-            write.table(job.describe, paste0('ªş¥[±ø¥ó\\',job[job_i],'ªş¥[±ø¥óµü·J»P¤º®e¹ïÀ³µ²ªG.csv'), row.names=F,col.names=F, sep=",", append=TRUE)
+            write.table(job.describe, paste0('é™„åŠ æ¢ä»¶\\',job[job_i],'é™„åŠ æ¢ä»¶è©å½™èˆ‡å…§å®¹å°æ‡‰çµæœ.csv'), row.names=F,col.names=F, sep=",", append=TRUE)
             
           }
         }
       }
       
       print(paste0(format(round(job_i/length(job)*100,2),2),'%'))
-      print(paste0(job[job_i],' ªş¥[±ø¥ó­pºâ§¹¦¨'))
+      print(paste0(job[job_i],' é™„åŠ æ¢ä»¶è¨ˆç®—å®Œæˆ'))
     }else{
-      print(paste0(job[job_i],' ¼Ë¥»¤£¨¬',min_n_sample,'¡A¤£¤©­pºâ'))
+      print(paste0(job[job_i],' æ¨£æœ¬ä¸è¶³',min_n_sample,'ï¼Œä¸äºˆè¨ˆç®—'))
     }
     
     
@@ -295,13 +306,14 @@ other_needs <-function(){
   
 }
 
-#¹q¸£±Mªø
+#é›»è…¦å°ˆé•·
 conputer_skills <- function(){
   for(job_i in 1:length(job_only)){
-    print(paste0(job_only[job_i],' ¶i¦æ¹q¸£±Mªø­pºâ¤¤'))
-    people_sep <- people[which(people$Â¾°È¤pÃş==job_only[job_i]),]
-    total_sep_people_sum = length(people_sep$Â¾°È¤pÃş)
-    people_computer_skills <- c(people_sep$¹q¸£±Mªø)
+    jgc()
+    print(paste0(job_only[job_i],' é€²è¡Œé›»è…¦å°ˆé•·è¨ˆç®—ä¸­'))
+    people_sep <- people[which(people$è·å‹™å°é¡==job_only[job_i]),]
+    total_sep_people_sum = length(people_sep$è·å‹™å°é¡)
+    people_computer_skills <- c(people_sep$é›»è…¦å°ˆé•·)
     people_computer_skills <- people_computer_skills[-which(people_computer_skills=='NULL')]
     people_computer_skills <- strsplit(people_computer_skills,',')
     people_computer_skills <- unlist(people_computer_skills)
@@ -314,7 +326,7 @@ conputer_skills <- function(){
     if(toString(nrow(people_computer_skills))!=""){
       #people_computer_skills <- people_computer_skills[which(people_computer_skills$Freq>=nrow(people_sep)*0.4),]
       if(toString(nrow(people_computer_skills))!="" & nrow(people_computer_skills)>=1){
-        ##³]©w¿z¿ï±ø¥ó
+        ##è¨­å®šç¯©é¸æ¢ä»¶
         people_computer_skills$percentage = people_computer_skills$Freq/total_sep_people_sum
         people_computer_skills <- people_computer_skills[which(people_computer_skills$Freq>5 | people_computer_skills$percentage>0.015),]
         for(i in 1:length(computer_skills_del)){
@@ -331,15 +343,15 @@ conputer_skills <- function(){
         people_computer_skills = t(people_computer_skills)
         colnames(people_computer_skills) = c(1:ncol(people_computer_skills))
         if(nrow(people_computer_skills)>0){
-          write.csv(people_computer_skills,paste0('¹q¸£±Mªø\\',job_only[job_i],'°ªÀW¹q¸£±Mªø.csv'))
+          write.csv(people_computer_skills,paste0('é›»è…¦å°ˆé•·\\',job_only[job_i],'é«˜é »é›»è…¦å°ˆé•·.csv'))
         }
         
       }
     }
   }
-  print('¶}©l§ì¨ú¹q¸£±MªøÁ`ªí')
-  ##¿é¥XÁ`ªí
-  path_com<-"C:\\Users\\abc\\Desktop\\¼t°Óª©Â¾°È¤jÃã¨å\\¤À¦æ·~§Ooutput\\¹q¸£±Mªø"
+  print('é–‹å§‹æŠ“å–é›»è…¦å°ˆé•·ç¸½è¡¨')
+  ##è¼¸å‡ºç¸½è¡¨
+  path_com<-"C:\\Users\\abc\\Desktop\\å» å•†ç‰ˆè·å‹™å¤§è¾­å…¸\\åˆ†è¡Œæ¥­åˆ¥output\\é›»è…¦å°ˆé•·"
   setwd(path_com)
   files = list.files(pattern="*.csv")
   library(gtools)
@@ -350,23 +362,24 @@ conputer_skills <- function(){
     total_computer_skills = smartbind(total_computer_skills, temp_computer_skills[1,])
   }
   total_computer_skills_1 = total_computer_skills[-1,-1]
-  colnames(total_computer_skills_1) = c('Â¾°È¤pÃş¦WºÙ',1:(ncol(total_computer_skills_1)-1))
+  colnames(total_computer_skills_1) = c('è·å‹™å°é¡åç¨±',1:(ncol(total_computer_skills_1)-1))
   for(i in 1:ncol(total_computer_skills_1)){
     total_computer_skills_1[which(is.na(total_computer_skills_1[,i])),i] =''
   }  
-  write.csv(total_computer_skills_1,'¹q¸£±MªøÁ`¾ã²zªí.csv',row.names=F)
+  write.csv(total_computer_skills_1,'é›»è…¦å°ˆé•·ç¸½æ•´ç†è¡¨.csv',row.names=F)
   
-  path_output<-"C:\\Users\\abc\\Desktop\\¼t°Óª©Â¾°È¤jÃã¨å\\¤À¦æ·~§Ooutput"
+  path_output<-"C:\\Users\\abc\\Desktop\\å» å•†ç‰ˆè·å‹™å¤§è¾­å…¸\\åˆ†è¡Œæ¥­åˆ¥output"
   setwd(path_output)
 }
 
-##±M·~¾ÌÃÒ
+##å°ˆæ¥­æ†‘è­‰
 pro_certificate <- function(){
   for(job_i in 1:length(job_only)){
-    print(paste0(job_only[job_i],' ¶i¦æ±M·~¾ÌÃÒ­pºâ¤¤'))
-    people_sep <- people[which(people$Â¾°È¤pÃş==job_only[job_i]),]
-    total_sep_people_sum = length(people_sep$Â¾°È¤pÃş)
-    people_pro_certificate <- c(people_sep$±M·~¾ÌÃÒ)
+    jgc()
+    print(paste0(job_only[job_i],' é€²è¡Œå°ˆæ¥­æ†‘è­‰è¨ˆç®—ä¸­'))
+    people_sep <- people[which(people$è·å‹™å°é¡==job_only[job_i]),]
+    total_sep_people_sum = length(people_sep$è·å‹™å°é¡)
+    people_pro_certificate <- c(people_sep$å°ˆæ¥­æ†‘è­‰)
     people_pro_certificate <- people_pro_certificate[-which(people_pro_certificate=='NULL')]
     people_pro_certificate <- strsplit(people_pro_certificate,',')
     people_pro_certificate <- unlist(people_pro_certificate)
@@ -374,11 +387,11 @@ pro_certificate <- function(){
     people_pro_certificate <- people_pro_certificate[order(-people_pro_certificate$Freq),]
     
     
-    ##¶W¹L4¦¨¼t°Ó©Ò­n¨Dªº¦A§ì¥X
+    ##è¶…é4æˆå» å•†æ‰€è¦æ±‚çš„å†æŠ“å‡º
     if(toString(nrow(people_pro_certificate))!=""){
       #people_pro_certificate <- people_pro_certificate[which(people_pro_certificate$Freq>=nrow(people_sep)*0.4),]
       if(toString(nrow(people_pro_certificate))!="" & nrow(people_pro_certificate)>=1){
-        ##¿z¿ï±ø¥ó
+        ##ç¯©é¸æ¢ä»¶
         people_pro_certificate$percentage = people_pro_certificate$Freq/total_sep_people_sum
         people_pro_certificate <- people_pro_certificate[which(people_pro_certificate$Freq>5 | people_pro_certificate$percentage>0.015),]
       }
@@ -391,13 +404,13 @@ pro_certificate <- function(){
         colnames(people_pro_certificate)[1] = job_only[job_i]
         
         people_pro_certificate = t(people_pro_certificate)
-        write.csv(people_pro_certificate,paste0('±M·~¾ÌÃÒ\\',job_only[job_i],'°ªÀW±M·~¾ÌÃÒ.csv'))
+        write.csv(people_pro_certificate,paste0('å°ˆæ¥­æ†‘è­‰\\',job_only[job_i],'é«˜é »å°ˆæ¥­æ†‘è­‰.csv'))
       }
     }
   }
-  print('¶}©l§ì¨ú±M·~¾ÌÃÒÁ`ªí')
-  ##¿é¥XÁ`ªí
-  path_pro<-"C:\\Users\\abc\\Desktop\\¼t°Óª©Â¾°È¤jÃã¨å\\¤À¦æ·~§Ooutput\\±M·~¾ÌÃÒ"
+  print('é–‹å§‹æŠ“å–å°ˆæ¥­æ†‘è­‰ç¸½è¡¨')
+  ##è¼¸å‡ºç¸½è¡¨
+  path_pro<-"C:\\Users\\abc\\Desktop\\å» å•†ç‰ˆè·å‹™å¤§è¾­å…¸\\åˆ†è¡Œæ¥­åˆ¥output\\å°ˆæ¥­æ†‘è­‰"
   setwd(path_pro)
   files = list.files(pattern="*.csv")
   library(gtools)
@@ -408,28 +421,29 @@ pro_certificate <- function(){
     total_pro_certifi = smartbind(total_pro_certifi, temp_pro_certifi[1,])
   }
   total_pro_certifi_1 = total_pro_certifi[-1,-1]
-  colnames(total_pro_certifi_1) = c('Â¾°È¤pÃş¦WºÙ',1:(ncol(total_pro_certifi_1)-1))
+  colnames(total_pro_certifi_1) = c('è·å‹™å°é¡åç¨±',1:(ncol(total_pro_certifi_1)-1))
   for(i in 1:ncol(total_pro_certifi_1)){
     total_pro_certifi_1[which(is.na(total_pro_certifi_1[,i])),i] =''
   }  
-  write.csv(total_pro_certifi_1,'±M·~¾ÌÃÒÁ`¾ã²zªí.csv',row.names=F)
+  write.csv(total_pro_certifi_1,'å°ˆæ¥­æ†‘è­‰ç¸½æ•´ç†è¡¨.csv',row.names=F)
   
-  path_output<-"C:\\Users\\abc\\Desktop\\¼t°Óª©Â¾°È¤jÃã¨å\\¤À¦æ·~§Ooutput"
+  path_output<-"C:\\Users\\abc\\Desktop\\å» å•†ç‰ˆè·å‹™å¤§è¾­å…¸\\åˆ†è¡Œæ¥­åˆ¥output"
   setwd(path_output)
 }
 
-##¾ãÅé¤u§@»¡©ú
+##æ•´é«”å·¥ä½œèªªæ˜
 all_job_discription <-function(){
   
   for(job_i in 1:length(job_only)){
-    print(paste0(job_only[job_i],' ¶i¦æ¤u§@»¡©ú¤å¦r±´°É»P­pºâ¤¤'))
-    people_sep <- people[which(people$Â¾°È¤pÃş==job_only[job_i]),]
+    jgc()
+    print(paste0(job_only[job_i],' é€²è¡Œå·¥ä½œèªªæ˜æ–‡å­—æ¢å‹˜èˆ‡è¨ˆç®—ä¸­'))
+    people_sep <- people[which(people$è·å‹™å°é¡==job_only[job_i]),]
     
-    people_sep$¤u§@»¡©ú = gsub('\x9e','  ', people_sep$¤u§@»¡©ú)
-    ##¥h°£­^¤å¤u§@»¡©ú
+    people_sep$å·¥ä½œèªªæ˜ = gsub('\x9e','  ', people_sep$å·¥ä½œèªªæ˜)
+    ##å»é™¤è‹±æ–‡å·¥ä½œèªªæ˜
     en_remove_index <-{}
-    for(en.remove in 1:length(people_sep$¤u§@»¡©ú)){
-      if(length(gregexpr(pattern ='[a-z]',people_sep$¤u§@»¡©ú)[[en.remove]])/nchar(people_sep$¤u§@»¡©ú[en.remove])>0.5){
+    for(en.remove in 1:length(people_sep$å·¥ä½œèªªæ˜)){
+      if(length(gregexpr(pattern ='[a-z]',people_sep$å·¥ä½œèªªæ˜)[[en.remove]])/nchar(people_sep$å·¥ä½œèªªæ˜[en.remove])>0.5){
         en_remove_index <- c(en_remove_index,en.remove)
       }
     }
@@ -441,16 +455,16 @@ all_job_discription <-function(){
     job_all_name = substr(job_only[job_i],1,unlist(gregexpr(' - ',job_only[job_i]))-1)
     
     if(nrow(people_sep)>min_n_sample){
-      review_text <- paste(people_sep$¤u§@»¡©ú, collapse=" ")
-      #review_text =people_sep$¤u§@»¡©ú
+      review_text <- paste(people_sep$å·¥ä½œèªªæ˜, collapse=" ")
+      #review_text =people_sep$å·¥ä½œèªªæ˜
       review_text <- gsub("[\n]", "  ", review_text)
-      #review_text = unlist(strsplit(review_text, "[¡A,¡C¡´;¡F]"))
-      #review_text = unlist(strsplit(review_text, "[¡C¡´;¡F]"))
+      #review_text = unlist(strsplit(review_text, "[ï¼Œ,ã€‚â—;ï¼›]"))
+      #review_text = unlist(strsplit(review_text, "[ã€‚â—;ï¼›]"))
       #review_text = unlist(strsplit(review_text, "  "))
       #review_text = unlist(strsplit(review_text  , "[(][0-9][)]"))
-      #rreview_text = unlist(strsplit(review_text  , "[¡]][0-9][¡^]"))
+      #rreview_text = unlist(strsplit(review_text  , "[ï¼ˆ][0-9][ï¼‰]"))
       #review_text = unlist(strsplit(review_text  , "[0-9][.]"))
-      #review_text = unlist(strsplit(review_text  , "[0-9][¡B]"))
+      #review_text = unlist(strsplit(review_text  , "[0-9][ã€]"))
       
       review_source <- VectorSource(review_text)
       d.corpus <- Corpus(review_source)
@@ -463,14 +477,14 @@ all_job_discription <-function(){
       })
       
       
-      #°İÃD¦b³o
+      #å•é¡Œåœ¨é€™
       d.corpus <- tm_map(d.corpus, segmentCN, nature = TRUE)
       
-      myStopWords <- c(stopwordsCN(), "½s¿è", "®É¶¡", "¼ĞÃD", "µo«H", "¹ê·~", "§@ªÌ","¸ê®Æ®wºŞ²z")
+      myStopWords <- c(stopwordsCN(), "ç·¨è¼¯", "æ™‚é–“", "æ¨™é¡Œ", "ç™¼ä¿¡", "å¯¦æ¥­", "ä½œè€…","è³‡æ–™åº«ç®¡ç†")
       d.corpus <- tm_map(d.corpus, removeWords, myStopWords)
       d.corpus <- tm_map(d.corpus, removeWords, stopwords("english")) 
       d.corpus <- tm_map(d.corpus, PlainTextDocument)
-      ##­×§ï¨ú¥X¤å¦rªø«×
+      ##ä¿®æ”¹å–å‡ºæ–‡å­—é•·åº¦
       tdm <- TermDocumentMatrixCN(d.corpus, control = list(wordLengths = c(2, Inf)))
       
       m1 <- as.matrix(tdm)
@@ -479,7 +493,7 @@ all_job_discription <-function(){
       d$word <- as.character(d$word)
       d$percentage <- d$freq/nrow(people_sep)
       
-      delete.word.vector <- c('null','¥H¤W','¦~¥H¤W','¸gÅç','¤u§@','¤½¥q','¥ø·~','¥[¯Z','­t³d','°t¦X','§¹¦¨','¦a°Ï','¬ÛÃö','»P','§¹¦¨','work','experience','¶i¦æ','¾á¥ô','will','¯à¤O','°ò¥»','¿³½ì','¥D­n','¨ã¦³','¨ã³Æ','­±¸Õ','¤U¯Z','¤W¯Z','¤º®e','Á~¸ê','§¹¾ã','Àu¥ı','¦Û¦æ','²Î¤@')
+      delete.word.vector <- c('null','ä»¥ä¸Š','å¹´ä»¥ä¸Š','ç¶“é©—','å·¥ä½œ','å…¬å¸','ä¼æ¥­','åŠ ç­','è² è²¬','é…åˆ','å®Œæˆ','åœ°å€','ç›¸é—œ','èˆ‡','å®Œæˆ','work','experience','é€²è¡Œ','æ“”ä»»','will','èƒ½åŠ›','åŸºæœ¬','èˆˆè¶£','ä¸»è¦','å…·æœ‰','å…·å‚™','é¢è©¦','ä¸‹ç­','ä¸Šç­','å…§å®¹','è–ªè³‡','å®Œæ•´','å„ªå…ˆ','è‡ªè¡Œ','çµ±ä¸€')
       for(delete.word.index in 1:length(delete.word.vector)){
         if(toString(which(d$word==delete.word.vector[delete.word.index]))!=''){
           d <- d[-which(d$word==delete.word.vector[delete.word.index]),]
@@ -487,9 +501,9 @@ all_job_discription <-function(){
         
       }
       
-      write.csv(d,paste0('¤u§@»¡©ú\\¾ãÅé\\',job_only[job_i],'¤u§@»¡©ú¤å¦rFreq.csv'),row.names=F)
+      write.csv(d,paste0('å·¥ä½œèªªæ˜\\æ•´é«”\\',job_only[job_i],'å·¥ä½œèªªæ˜æ–‡å­—Freq.csv'),row.names=F)
       
-      png(paste0(output_path,'\\','¤u§@»¡©ú\\¾ãÅé\\',job_only[job_i],'_¤u§@»¡©úwordcloud.png'), width=800,height=800)
+      png(paste0(output_path,'\\','å·¥ä½œèªªæ˜\\æ•´é«”\\',job_only[job_i],'_å·¥ä½œèªªæ˜wordcloud.png'), width=800,height=800)
       
       if(length(d$freq)>=100){
         wordcloud(d$word[1:100], d$freq[1:100], random.order = F, scale=c(10, .5), colors=brewer.pal(6, "Dark2"))
@@ -499,20 +513,20 @@ all_job_discription <-function(){
       dev.off()
       
       
-      ##§ì¥X«e10¦W¦r¦ê¹ïÀ³¦Ü¤u§@»¡©ú
+      ##æŠ“å‡ºå‰10åå­—ä¸²å°æ‡‰è‡³å·¥ä½œèªªæ˜
       for(i in 1:10){
         word.to.handle <- d$word[i]
-        people_sep$¤u§@»¡©ú³B²z¹L <- people_sep$¤u§@»¡©ú
-        people_sep$¤u§@»¡©ú³B²z¹L <- tolower(people_sep$¤u§@»¡©ú³B²z¹L)
+        people_sep$å·¥ä½œèªªæ˜è™•ç†é <- people_sep$å·¥ä½œèªªæ˜
+        people_sep$å·¥ä½œèªªæ˜è™•ç†é <- tolower(people_sep$å·¥ä½œèªªæ˜è™•ç†é)
         
-        people_sep <- people_sep[order(-as.numeric(people_sep$¸ê¥»ª÷ÃB),-as.numeric(people_sep$­û¤u¤H¼Æ)),]
-        job_description <- people_sep$¤u§@»¡©ú³B²z¹L
-        job_description = unlist(strsplit(job_description, "[¡C¡´;¡F]"))
+        people_sep <- people_sep[order(-as.numeric(people_sep$è³‡æœ¬é‡‘é¡),-as.numeric(people_sep$å“¡å·¥äººæ•¸)),]
+        job_description <- people_sep$å·¥ä½œèªªæ˜è™•ç†é
+        job_description = unlist(strsplit(job_description, "[ã€‚â—;ï¼›]"))
         job_description = unlist(strsplit(job_description, "  "))
         job_description = unlist(strsplit(job_description  , "[(][0-9][)]"))
-        job_description = unlist(strsplit(job_description  , "[¡]][0-9][¡^]"))
+        job_description = unlist(strsplit(job_description  , "[ï¼ˆ][0-9][ï¼‰]"))
         job_description = unlist(strsplit(job_description  , "[0-9][.]"))
-        job_description = unlist(strsplit(job_description  , "[0-9][¡B]"))
+        job_description = unlist(strsplit(job_description  , "[0-9][ã€]"))
         job_description = trim(job_description)
         
         job.describe.df <- job_description[which(grepl(word.to.handle,job_description))]
@@ -520,7 +534,7 @@ all_job_discription <-function(){
         
         if(toString(job.describe)!=''){
           
-          ##§ì1~5¤jªº¤½¥qªº´y­z
+          ##æŠ“1~5å¤§çš„å…¬å¸çš„æè¿°
           job.describe <- job.describe[1:5]
           
           job.describe <- as.data.frame(job.describe)
@@ -528,19 +542,19 @@ all_job_discription <-function(){
           job.describe <- job.describe[,c('word','job.describe')]
           
           if(i==1){
-            write.table(job.describe, paste0('¤u§@»¡©ú\\¾ãÅé\\',job_only[job_i],'¤u§@»¡©úµü·J»P¤º®e¹ïÀ³µ²ªG.csv'), row.names=F, col.names=TRUE, sep=",")
+            write.table(job.describe, paste0('å·¥ä½œèªªæ˜\\æ•´é«”\\',job_only[job_i],'å·¥ä½œèªªæ˜è©å½™èˆ‡å…§å®¹å°æ‡‰çµæœ.csv'), row.names=F, col.names=TRUE, sep=",")
             
           }else{
-            write.table(job.describe, paste0('¤u§@»¡©ú\\¾ãÅé\\',job_only[job_i],'¤u§@»¡©úµü·J»P¤º®e¹ïÀ³µ²ªG.csv'), row.names=F,col.names=F, sep=",", append=TRUE)
+            write.table(job.describe, paste0('å·¥ä½œèªªæ˜\\æ•´é«”\\',job_only[job_i],'å·¥ä½œèªªæ˜è©å½™èˆ‡å…§å®¹å°æ‡‰çµæœ.csv'), row.names=F,col.names=F, sep=",", append=TRUE)
             
           }
         }
       }
       
       print(paste0(format(round(job_i/length(job)*100,2),2),'%'))
-      print(paste0(job_only[job_i],' ­pºâ§¹¦¨'))
+      print(paste0(job_only[job_i],' è¨ˆç®—å®Œæˆ'))
     }else{
-      print(paste0(job_only[job_i],' ¼Ë¥»¤£¨¬',min_n_sample,'¡A¤£¤©­pºâ'))
+      print(paste0(job_only[job_i],' æ¨£æœ¬ä¸è¶³',min_n_sample,'ï¼Œä¸äºˆè¨ˆç®—'))
     }
     
     
@@ -548,18 +562,19 @@ all_job_discription <-function(){
   
 }
 
-##¾ãÅéªş¥[±ø¥ó
+##æ•´é«”é™„åŠ æ¢ä»¶
 all_other_needs <-function(){
   
   for(job_i in 1:length(job_only)){
-    print(paste0(job_only[job_i],' ¶i¦æªş¥[±ø¥ó¤å¦r±´°É»P­pºâ¤¤'))
-    people_sep <- people[which(people$Â¾°È¤pÃş==job_only[job_i]),]
+    jgc()
+    print(paste0(job_only[job_i],' é€²è¡Œé™„åŠ æ¢ä»¶æ–‡å­—æ¢å‹˜èˆ‡è¨ˆç®—ä¸­'))
+    people_sep <- people[which(people$è·å‹™å°é¡==job_only[job_i]),]
     
-    people_sep$ªş¥[±ø¥ó = gsub('\x9e','  ', people_sep$ªş¥[±ø¥ó)
-    ##¥h°£­^¤åªºªş¥[±ø¥ó
+    people_sep$é™„åŠ æ¢ä»¶ = gsub('\x9e','  ', people_sep$é™„åŠ æ¢ä»¶)
+    ##å»é™¤è‹±æ–‡çš„é™„åŠ æ¢ä»¶
     en_remove_index <-{}
-    for(en.remove in 1:length(people_sep$ªş¥[±ø¥ó)){
-      if(length(gregexpr(pattern ='[a-z]',people_sep$ªş¥[±ø¥ó)[[en.remove]])/nchar(people_sep$ªş¥[±ø¥ó[en.remove])>0.5){
+    for(en.remove in 1:length(people_sep$é™„åŠ æ¢ä»¶)){
+      if(length(gregexpr(pattern ='[a-z]',people_sep$é™„åŠ æ¢ä»¶)[[en.remove]])/nchar(people_sep$é™„åŠ æ¢ä»¶[en.remove])>0.5){
         en_remove_index <- c(en_remove_index,en.remove)
       }
     }
@@ -570,16 +585,16 @@ all_other_needs <-function(){
     }
     
     if(nrow(people_sep)>min_n_sample){
-      review_text <- paste(people_sep$ªş¥[±ø¥ó, collapse=" ")
-      #review_text <- people_sep$ªş¥[±ø¥ó
+      review_text <- paste(people_sep$é™„åŠ æ¢ä»¶, collapse=" ")
+      #review_text <- people_sep$é™„åŠ æ¢ä»¶
       review_text <- gsub("[\n]", "  ", review_text)
-      #review_text = unlist(strsplit(review_text, "[¡A,¡C¡´;¡F]"))
-      #review_text = unlist(strsplit(review_text, "[¡C¡´;¡F]"))
+      #review_text = unlist(strsplit(review_text, "[ï¼Œ,ã€‚â—;ï¼›]"))
+      #review_text = unlist(strsplit(review_text, "[ã€‚â—;ï¼›]"))
       #review_text = unlist(strsplit(review_text, "  "))
       #review_text = unlist(strsplit(review_text  , "[(][0-9][)]"))
-      #review_text = unlist(strsplit(review_text  , "[¡]][0-9][¡^]"))
+      #review_text = unlist(strsplit(review_text  , "[ï¼ˆ][0-9][ï¼‰]"))
       #review_text = unlist(strsplit(review_text  , "[0-9][.]"))
-      #review_text = unlist(strsplit(review_text  , "[0-9][¡B]"))
+      #review_text = unlist(strsplit(review_text  , "[0-9][ã€]"))
       
       review_source <- VectorSource(review_text)
       d.corpus <- Corpus(review_source)
@@ -593,7 +608,7 @@ all_other_needs <-function(){
       
       d.corpus <- tm_map(d.corpus, segmentCN, nature = TRUE)
       
-      myStopWords <- c(stopwordsCN(), "½s¿è", "®É¶¡", "¼ĞÃD", "µo«H", "¹ê·~", "§@ªÌ","¸ê®Æ®wºŞ²z")
+      myStopWords <- c(stopwordsCN(), "ç·¨è¼¯", "æ™‚é–“", "æ¨™é¡Œ", "ç™¼ä¿¡", "å¯¦æ¥­", "ä½œè€…","è³‡æ–™åº«ç®¡ç†")
       d.corpus <- tm_map(d.corpus, removeWords, myStopWords)
       d.corpus <- tm_map(d.corpus, removeWords, stopwords("english")) 
       d.corpus <- tm_map(d.corpus, PlainTextDocument)
@@ -605,7 +620,7 @@ all_other_needs <-function(){
       d$word <- as.character(d$word)
       d$percentage <- d$freq/nrow(people_sep)
       
-      delete.word.vector <- c('¥H¤W','¦~¥H¤W','¸gÅç','¤u§@','¤½¥q','¥ø·~','¥[¯Z','­t³d','°t¦X','§¹¦¨','¦a°Ï','¬ÛÃö','»P','§¹¦¨','work','experience','¶i¦æ','¾á¥ô','will','¯à¤O','°ò¥»','¿³½ì','¥D­n','¨ã¦³','¨ã³Æ','­±¸Õ','¤U¯Z','¤W¯Z','¤º®e','Á~¸ê','§¹¾ã','Àu¥ı','¦Û¦æ','²Î¤@')
+      delete.word.vector <- c('ä»¥ä¸Š','å¹´ä»¥ä¸Š','ç¶“é©—','å·¥ä½œ','å…¬å¸','ä¼æ¥­','åŠ ç­','è² è²¬','é…åˆ','å®Œæˆ','åœ°å€','ç›¸é—œ','èˆ‡','å®Œæˆ','work','experience','é€²è¡Œ','æ“”ä»»','will','èƒ½åŠ›','åŸºæœ¬','èˆˆè¶£','ä¸»è¦','å…·æœ‰','å…·å‚™','é¢è©¦','ä¸‹ç­','ä¸Šç­','å…§å®¹','è–ªè³‡','å®Œæ•´','å„ªå…ˆ','è‡ªè¡Œ','çµ±ä¸€')
       for(delete.word.index in 1:length(delete.word.vector)){
         if(toString(which(d$word==delete.word.vector[delete.word.index]))!=''){
           d <- d[-which(d$word==delete.word.vector[delete.word.index]),]
@@ -613,9 +628,9 @@ all_other_needs <-function(){
         
       }
       
-      write.csv(d,paste0('ªş¥[±ø¥ó\\¾ãÅé\\',job_only[job_i],'ªş¥[±ø¥ó¤å¦rFreq.csv'),row.names=F)
+      write.csv(d,paste0('é™„åŠ æ¢ä»¶\\æ•´é«”\\',job_only[job_i],'é™„åŠ æ¢ä»¶æ–‡å­—Freq.csv'),row.names=F)
       
-      png(paste0(output_path,'\\','ªş¥[±ø¥ó\\¾ãÅé\\',job_only[job_i],'_ªş¥[±ø¥ówordcloud.png'), width=800,height=800)
+      png(paste0(output_path,'\\','é™„åŠ æ¢ä»¶\\æ•´é«”\\',job_only[job_i],'_é™„åŠ æ¢ä»¶wordcloud.png'), width=800,height=800)
       
       if(length(d$freq)>=100){
         wordcloud(d$word[1:100], d$freq[1:100], random.order = F, scale=c(10, .5), colors=brewer.pal(6, "Dark2"))
@@ -625,20 +640,20 @@ all_other_needs <-function(){
       dev.off()
       
       
-      ##§ì¥X«e10¦W¦r¦ê¹ïÀ³¦Üªş¥[±ø¥ó
+      ##æŠ“å‡ºå‰10åå­—ä¸²å°æ‡‰è‡³é™„åŠ æ¢ä»¶
       for(i in 1:10){
         word.to.handle <- d$word[i]
-        people_sep$ªş¥[±ø¥ó³B²z¹L <- people_sep$ªş¥[±ø¥ó
-        people_sep$ªş¥[±ø¥ó³B²z¹L <- tolower(people_sep$ªş¥[±ø¥ó³B²z¹L)
+        people_sep$é™„åŠ æ¢ä»¶è™•ç†é <- people_sep$é™„åŠ æ¢ä»¶
+        people_sep$é™„åŠ æ¢ä»¶è™•ç†é <- tolower(people_sep$é™„åŠ æ¢ä»¶è™•ç†é)
         
-        people_sep <- people_sep[order(-as.numeric(people_sep$¸ê¥»ª÷ÃB),-as.numeric(people_sep$­û¤u¤H¼Æ)),]
-        job_description <- people_sep$ªş¥[±ø¥ó³B²z¹L
-        job_description = unlist(strsplit(job_description, "[¡C¡´;¡F]"))
+        people_sep <- people_sep[order(-as.numeric(people_sep$è³‡æœ¬é‡‘é¡),-as.numeric(people_sep$å“¡å·¥äººæ•¸)),]
+        job_description <- people_sep$é™„åŠ æ¢ä»¶è™•ç†é
+        job_description = unlist(strsplit(job_description, "[ã€‚â—;ï¼›]"))
         job_description = unlist(strsplit(job_description, "  "))
         job_description = unlist(strsplit(job_description  , "[(][0-9][)]"))
-        job_description = unlist(strsplit(job_description  , "[¡]][0-9][¡^]"))
+        job_description = unlist(strsplit(job_description  , "[ï¼ˆ][0-9][ï¼‰]"))
         job_description = unlist(strsplit(job_description  , "[0-9][.]"))
-        job_description = unlist(strsplit(job_description  , "[0-9][¡B]"))
+        job_description = unlist(strsplit(job_description  , "[0-9][ã€]"))
         
         job_description = trim(job_description)
         job.describe.df <- job_description[which(grepl(word.to.handle,job_description))]
@@ -646,7 +661,7 @@ all_other_needs <-function(){
         
         if(toString(job.describe)!=''){
           
-          ##§ì1~5¤jªº¤½¥qªº´y­z
+          ##æŠ“1~5å¤§çš„å…¬å¸çš„æè¿°
           job.describe <- job.describe[1:5]
           
           job.describe <- as.data.frame(job.describe)
@@ -654,19 +669,19 @@ all_other_needs <-function(){
           job.describe <- job.describe[,c('word','job.describe')]
           
           if(i==1){
-            write.table(job.describe, paste0('ªş¥[±ø¥ó\\¾ãÅé\\',job_only[job_i],'ªş¥[±ø¥óµü·J»P¤º®e¹ïÀ³µ²ªG.csv'), row.names=F, col.names=TRUE, sep=",")
+            write.table(job.describe, paste0('é™„åŠ æ¢ä»¶\\æ•´é«”\\',job_only[job_i],'é™„åŠ æ¢ä»¶è©å½™èˆ‡å…§å®¹å°æ‡‰çµæœ.csv'), row.names=F, col.names=TRUE, sep=",")
             
           }else{
-            write.table(job.describe, paste0('ªş¥[±ø¥ó\\¾ãÅé\\',job_only[job_i],'ªş¥[±ø¥óµü·J»P¤º®e¹ïÀ³µ²ªG.csv'), row.names=F,col.names=F, sep=",", append=TRUE)
+            write.table(job.describe, paste0('é™„åŠ æ¢ä»¶\\æ•´é«”\\',job_only[job_i],'é™„åŠ æ¢ä»¶è©å½™èˆ‡å…§å®¹å°æ‡‰çµæœ.csv'), row.names=F,col.names=F, sep=",", append=TRUE)
             
           }
         }
       }
       
       print(paste0(format(round(job_i/length(job)*100,2),2),'%'))
-      print(paste0(job_only[job_i],' ªş¥[±ø¥ó­pºâ§¹¦¨'))
+      print(paste0(job_only[job_i],' é™„åŠ æ¢ä»¶è¨ˆç®—å®Œæˆ'))
     }else{
-      print(paste0(job_only[job_i],' ¼Ë¥»¤£¨¬',min_n_sample,'¡A¤£¤©­pºâ'))
+      print(paste0(job_only[job_i],' æ¨£æœ¬ä¸è¶³',min_n_sample,'ï¼Œä¸äºˆè¨ˆç®—'))
     }
     
     

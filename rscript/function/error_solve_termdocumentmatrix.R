@@ -1,13 +1,13 @@
 ######################################################################
-##  ª`·N!
-##  ¥ı¦w¸Ë¦n©Ò»İªº®M¥ó
+##  æ³¨æ„!
+##  å…ˆå®‰è£å¥½æ‰€éœ€çš„å¥—ä»¶
 library("tm")
-##  ¦³Ãö¤¤¤åªº®M¥ó: Rwordseg tmcn
-##  ¥Î«ü¥O·|¦³µLªk¦w¸Ëªº¥i¯à(º¡±`µo¥Í)
-##  ª½±µ¨ì https://r-forge.r-project.org/R/?group_id=1571 ¤Î
-##         https://r-forge.r-project.org/R/?group_id=1054 ¤U¸ü .zip ÀÉ
-##  ©ñ¤J R ªº®M¥ó¸ê®Æ§¨    
-##  ª`·N:¸ü¤J Rwordseg «e»İ­n¥ı¸ü¤J rJava ®M¥ó
+##  æœ‰é—œä¸­æ–‡çš„å¥—ä»¶: Rwordseg tmcn
+##  ç”¨æŒ‡ä»¤æœƒæœ‰ç„¡æ³•å®‰è£çš„å¯èƒ½(æ»¿å¸¸ç™¼ç”Ÿ)
+##  ç›´æ¥åˆ° https://r-forge.r-project.org/R/?group_id=1571 åŠ
+##         https://r-forge.r-project.org/R/?group_id=1054 ä¸‹è¼‰ .zip æª”
+##  æ”¾å…¥ R çš„å¥—ä»¶è³‡æ–™å¤¾    
+##  æ³¨æ„:è¼‰å…¥ Rwordseg å‰éœ€è¦å…ˆè¼‰å…¥ rJava å¥—ä»¶
 library("rJava")
 library("Rwordseg")
 library("tmcn")
