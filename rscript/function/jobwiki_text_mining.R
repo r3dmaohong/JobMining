@@ -351,7 +351,7 @@ computer_skills <- function(){
   }
   print('開始抓取電腦專長總表')
   ##輸出總表
-  path_com<-"C:\\Users\\abc\\Desktop\\廠商版職務大辭典\\分行業別output\\電腦專長"
+  path_com<-"D:\\abc\\wjhong\\projects\\廠商版職務大蒐秘\\jobwiki\\分行業別output\\電腦專長"
   setwd(path_com)
   files = list.files(pattern="*.csv")
   library(gtools)
@@ -368,7 +368,7 @@ computer_skills <- function(){
   }  
   write.csv(total_computer_skills_1,'電腦專長總整理表.csv',row.names=F)
   
-  path_output<-"C:\\Users\\abc\\Desktop\\廠商版職務大辭典\\分行業別output"
+  path_output<-"D:\\abc\\wjhong\\projects\\廠商版職務大蒐秘\\jobwiki\\分行業別output"
   setwd(path_output)
 }
 
@@ -410,7 +410,7 @@ pro_certificate <- function(){
   }
   print('開始抓取專業憑證總表')
   ##輸出總表
-  path_pro<-"C:\\Users\\abc\\Desktop\\廠商版職務大辭典\\分行業別output\\專業憑證"
+  path_pro<-"D:\\abc\\wjhong\\projects\\廠商版職務大蒐秘\\jobwiki\\分行業別output\\專業憑證"
   setwd(path_pro)
   files = list.files(pattern="*.csv")
   library(gtools)
@@ -427,7 +427,7 @@ pro_certificate <- function(){
   }  
   write.csv(total_pro_certifi_1,'專業憑證總整理表.csv',row.names=F)
   
-  path_output<-"C:\\Users\\abc\\Desktop\\廠商版職務大辭典\\分行業別output"
+  path_output<-"D:\\abc\\wjhong\\projects\\廠商版職務大蒐秘\\jobwiki\\分行業別output"
   setwd(path_output)
 }
 
@@ -744,7 +744,7 @@ arule_computer_skills <- function(){
       rules = apriori(tranc_list,parameter=list(supp=0.2,conf=0.8,maxlen=2),appearance=list(rhs=job,default="lhs"))
       inspect(head(sort(rules,by="support"),40))
       #inspect(sort(rules,by="support"))
-      path_arule<-"C:\\Users\\abc\\Desktop\\廠商版職務大辭典\\分行業別output\\電腦專長arule"
+      path_arule<-"D:\\abc\\wjhong\\projects\\廠商版職務大蒐秘\\jobwiki\\分行業別output\\電腦專長arule"
       setwd(path_arule)
       sink(paste0(job,"電腦專長.csv"))
       inspect(sort(rules,by="support"))
@@ -807,7 +807,7 @@ arule_pro_certificate <- function(){
       rules = apriori(tranc_list,parameter=list(supp=0.2,conf=0.8,maxlen=2),appearance=list(rhs=job,default="lhs"))
       inspect(head(sort(rules,by="support"),40))
       #inspect(sort(rules,by="support"))
-      path_arule<-"C:\\Users\\abc\\Desktop\\廠商版職務大辭典\\分行業別output\\專業憑證arule"
+      path_arule<-"D:\\abc\\wjhong\\projects\\廠商版職務大蒐秘\\jobwiki\\分行業別output\\專業憑證arule"
       setwd(path_arule)
       sink(paste0(job,"專業憑證.csv"))
       inspect(sort(rules,by="support"))

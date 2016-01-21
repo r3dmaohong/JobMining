@@ -1,4 +1,4 @@
-##source('C:\\Users\\abc\\Desktop\\廠商版職務大辭典\\rscript\\廠商版職務大辭典.R', print.eval  = TRUE)
+##source('D:\\abc\\wjhong\\projects\\廠商版職務大蒐秘\\jobwiki\\rscript\\廠商版職務大辭典.R', print.eval  = TRUE)
 
 ##廠商版職務大辭典
 rm(list = ls()) #去除工作空間中所有物件
@@ -12,21 +12,22 @@ library(wordcloud)
 library(SnowballC)
 library(cluster)   
 library(ggplot2) 
+library(data.table) 
 
 gc() #記憶體釋放 
 
-path<-"C:\\Users\\abc\\Desktop\\廠商版職務大辭典"
+path<-"D:\\abc\\wjhong\\projects\\廠商版職務大蒐秘\\jobwiki"
 #讀取多個csv至df
 data_path<-paste0(path,"\\撈取資料")
 setwd(data_path)
-library(data.table)  
+ 
 files = list.files(pattern="*.csv")
 print('讀取資料中')
 temp <- lapply(files, fread, sep=",")
 people <- rbindlist(temp)
 print('讀取資料完畢')
 ##text mining
-#path<-"C:\\Users\\abc\\Desktop\\廠商版職務大辭典"
+#path<-"D:\\abc\\wjhong\\projects\\廠商版職務大蒐秘\\jobwiki"
 setwd(path)
 start.time<-Sys.time()
 
