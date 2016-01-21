@@ -122,7 +122,7 @@ job_discription <-function(){
         wordcloud(d$word, d$freq, random.order = F, scale=c(10, .5), colors=brewer.pal(6, "Dark2"))
       }
       dev.off()
-      
+      jgc()
       
       ##抓出前10名字串對應至工作說明
       for(i in 1:10){
@@ -254,7 +254,7 @@ other_needs <-function(){
         wordcloud(d$word, d$freq, random.order = F, scale=c(10, .5), colors=brewer.pal(6, "Dark2"))
       }
       dev.off()
-      
+      jgc()
       
       ##抓出前10名字串對應至附加條件
       for(i in 1:10){
@@ -511,7 +511,7 @@ all_job_discription <-function(){
         wordcloud(d$word, d$freq, random.order = F, scale=c(10, .5), colors=brewer.pal(6, "Dark2"))
       }
       dev.off()
-      
+      jgc()
       
       ##抓出前10名字串對應至工作說明
       for(i in 1:10){
@@ -638,7 +638,7 @@ all_other_needs <-function(){
         wordcloud(d$word, d$freq, random.order = F, scale=c(10, .5), colors=brewer.pal(6, "Dark2"))
       }
       dev.off()
-      
+      jgc()
       
       ##抓出前10名字串對應至附加條件
       for(i in 1:10){

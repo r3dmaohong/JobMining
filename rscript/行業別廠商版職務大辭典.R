@@ -83,7 +83,6 @@ setwd(output_path)
 
 
 
-
 ##取出要處理的資料
 job <- data_processing_job()
 
