@@ -346,7 +346,7 @@ computer_skills <- function(){
       if(toString(nrow(people_computer_skills))!="" & nrow(people_computer_skills)>=1){
         ##設定篩選條件
         people_computer_skills$percentage = people_computer_skills$Freq/total_sep_people_sum
-        people_computer_skills <- people_computer_skills[which(people_computer_skills$Freq>5 | people_computer_skills$percentage>0.015),]
+        people_computer_skills <- people_computer_skills[which(people_computer_skills$Freq>5 & people_computer_skills$percentage>0.015),]
         for(i in 1:length(computer_skills_del)){
           people_computer_skills = people_computer_skills[which(people_computer_skills[,1]!=computer_skills_del[i]),]
         }}
@@ -411,7 +411,7 @@ pro_certificate <- function(){
       if(toString(nrow(people_pro_certificate))!="" & nrow(people_pro_certificate)>=1){
         ##篩選條件
         people_pro_certificate$percentage = people_pro_certificate$Freq/total_sep_people_sum
-        people_pro_certificate <- people_pro_certificate[which(people_pro_certificate$Freq>5 | people_pro_certificate$percentage>0.015),]
+        people_pro_certificate <- people_pro_certificate[which(people_pro_certificate$Freq>5 & people_pro_certificate$percentage>0.015),]
       }
       
       if(toString(nrow(people_pro_certificate))!="" & nrow(people_pro_certificate)>=1){

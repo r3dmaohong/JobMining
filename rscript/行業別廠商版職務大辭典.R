@@ -31,6 +31,23 @@ print('讀取資料完畢')
 setwd(path)
 start.time<-Sys.time()
 
+#jobwiki_old_discription = read.csv('jobwiki_discription.csv',stringsAsFactors=F)
+#jobwiki_old_discription = unlist(strsplit(jobwiki_old_discription$工作內容  , "[0-9][.]"))
+#jobwiki_old_discription = unlist(strsplit(jobwiki_old_discription$工作內容  , "[（][0-9][）]"))
+#jobwiki_old_discription = unlist(strsplit(jobwiki_old_discription$工作內容  , "[()][0-9][)]"))
+#jobwiki_old_discription <- gsub(' ','',jobwiki_old_discription)
+#jobwiki_old_discription <- gsub('<br>','',jobwiki_old_discription)
+#jobwiki_old_discription <- sort(jobwiki_old_discription)
+#jobwiki_old_discription <- gsub("^[.]", "", jobwiki_old_discription)
+#jobwiki_old_discription <- gsub("A.工作內容", "", jobwiki_old_discription)
+#jobwiki_old_discription <- gsub("A.工作內容:", "", jobwiki_old_discription)
+#jobwiki_old_discription <- jobwiki_old_discription[-which(jobwiki_old_discription=='')]
+
+#for(i in 1:length(jobwiki_old_discription)){
+#  people$工作說明 = gsub(jobwiki_old_discription[i],'',people$工作說明)
+#  print(paste0('剔除勾選之工作說明',i/length(jobwiki_old_discription) * 100,'%'))
+#}
+
 job_type <- as.data.frame(table(people$職務小類),stringsAsFactors=F)
 job_type <- job_type[order(rank(-job_type$Freq)),]
 
@@ -98,15 +115,6 @@ job_discription()
 ##附加條件
 other_needs()
 
-##取出要處理的資料
-job_only <- data_processing_job_only()
-##電腦專長
-##改先抓共同高的，把這些替除，推薦特殊的
-computer_skills()
-
-##專業憑證
-pro_certificate()
-
 ##整體工作說明
 all_job_discription()
 
@@ -118,6 +126,15 @@ all_other_needs()
 ##找出整體高頻詞
 ##將各職務的詞去除高頻詞 >0.5?
 ##再找出各職務的高頻詞 >0.5?
+
+##取出要處理的資料
+job_only <- data_processing_job_only()
+##電腦專長
+##改先抓共同高的，把這些替除，推薦特殊的
+computer_skills()
+
+##專業憑證
+pro_certificate()
 
 ##利用apriori抓出相關證照
 arule_computer_skills()
