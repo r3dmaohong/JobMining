@@ -40,139 +40,149 @@ data_processing_job_only <- function(){
   
 }
 
+job_discription_error <- {}
 ##工作說明
 job_discription <-function(){
   
   
   for(job_i in 1:length(job)){
-    jgc()
-    print(paste0(job[job_i],' 進行工作說明文字探勘與計算中'))
-    people_sep <- people[which(people$行業與職務==job[job_i]),]
     
-    people_sep$工作說明 = gsub('\x9e','  ', people_sep$工作說明)
-    ##去除英文工作說明
-    en_remove_index <-{}
-    for(en.remove in 1:length(people_sep$工作說明)){
-      if(length(gregexpr(pattern ='[a-z]',people_sep$工作說明)[[en.remove]])/nchar(people_sep$工作說明[en.remove])>0.5){
-        en_remove_index <- c(en_remove_index,en.remove)
+    tryCatch({
+      jgc()
+      print(paste0(job[job_i],' 進行工作說明文字探勘與計算中'))
+      people_sep <- people[which(people$行業與職務==job[job_i]),]
+      
+      people_sep$工作說明 = gsub('\x9e','  ', people_sep$工作說明)
+      ##去除英文工作說明
+      en_remove_index <-{}
+      for(en.remove in 1:length(people_sep$工作說明)){
+        if(length(gregexpr(pattern ='[a-z]',people_sep$工作說明)[[en.remove]])/nchar(people_sep$工作說明[en.remove])>0.5){
+          en_remove_index <- c(en_remove_index,en.remove)
+        }
       }
-    }
-    if(toString(en_remove_index)==''){
+      if(toString(en_remove_index)==''){
+        
+      }else{
+        people_sep <- people_sep[-en_remove_index,]
+      }
+      job_all_name = substr(job[job_i],1,unlist(gregexpr(' - ',job[job_i]))-1)
+      #min_nrow = mean(as.data.frame(table(people[which(people$職務小類==job_all_name)]$行業與職務))$Freq)-2*sd(as.factor(people[which(people$職務小類==job_all_name)]$行業與職務))
       
-    }else{
-      people_sep <- people_sep[-en_remove_index,]
-    }
-    job_all_name = substr(job[job_i],1,unlist(gregexpr(' - ',job[job_i]))-1)
-    #min_nrow = mean(as.data.frame(table(people[which(people$職務小類==job_all_name)]$行業與職務))$Freq)-2*sd(as.factor(people[which(people$職務小類==job_all_name)]$行業與職務))
-    
-    if(nrow(people_sep)>min_n_sample){
-      review_text <- paste(people_sep$工作說明, collapse=" ")
-      #review_text =people_sep$工作說明
-      review_text <- gsub("[\n]", "  ", review_text)
-      #review_text = unlist(strsplit(review_text, "[，,。●;；]"))
-      #review_text = unlist(strsplit(review_text, "[。●;；]"))
-      #review_text = unlist(strsplit(review_text, "  "))
-      #review_text = unlist(strsplit(review_text  , "[(][0-9][)]"))
-      #rreview_text = unlist(strsplit(review_text  , "[（][0-9][）]"))
-      #review_text = unlist(strsplit(review_text  , "[0-9][.]"))
-      #review_text = unlist(strsplit(review_text  , "[0-9][、]"))
-      
-      review_source <- VectorSource(review_text)
-      d.corpus <- Corpus(review_source)
-      
-      d.corpus <- tm_map(d.corpus, removePunctuation) 
-      d.corpus <- tm_map(d.corpus, removeNumbers) 
-      d.corpus <- tm_map(d.corpus, content_transformer(tolower))
-      d.corpus <- tm_map(d.corpus, function(word) {
-        gsub("[0-9]", " ", word)
-      })
-      
-      
-      #問題在這
-      d.corpus <- tm_map(d.corpus, segmentCN, nature = TRUE)
-      
-      myStopWords <- c(stopwordsCN(), "編輯", "時間", "標題", "發信", "實業", "作者","資料庫管理")
-      d.corpus <- tm_map(d.corpus, removeWords, myStopWords)
-      d.corpus <- tm_map(d.corpus, removeWords, stopwords("english")) 
-      d.corpus <- tm_map(d.corpus, PlainTextDocument)
-      ##修改取出文字長度
-      tdm <- TermDocumentMatrixCN(d.corpus, control = list(wordLengths = c(2, Inf)))
-      
-      m1 <- as.matrix(tdm)
-      v <- sort(rowSums(m1), decreasing = TRUE)
-      d <- data.frame(word = names(v), freq = v)
-      d$word <- as.character(d$word)
-      d$percentage <- d$freq/nrow(people_sep)
-      
-      delete.word.vector <- c('null','以上','年以上','經驗','工作','公司','企業','加班','負責','配合','完成','地區','相關','與','完成','work','experience','進行','擔任','will','能力','基本','興趣','主要','具有','具備','面試','下班','上班','內容','薪資','完整','優先','自行','統一')
-      for(delete.word.index in 1:length(delete.word.vector)){
-        if(toString(which(d$word==delete.word.vector[delete.word.index]))!=''){
-          d <- d[-which(d$word==delete.word.vector[delete.word.index]),]
+      if(nrow(people_sep)>min_n_sample){
+        review_text <- paste(people_sep$工作說明, collapse=" ")
+        #review_text =people_sep$工作說明
+        review_text <- gsub("[\n]", "  ", review_text)
+        #review_text = unlist(strsplit(review_text, "[，,。●;；]"))
+        #review_text = unlist(strsplit(review_text, "[。●;；]"))
+        #review_text = unlist(strsplit(review_text, "  "))
+        #review_text = unlist(strsplit(review_text  , "[(][0-9][)]"))
+        #rreview_text = unlist(strsplit(review_text  , "[（][0-9][）]"))
+        #review_text = unlist(strsplit(review_text  , "[0-9][.]"))
+        #review_text = unlist(strsplit(review_text  , "[0-9][、]"))
+        
+        review_source <- VectorSource(review_text)
+        d.corpus <- Corpus(review_source)
+        
+        d.corpus <- tm_map(d.corpus, removePunctuation) 
+        d.corpus <- tm_map(d.corpus, removeNumbers) 
+        d.corpus <- tm_map(d.corpus, content_transformer(tolower))
+        d.corpus <- tm_map(d.corpus, function(word) {
+          gsub("[0-9]", " ", word)
+        })
+        
+        
+        #問題在這
+        d.corpus <- tm_map(d.corpus, segmentCN, nature = TRUE)
+        
+        myStopWords <- c(stopwordsCN(), "編輯", "時間", "標題", "發信", "實業", "作者","資料庫管理")
+        d.corpus <- tm_map(d.corpus, removeWords, myStopWords)
+        d.corpus <- tm_map(d.corpus, removeWords, stopwords("english")) 
+        d.corpus <- tm_map(d.corpus, PlainTextDocument)
+        ##修改取出文字長度
+        tdm <- TermDocumentMatrixCN(d.corpus, control = list(wordLengths = c(2, Inf)))
+        
+        m1 <- as.matrix(tdm)
+        v <- sort(rowSums(m1), decreasing = TRUE)
+        d <- data.frame(word = names(v), freq = v)
+        d$word <- as.character(d$word)
+        d$percentage <- d$freq/nrow(people_sep)
+        if(nrow(d)>100){
+          d = d[1:100,]
         }
         
-      }
-      
-      write.csv(d,paste0('工作說明\\',job[job_i],'工作說明文字Freq.csv'),row.names=F)
-      
-      png(paste0(output_path,'\\','工作說明\\',job[job_i],'_工作說明wordcloud.png'), width=800,height=800)
-      
-      if(length(d$freq)>=100){
-        wordcloud(d$word[1:100], d$freq[1:100], random.order = F, scale=c(10, .5), colors=brewer.pal(6, "Dark2"))
-      }else{
-        wordcloud(d$word, d$freq, random.order = F, scale=c(10, .5), colors=brewer.pal(6, "Dark2"))
-      }
-      dev.off()
-      jgc()
-      
-      ##抓出前10名字串對應至工作說明
-      for(i in 1:10){
-        word.to.handle <- d$word[i]
-        people_sep$工作說明處理過 <- people_sep$工作說明
-        people_sep$工作說明處理過 <- tolower(people_sep$工作說明處理過)
         
-        people_sep <- people_sep[order(-as.numeric(people_sep$資本金額),-as.numeric(people_sep$員工人數)),]
-        job_description <- people_sep$工作說明處理過
-        job_description = unlist(strsplit(job_description, "[。●;；]"))
-        job_description = unlist(strsplit(job_description, "  "))
-        job_description = unlist(strsplit(job_description  , "[(][0-9][)]"))
-        job_description = unlist(strsplit(job_description  , "[（][0-9][）]"))
-        job_description = unlist(strsplit(job_description  , "[0-9][.]"))
-        job_description = unlist(strsplit(job_description  , "[0-9][、]"))
-        job_description = trim(job_description)
+        delete.word.vector <- c('null','以上','年以上','經驗','工作','公司','企業','加班','負責','配合','完成','地區','相關','與','完成','work','experience','進行','擔任','will','能力','基本','興趣','主要','具有','具備','面試','下班','上班','內容','薪資','完整','優先','自行','統一')
+        for(delete.word.index in 1:length(delete.word.vector)){
+          if(toString(which(d$word==delete.word.vector[delete.word.index]))!=''){
+            d <- d[-which(d$word==delete.word.vector[delete.word.index]),]
+          }
+          
+        }
         
-        job.describe.df <- job_description[which(grepl(word.to.handle,job_description))]
-        job.describe <- unique(job.describe.df)
+        write.csv(d,paste0('工作說明\\',job[job_i],'工作說明文字Freq.csv'),row.names=F)
         
-        if(toString(job.describe)!=''){
+        png(paste0(output_path,'\\','工作說明\\',job[job_i],'_工作說明wordcloud.png'), width=800,height=800)
+        
+        if(length(d$freq)>=100){
+          wordcloud(d$word[1:100], d$freq[1:100], random.order = F, scale=c(10, .5), colors=brewer.pal(6, "Dark2"))
+        }else{
+          wordcloud(d$word, d$freq, random.order = F, scale=c(10, .5), colors=brewer.pal(6, "Dark2"))
+        }
+        dev.off()
+        jgc()
+        
+        ##抓出前10名字串對應至工作說明
+        for(i in 1:10){
+          word.to.handle <- d$word[i]
+          people_sep$工作說明處理過 <- people_sep$工作說明
+          people_sep$工作說明處理過 <- tolower(people_sep$工作說明處理過)
           
-          ##抓1~5大的公司的描述
-          job.describe <- job.describe[1:5]
+          people_sep <- people_sep[order(-as.numeric(people_sep$資本金額),-as.numeric(people_sep$員工人數)),]
+          job_description <- people_sep$工作說明處理過
+          job_description = unlist(strsplit(job_description, "[。●;；]"))
+          job_description = unlist(strsplit(job_description, "  "))
+          job_description = unlist(strsplit(job_description  , "[(][0-9][)]"))
+          job_description = unlist(strsplit(job_description  , "[（][0-9][）]"))
+          job_description = unlist(strsplit(job_description  , "[0-9][.]"))
+          job_description = unlist(strsplit(job_description  , "[0-9][、]"))
+          job_description = trim(job_description)
           
-          job.describe <- as.data.frame(job.describe)
-          job.describe$word <- word.to.handle
-          job.describe <- job.describe[,c('word','job.describe')]
+          job.describe.df <- job_description[which(grepl(word.to.handle,job_description))]
+          job.describe <- unique(job.describe.df)
           
-          if(i==1){
-            write.table(job.describe, paste0('工作說明\\',job[job_i],'工作說明詞彙與內容對應結果.csv'), row.names=F, col.names=TRUE, sep=",")
+          if(toString(job.describe)!=''){
             
-          }else{
-            write.table(job.describe, paste0('工作說明\\',job[job_i],'工作說明詞彙與內容對應結果.csv'), row.names=F,col.names=F, sep=",", append=TRUE)
+            ##抓1~5大的公司的描述
+            job.describe <- job.describe[1:5]
             
+            job.describe <- as.data.frame(job.describe)
+            job.describe$word <- word.to.handle
+            job.describe <- job.describe[,c('word','job.describe')]
+            
+            if(i==1){
+              write.table(job.describe, paste0('工作說明\\',job[job_i],'工作說明詞彙與內容對應結果.csv'), row.names=F, col.names=TRUE, sep=",")
+              
+            }else{
+              write.table(job.describe, paste0('工作說明\\',job[job_i],'工作說明詞彙與內容對應結果.csv'), row.names=F,col.names=F, sep=",", append=TRUE)
+              
+            }
           }
         }
+        
+        print(paste0(format(round(job_i/length(job)*100,2),2),'%'))
+        print(paste0(job[job_i],' 計算完成'))
+      }else{
+        print(paste0(job[job_i],' 樣本不足',min_n_sample,'，不予計算'))
       }
-      
-      print(paste0(format(round(job_i/length(job)*100,2),2),'%'))
-      print(paste0(job[job_i],' 計算完成'))
-    }else{
-      print(paste0(job[job_i],' 樣本不足',min_n_sample,'，不予計算'))
-    }
-    
+    }, error=function(e){
+      job_discription_error = c(job_discription_error, job[job_i] , e)
+    })
     
   }
   
 }
 
+other_needs_error <- {}
 ##附加條件
 other_needs <-function(){
   #job_and_undustry = as.data.frame(table(people$行業與職務),stringsAsFactors=F)
@@ -182,125 +192,133 @@ other_needs <-function(){
   #print(paste0('不同行業別 職務小類樣本數大於100者剩 ',length(job),' 筆'))
   
   for(job_i in 1:length(job)){
-    jgc()
-    print(paste0(job[job_i],' 進行附加條件文字探勘與計算中'))
-    people_sep <- people[which(people$行業與職務==job[job_i]),]
-    
-    people_sep$附加條件 = gsub('\x9e','  ', people_sep$附加條件)
-    ##去除英文的附加條件
-    en_remove_index <-{}
-    for(en.remove in 1:length(people_sep$附加條件)){
-      if(length(gregexpr(pattern ='[a-z]',people_sep$附加條件)[[en.remove]])/nchar(people_sep$附加條件[en.remove])>0.5){
-        en_remove_index <- c(en_remove_index,en.remove)
+    tryCatch({
+      jgc()
+      print(paste0(job[job_i],' 進行附加條件文字探勘與計算中'))
+      people_sep <- people[which(people$行業與職務==job[job_i]),]
+      
+      people_sep$附加條件 = gsub('\x9e','  ', people_sep$附加條件)
+      ##去除英文的附加條件
+      en_remove_index <-{}
+      for(en.remove in 1:length(people_sep$附加條件)){
+        if(length(gregexpr(pattern ='[a-z]',people_sep$附加條件)[[en.remove]])/nchar(people_sep$附加條件[en.remove])>0.5){
+          en_remove_index <- c(en_remove_index,en.remove)
+        }
       }
-    }
-    if(toString(en_remove_index)==''){
+      if(toString(en_remove_index)==''){
+        
+      }else{
+        people_sep <- people_sep[-en_remove_index,]
+      }
       
-    }else{
-      people_sep <- people_sep[-en_remove_index,]
-    }
-    
-    if(nrow(people_sep)>min_n_sample){
-      review_text <- paste(people_sep$附加條件, collapse=" ")
-      #review_text <- people_sep$附加條件
-      review_text <- gsub("[\n]", "  ", review_text)
-      #review_text = unlist(strsplit(review_text, "[，,。●;；]"))
-      #review_text = unlist(strsplit(review_text, "[。●;；]"))
-      #review_text = unlist(strsplit(review_text, "  "))
-      #review_text = unlist(strsplit(review_text  , "[(][0-9][)]"))
-      #review_text = unlist(strsplit(review_text  , "[（][0-9][）]"))
-      #review_text = unlist(strsplit(review_text  , "[0-9][.]"))
-      #review_text = unlist(strsplit(review_text  , "[0-9][、]"))
-      
-      review_source <- VectorSource(review_text)
-      d.corpus <- Corpus(review_source)
-      
-      d.corpus <- tm_map(d.corpus, removePunctuation) 
-      d.corpus <- tm_map(d.corpus, removeNumbers) 
-      d.corpus <- tm_map(d.corpus, content_transformer(tolower))
-      d.corpus <- tm_map(d.corpus, function(word) {
-        gsub("[0-9]", " ", word)
-      })
-      
-      d.corpus <- tm_map(d.corpus, segmentCN, nature = TRUE)
-      
-      myStopWords <- c(stopwordsCN(), "編輯", "時間", "標題", "發信", "實業", "作者","資料庫管理")
-      d.corpus <- tm_map(d.corpus, removeWords, myStopWords)
-      d.corpus <- tm_map(d.corpus, removeWords, stopwords("english")) 
-      d.corpus <- tm_map(d.corpus, PlainTextDocument)
-      tdm <- TermDocumentMatrixCN(d.corpus, control = list(wordLengths = c(2, Inf)))
-      
-      m1 <- as.matrix(tdm)
-      v <- sort(rowSums(m1), decreasing = TRUE)
-      d <- data.frame(word = names(v), freq = v)
-      d$word <- as.character(d$word)
-      d$percentage <- d$freq/nrow(people_sep)
-      
-      delete.word.vector <- c('以上','年以上','經驗','工作','公司','企業','加班','負責','配合','完成','地區','相關','與','完成','work','experience','進行','擔任','will','能力','基本','興趣','主要','具有','具備','面試','下班','上班','內容','薪資','完整','優先','自行','統一')
-      for(delete.word.index in 1:length(delete.word.vector)){
-        if(toString(which(d$word==delete.word.vector[delete.word.index]))!=''){
-          d <- d[-which(d$word==delete.word.vector[delete.word.index]),]
+      if(nrow(people_sep)>min_n_sample){
+        review_text <- paste(people_sep$附加條件, collapse=" ")
+        #review_text <- people_sep$附加條件
+        review_text <- gsub("[\n]", "  ", review_text)
+        #review_text = unlist(strsplit(review_text, "[，,。●;；]"))
+        #review_text = unlist(strsplit(review_text, "[。●;；]"))
+        #review_text = unlist(strsplit(review_text, "  "))
+        #review_text = unlist(strsplit(review_text  , "[(][0-9][)]"))
+        #review_text = unlist(strsplit(review_text  , "[（][0-9][）]"))
+        #review_text = unlist(strsplit(review_text  , "[0-9][.]"))
+        #review_text = unlist(strsplit(review_text  , "[0-9][、]"))
+        
+        review_source <- VectorSource(review_text)
+        d.corpus <- Corpus(review_source)
+        
+        d.corpus <- tm_map(d.corpus, removePunctuation) 
+        d.corpus <- tm_map(d.corpus, removeNumbers) 
+        d.corpus <- tm_map(d.corpus, content_transformer(tolower))
+        d.corpus <- tm_map(d.corpus, function(word) {
+          gsub("[0-9]", " ", word)
+        })
+        
+        d.corpus <- tm_map(d.corpus, segmentCN, nature = TRUE)
+        
+        myStopWords <- c(stopwordsCN(), "編輯", "時間", "標題", "發信", "實業", "作者","資料庫管理")
+        d.corpus <- tm_map(d.corpus, removeWords, myStopWords)
+        d.corpus <- tm_map(d.corpus, removeWords, stopwords("english")) 
+        d.corpus <- tm_map(d.corpus, PlainTextDocument)
+        tdm <- TermDocumentMatrixCN(d.corpus, control = list(wordLengths = c(2, Inf)))
+        
+        m1 <- as.matrix(tdm)
+        v <- sort(rowSums(m1), decreasing = TRUE)
+        d <- data.frame(word = names(v), freq = v)
+        d$word <- as.character(d$word)
+        d$percentage <- d$freq/nrow(people_sep)
+        if(nrow(d)>100){
+          d = d[1:100,]
         }
         
-      }
-      
-      write.csv(d,paste0('附加條件\\',job[job_i],'附加條件文字Freq.csv'),row.names=F)
-      
-      png(paste0(output_path,'\\','附加條件\\',job[job_i],'_附加條件wordcloud.png'), width=800,height=800)
-      
-      if(length(d$freq)>=100){
-        wordcloud(d$word[1:100], d$freq[1:100], random.order = F, scale=c(10, .5), colors=brewer.pal(6, "Dark2"))
-      }else{
-        wordcloud(d$word, d$freq, random.order = F, scale=c(10, .5), colors=brewer.pal(6, "Dark2"))
-      }
-      dev.off()
-      jgc()
-      
-      ##抓出前10名字串對應至附加條件
-      for(i in 1:10){
-        word.to.handle <- d$word[i]
-        people_sep$附加條件處理過 <- people_sep$附加條件
-        people_sep$附加條件處理過 <- tolower(people_sep$附加條件處理過)
-        
-        people_sep <- people_sep[order(-as.numeric(people_sep$資本金額),-as.numeric(people_sep$員工人數)),]
-        job_description <- people_sep$附加條件處理過
-        job_description = unlist(strsplit(job_description, "[。●;；]"))
-        job_description = unlist(strsplit(job_description, "  "))
-        job_description = unlist(strsplit(job_description  , "[(][0-9][)]"))
-        job_description = unlist(strsplit(job_description  , "[（][0-9][）]"))
-        job_description = unlist(strsplit(job_description  , "[0-9][.]"))
-        job_description = unlist(strsplit(job_description  , "[0-9][、]"))
-        
-        job_description = trim(job_description)
-        job.describe.df <- job_description[which(grepl(word.to.handle,job_description))]
-        job.describe <- unique(job.describe.df)
-        
-        if(toString(job.describe)!=''){
+        delete.word.vector <- c('以上','年以上','經驗','工作','公司','企業','加班','負責','配合','完成','地區','相關','與','完成','work','experience','進行','擔任','will','能力','基本','興趣','主要','具有','具備','面試','下班','上班','內容','薪資','完整','優先','自行','統一')
+        for(delete.word.index in 1:length(delete.word.vector)){
+          if(toString(which(d$word==delete.word.vector[delete.word.index]))!=''){
+            d <- d[-which(d$word==delete.word.vector[delete.word.index]),]
+          }
           
-          ##抓1~5大的公司的描述
-          job.describe <- job.describe[1:5]
+        }
+        
+        write.csv(d,paste0('附加條件\\',job[job_i],'附加條件文字Freq.csv'),row.names=F)
+        
+        png(paste0(output_path,'\\','附加條件\\',job[job_i],'_附加條件wordcloud.png'), width=800,height=800)
+        
+        if(length(d$freq)>=100){
+          wordcloud(d$word[1:100], d$freq[1:100], random.order = F, scale=c(10, .5), colors=brewer.pal(6, "Dark2"))
+        }else{
+          wordcloud(d$word, d$freq, random.order = F, scale=c(10, .5), colors=brewer.pal(6, "Dark2"))
+        }
+        dev.off()
+        jgc()
+        
+        ##抓出前10名字串對應至附加條件
+        for(i in 1:10){
+          word.to.handle <- d$word[i]
+          people_sep$附加條件處理過 <- people_sep$附加條件
+          people_sep$附加條件處理過 <- tolower(people_sep$附加條件處理過)
           
-          job.describe <- as.data.frame(job.describe)
-          job.describe$word <- word.to.handle
-          job.describe <- job.describe[,c('word','job.describe')]
+          people_sep <- people_sep[order(-as.numeric(people_sep$資本金額),-as.numeric(people_sep$員工人數)),]
+          job_description <- people_sep$附加條件處理過
+          job_description = unlist(strsplit(job_description, "[。●;；]"))
+          job_description = unlist(strsplit(job_description, "  "))
+          job_description = unlist(strsplit(job_description  , "[(][0-9][)]"))
+          job_description = unlist(strsplit(job_description  , "[（][0-9][）]"))
+          job_description = unlist(strsplit(job_description  , "[0-9][.]"))
+          job_description = unlist(strsplit(job_description  , "[0-9][、]"))
           
-          if(i==1){
-            write.table(job.describe, paste0('附加條件\\',job[job_i],'附加條件詞彙與內容對應結果.csv'), row.names=F, col.names=TRUE, sep=",")
+          job_description = trim(job_description)
+          job.describe.df <- job_description[which(grepl(word.to.handle,job_description))]
+          job.describe <- unique(job.describe.df)
+          
+          if(toString(job.describe)!=''){
             
-          }else{
-            write.table(job.describe, paste0('附加條件\\',job[job_i],'附加條件詞彙與內容對應結果.csv'), row.names=F,col.names=F, sep=",", append=TRUE)
+            ##抓1~5大的公司的描述
+            job.describe <- job.describe[1:5]
             
+            job.describe <- as.data.frame(job.describe)
+            job.describe$word <- word.to.handle
+            job.describe <- job.describe[,c('word','job.describe')]
+            
+            if(i==1){
+              write.table(job.describe, paste0('附加條件\\',job[job_i],'附加條件詞彙與內容對應結果.csv'), row.names=F, col.names=TRUE, sep=",")
+              
+            }else{
+              write.table(job.describe, paste0('附加條件\\',job[job_i],'附加條件詞彙與內容對應結果.csv'), row.names=F,col.names=F, sep=",", append=TRUE)
+              
+            }
           }
         }
+        
+        print(paste0(format(round(job_i/length(job)*100,2),2),'%'))
+        print(paste0(job[job_i],' 附加條件計算完成'))
+      }else{
+        print(paste0(job[job_i],' 樣本不足',min_n_sample,'，不予計算'))
       }
       
-      print(paste0(format(round(job_i/length(job)*100,2),2),'%'))
-      print(paste0(job[job_i],' 附加條件計算完成'))
-    }else{
-      print(paste0(job[job_i],' 樣本不足',min_n_sample,'，不予計算'))
-    }
-    
-    
+      
+      
+    }, error=function(e){
+      other_needs_error = c(other_needs_error, job[job_i] , e)
+    })
     
   }
   
@@ -430,261 +448,276 @@ pro_certificate <- function(){
   path_output<-"D:\\abc\\wjhong\\projects\\廠商版職務大蒐秘\\jobwiki\\分行業別output"
   setwd(path_output)
 }
-
+all_job_discription_error = {}
 ##整體工作說明
 all_job_discription <-function(){
   
   for(job_i in 1:length(job_only)){
-    jgc()
-    print(paste0(job_only[job_i],' 進行工作說明文字探勘與計算中'))
-    people_sep <- people[which(people$職務小類==job_only[job_i]),]
-    
-    people_sep$工作說明 = gsub('\x9e','  ', people_sep$工作說明)
-    ##去除英文工作說明
-    en_remove_index <-{}
-    for(en.remove in 1:length(people_sep$工作說明)){
-      if(length(gregexpr(pattern ='[a-z]',people_sep$工作說明)[[en.remove]])/nchar(people_sep$工作說明[en.remove])>0.5){
-        en_remove_index <- c(en_remove_index,en.remove)
+    tryCatch({
+      jgc()
+      print(paste0(job_only[job_i],' 進行工作說明文字探勘與計算中'))
+      people_sep <- people[which(people$職務小類==job_only[job_i]),]
+      
+      people_sep$工作說明 = gsub('\x9e','  ', people_sep$工作說明)
+      ##去除英文工作說明
+      en_remove_index <-{}
+      for(en.remove in 1:length(people_sep$工作說明)){
+        if(length(gregexpr(pattern ='[a-z]',people_sep$工作說明)[[en.remove]])/nchar(people_sep$工作說明[en.remove])>0.5){
+          en_remove_index <- c(en_remove_index,en.remove)
+        }
       }
-    }
-    if(toString(en_remove_index)==''){
+      if(toString(en_remove_index)==''){
+        
+      }else{
+        people_sep <- people_sep[-en_remove_index,]
+      }
+      job_all_name = substr(job_only[job_i],1,unlist(gregexpr(' - ',job_only[job_i]))-1)
       
-    }else{
-      people_sep <- people_sep[-en_remove_index,]
-    }
-    job_all_name = substr(job_only[job_i],1,unlist(gregexpr(' - ',job_only[job_i]))-1)
-    
-    if(nrow(people_sep)>min_n_sample){
-      review_text <- paste(people_sep$工作說明, collapse=" ")
-      #review_text =people_sep$工作說明
-      review_text <- gsub("[\n]", "  ", review_text)
-      #review_text = unlist(strsplit(review_text, "[，,。●;；]"))
-      #review_text = unlist(strsplit(review_text, "[。●;；]"))
-      #review_text = unlist(strsplit(review_text, "  "))
-      #review_text = unlist(strsplit(review_text  , "[(][0-9][)]"))
-      #rreview_text = unlist(strsplit(review_text  , "[（][0-9][）]"))
-      #review_text = unlist(strsplit(review_text  , "[0-9][.]"))
-      #review_text = unlist(strsplit(review_text  , "[0-9][、]"))
-      
-      review_source <- VectorSource(review_text)
-      d.corpus <- Corpus(review_source)
-      
-      d.corpus <- tm_map(d.corpus, removePunctuation) 
-      d.corpus <- tm_map(d.corpus, removeNumbers) 
-      d.corpus <- tm_map(d.corpus, content_transformer(tolower))
-      d.corpus <- tm_map(d.corpus, function(word) {
-        gsub("[0-9]", " ", word)
-      })
-      
-      
-      #問題在這
-      d.corpus <- tm_map(d.corpus, segmentCN, nature = TRUE)
-      
-      myStopWords <- c(stopwordsCN(), "編輯", "時間", "標題", "發信", "實業", "作者","資料庫管理")
-      d.corpus <- tm_map(d.corpus, removeWords, myStopWords)
-      d.corpus <- tm_map(d.corpus, removeWords, stopwords("english")) 
-      d.corpus <- tm_map(d.corpus, PlainTextDocument)
-      ##修改取出文字長度
-      tdm <- TermDocumentMatrixCN(d.corpus, control = list(wordLengths = c(2, Inf)))
-      
-      m1 <- as.matrix(tdm)
-      v <- sort(rowSums(m1), decreasing = TRUE)
-      d <- data.frame(word = names(v), freq = v)
-      d$word <- as.character(d$word)
-      d$percentage <- d$freq/nrow(people_sep)
-      
-      delete.word.vector <- c('null','以上','年以上','經驗','工作','公司','企業','加班','負責','配合','完成','地區','相關','與','完成','work','experience','進行','擔任','will','能力','基本','興趣','主要','具有','具備','面試','下班','上班','內容','薪資','完整','優先','自行','統一')
-      for(delete.word.index in 1:length(delete.word.vector)){
-        if(toString(which(d$word==delete.word.vector[delete.word.index]))!=''){
-          d <- d[-which(d$word==delete.word.vector[delete.word.index]),]
+      if(nrow(people_sep)>min_n_sample){
+        review_text <- paste(people_sep$工作說明, collapse=" ")
+        #review_text =people_sep$工作說明
+        review_text <- gsub("[\n]", "  ", review_text)
+        #review_text = unlist(strsplit(review_text, "[，,。●;；]"))
+        #review_text = unlist(strsplit(review_text, "[。●;；]"))
+        #review_text = unlist(strsplit(review_text, "  "))
+        #review_text = unlist(strsplit(review_text  , "[(][0-9][)]"))
+        #rreview_text = unlist(strsplit(review_text  , "[（][0-9][）]"))
+        #review_text = unlist(strsplit(review_text  , "[0-9][.]"))
+        #review_text = unlist(strsplit(review_text  , "[0-9][、]"))
+        
+        review_source <- VectorSource(review_text)
+        d.corpus <- Corpus(review_source)
+        
+        d.corpus <- tm_map(d.corpus, removePunctuation) 
+        d.corpus <- tm_map(d.corpus, removeNumbers) 
+        d.corpus <- tm_map(d.corpus, content_transformer(tolower))
+        d.corpus <- tm_map(d.corpus, function(word) {
+          gsub("[0-9]", " ", word)
+        })
+        
+        
+        #問題在這
+        d.corpus <- tm_map(d.corpus, segmentCN, nature = TRUE)
+        
+        myStopWords <- c(stopwordsCN(), "編輯", "時間", "標題", "發信", "實業", "作者","資料庫管理")
+        d.corpus <- tm_map(d.corpus, removeWords, myStopWords)
+        d.corpus <- tm_map(d.corpus, removeWords, stopwords("english")) 
+        d.corpus <- tm_map(d.corpus, PlainTextDocument)
+        ##修改取出文字長度
+        tdm <- TermDocumentMatrixCN(d.corpus, control = list(wordLengths = c(2, Inf)))
+        
+        m1 <- as.matrix(tdm)
+        v <- sort(rowSums(m1), decreasing = TRUE)
+        d <- data.frame(word = names(v), freq = v)
+        d$word <- as.character(d$word)
+        d$percentage <- d$freq/nrow(people_sep)
+        if(nrow(d)>100){
+          d = d[1:100,]
         }
         
-      }
-      
-      write.csv(d,paste0('工作說明\\整體\\',job_only[job_i],'工作說明文字Freq.csv'),row.names=F)
-      
-      png(paste0(output_path,'\\','工作說明\\整體\\',job_only[job_i],'_工作說明wordcloud.png'), width=800,height=800)
-      
-      if(length(d$freq)>=100){
-        wordcloud(d$word[1:100], d$freq[1:100], random.order = F, scale=c(10, .5), colors=brewer.pal(6, "Dark2"))
-      }else{
-        wordcloud(d$word, d$freq, random.order = F, scale=c(10, .5), colors=brewer.pal(6, "Dark2"))
-      }
-      dev.off()
-      jgc()
-      
-      ##抓出前10名字串對應至工作說明
-      for(i in 1:10){
-        word.to.handle <- d$word[i]
-        people_sep$工作說明處理過 <- people_sep$工作說明
-        people_sep$工作說明處理過 <- tolower(people_sep$工作說明處理過)
-        
-        people_sep <- people_sep[order(-as.numeric(people_sep$資本金額),-as.numeric(people_sep$員工人數)),]
-        job_description <- people_sep$工作說明處理過
-        job_description = unlist(strsplit(job_description, "[。●;；]"))
-        job_description = unlist(strsplit(job_description, "  "))
-        job_description = unlist(strsplit(job_description  , "[(][0-9][)]"))
-        job_description = unlist(strsplit(job_description  , "[（][0-9][）]"))
-        job_description = unlist(strsplit(job_description  , "[0-9][.]"))
-        job_description = unlist(strsplit(job_description  , "[0-9][、]"))
-        job_description = trim(job_description)
-        
-        job.describe.df <- job_description[which(grepl(word.to.handle,job_description))]
-        job.describe <- unique(job.describe.df)
-        
-        if(toString(job.describe)!=''){
+        delete.word.vector <- c('null','以上','年以上','經驗','工作','公司','企業','加班','負責','配合','完成','地區','相關','與','完成','work','experience','進行','擔任','will','能力','基本','興趣','主要','具有','具備','面試','下班','上班','內容','薪資','完整','優先','自行','統一')
+        for(delete.word.index in 1:length(delete.word.vector)){
+          if(toString(which(d$word==delete.word.vector[delete.word.index]))!=''){
+            d <- d[-which(d$word==delete.word.vector[delete.word.index]),]
+          }
           
-          ##抓1~5大的公司的描述
-          job.describe <- job.describe[1:5]
+        }
+        
+        write.csv(d,paste0('工作說明\\整體\\',job_only[job_i],'工作說明文字Freq.csv'),row.names=F)
+        
+        png(paste0(output_path,'\\','工作說明\\整體\\',job_only[job_i],'_工作說明wordcloud.png'), width=800,height=800)
+        
+        if(length(d$freq)>=100){
+          wordcloud(d$word[1:100], d$freq[1:100], random.order = F, scale=c(10, .5), colors=brewer.pal(6, "Dark2"))
+        }else{
+          wordcloud(d$word, d$freq, random.order = F, scale=c(10, .5), colors=brewer.pal(6, "Dark2"))
+        }
+        dev.off()
+        jgc()
+        
+        ##抓出前10名字串對應至工作說明
+        for(i in 1:10){
+          word.to.handle <- d$word[i]
+          people_sep$工作說明處理過 <- people_sep$工作說明
+          people_sep$工作說明處理過 <- tolower(people_sep$工作說明處理過)
           
-          job.describe <- as.data.frame(job.describe)
-          job.describe$word <- word.to.handle
-          job.describe <- job.describe[,c('word','job.describe')]
+          people_sep <- people_sep[order(-as.numeric(people_sep$資本金額),-as.numeric(people_sep$員工人數)),]
+          job_description <- people_sep$工作說明處理過
+          job_description = unlist(strsplit(job_description, "[。●;；]"))
+          job_description = unlist(strsplit(job_description, "  "))
+          job_description = unlist(strsplit(job_description  , "[(][0-9][)]"))
+          job_description = unlist(strsplit(job_description  , "[（][0-9][）]"))
+          job_description = unlist(strsplit(job_description  , "[0-9][.]"))
+          job_description = unlist(strsplit(job_description  , "[0-9][、]"))
+          job_description = trim(job_description)
           
-          if(i==1){
-            write.table(job.describe, paste0('工作說明\\整體\\',job_only[job_i],'工作說明詞彙與內容對應結果.csv'), row.names=F, col.names=TRUE, sep=",")
+          job.describe.df <- job_description[which(grepl(word.to.handle,job_description))]
+          job.describe <- unique(job.describe.df)
+          
+          if(toString(job.describe)!=''){
             
-          }else{
-            write.table(job.describe, paste0('工作說明\\整體\\',job_only[job_i],'工作說明詞彙與內容對應結果.csv'), row.names=F,col.names=F, sep=",", append=TRUE)
+            ##抓1~5大的公司的描述
+            job.describe <- job.describe[1:5]
             
+            job.describe <- as.data.frame(job.describe)
+            job.describe$word <- word.to.handle
+            job.describe <- job.describe[,c('word','job.describe')]
+            
+            if(i==1){
+              write.table(job.describe, paste0('工作說明\\整體\\',job_only[job_i],'工作說明詞彙與內容對應結果.csv'), row.names=F, col.names=TRUE, sep=",")
+              
+            }else{
+              write.table(job.describe, paste0('工作說明\\整體\\',job_only[job_i],'工作說明詞彙與內容對應結果.csv'), row.names=F,col.names=F, sep=",", append=TRUE)
+              
+            }
           }
         }
+        
+        print(paste0(format(round(job_i/length(job)*100,2),2),'%'))
+        print(paste0(job_only[job_i],' 計算完成'))
+      }else{
+        print(paste0(job_only[job_i],' 樣本不足',min_n_sample,'，不予計算'))
       }
-      
-      print(paste0(format(round(job_i/length(job)*100,2),2),'%'))
-      print(paste0(job_only[job_i],' 計算完成'))
-    }else{
-      print(paste0(job_only[job_i],' 樣本不足',min_n_sample,'，不予計算'))
-    }
+    }, error=function(e){
+      all_job_discription_error = c(all_job_discription_error, job[job_i] , e)
+    })
     
     
   }
   
 }
 
+all_other_needs_error = {}
 ##整體附加條件
 all_other_needs <-function(){
   
   for(job_i in 1:length(job_only)){
-    jgc()
-    print(paste0(job_only[job_i],' 進行附加條件文字探勘與計算中'))
-    people_sep <- people[which(people$職務小類==job_only[job_i]),]
-    
-    people_sep$附加條件 = gsub('\x9e','  ', people_sep$附加條件)
-    ##去除英文的附加條件
-    en_remove_index <-{}
-    for(en.remove in 1:length(people_sep$附加條件)){
-      if(length(gregexpr(pattern ='[a-z]',people_sep$附加條件)[[en.remove]])/nchar(people_sep$附加條件[en.remove])>0.5){
-        en_remove_index <- c(en_remove_index,en.remove)
+    tryCatch({
+      jgc()
+      print(paste0(job_only[job_i],' 進行附加條件文字探勘與計算中'))
+      people_sep <- people[which(people$職務小類==job_only[job_i]),]
+      
+      people_sep$附加條件 = gsub('\x9e','  ', people_sep$附加條件)
+      ##去除英文的附加條件
+      en_remove_index <-{}
+      for(en.remove in 1:length(people_sep$附加條件)){
+        if(length(gregexpr(pattern ='[a-z]',people_sep$附加條件)[[en.remove]])/nchar(people_sep$附加條件[en.remove])>0.5){
+          en_remove_index <- c(en_remove_index,en.remove)
+        }
       }
-    }
-    if(toString(en_remove_index)==''){
+      if(toString(en_remove_index)==''){
+        
+      }else{
+        people_sep <- people_sep[-en_remove_index,]
+      }
       
-    }else{
-      people_sep <- people_sep[-en_remove_index,]
-    }
-    
-    if(nrow(people_sep)>min_n_sample){
-      review_text <- paste(people_sep$附加條件, collapse=" ")
-      #review_text <- people_sep$附加條件
-      review_text <- gsub("[\n]", "  ", review_text)
-      #review_text = unlist(strsplit(review_text, "[，,。●;；]"))
-      #review_text = unlist(strsplit(review_text, "[。●;；]"))
-      #review_text = unlist(strsplit(review_text, "  "))
-      #review_text = unlist(strsplit(review_text  , "[(][0-9][)]"))
-      #review_text = unlist(strsplit(review_text  , "[（][0-9][）]"))
-      #review_text = unlist(strsplit(review_text  , "[0-9][.]"))
-      #review_text = unlist(strsplit(review_text  , "[0-9][、]"))
-      
-      review_source <- VectorSource(review_text)
-      d.corpus <- Corpus(review_source)
-      
-      d.corpus <- tm_map(d.corpus, removePunctuation) 
-      d.corpus <- tm_map(d.corpus, removeNumbers) 
-      d.corpus <- tm_map(d.corpus, content_transformer(tolower))
-      d.corpus <- tm_map(d.corpus, function(word) {
-        gsub("[0-9]", " ", word)
-      })
-      
-      d.corpus <- tm_map(d.corpus, segmentCN, nature = TRUE)
-      
-      myStopWords <- c(stopwordsCN(), "編輯", "時間", "標題", "發信", "實業", "作者","資料庫管理")
-      d.corpus <- tm_map(d.corpus, removeWords, myStopWords)
-      d.corpus <- tm_map(d.corpus, removeWords, stopwords("english")) 
-      d.corpus <- tm_map(d.corpus, PlainTextDocument)
-      tdm <- TermDocumentMatrixCN(d.corpus, control = list(wordLengths = c(2, Inf)))
-      
-      m1 <- as.matrix(tdm)
-      v <- sort(rowSums(m1), decreasing = TRUE)
-      d <- data.frame(word = names(v), freq = v)
-      d$word <- as.character(d$word)
-      d$percentage <- d$freq/nrow(people_sep)
-      
-      delete.word.vector <- c('以上','年以上','經驗','工作','公司','企業','加班','負責','配合','完成','地區','相關','與','完成','work','experience','進行','擔任','will','能力','基本','興趣','主要','具有','具備','面試','下班','上班','內容','薪資','完整','優先','自行','統一')
-      for(delete.word.index in 1:length(delete.word.vector)){
-        if(toString(which(d$word==delete.word.vector[delete.word.index]))!=''){
-          d <- d[-which(d$word==delete.word.vector[delete.word.index]),]
+      if(nrow(people_sep)>min_n_sample){
+        review_text <- paste(people_sep$附加條件, collapse=" ")
+        #review_text <- people_sep$附加條件
+        review_text <- gsub("[\n]", "  ", review_text)
+        #review_text = unlist(strsplit(review_text, "[，,。●;；]"))
+        #review_text = unlist(strsplit(review_text, "[。●;；]"))
+        #review_text = unlist(strsplit(review_text, "  "))
+        #review_text = unlist(strsplit(review_text  , "[(][0-9][)]"))
+        #review_text = unlist(strsplit(review_text  , "[（][0-9][）]"))
+        #review_text = unlist(strsplit(review_text  , "[0-9][.]"))
+        #review_text = unlist(strsplit(review_text  , "[0-9][、]"))
+        
+        review_source <- VectorSource(review_text)
+        d.corpus <- Corpus(review_source)
+        
+        d.corpus <- tm_map(d.corpus, removePunctuation) 
+        d.corpus <- tm_map(d.corpus, removeNumbers) 
+        d.corpus <- tm_map(d.corpus, content_transformer(tolower))
+        d.corpus <- tm_map(d.corpus, function(word) {
+          gsub("[0-9]", " ", word)
+        })
+        
+        d.corpus <- tm_map(d.corpus, segmentCN, nature = TRUE)
+        
+        myStopWords <- c(stopwordsCN(), "編輯", "時間", "標題", "發信", "實業", "作者","資料庫管理")
+        d.corpus <- tm_map(d.corpus, removeWords, myStopWords)
+        d.corpus <- tm_map(d.corpus, removeWords, stopwords("english")) 
+        d.corpus <- tm_map(d.corpus, PlainTextDocument)
+        tdm <- TermDocumentMatrixCN(d.corpus, control = list(wordLengths = c(2, Inf)))
+        
+        m1 <- as.matrix(tdm)
+        v <- sort(rowSums(m1), decreasing = TRUE)
+        d <- data.frame(word = names(v), freq = v)
+        d$word <- as.character(d$word)
+        d$percentage <- d$freq/nrow(people_sep)
+        if(nrow(d)>100){
+          d = d[1:100,]
         }
         
-      }
-      
-      write.csv(d,paste0('附加條件\\整體\\',job_only[job_i],'附加條件文字Freq.csv'),row.names=F)
-      
-      png(paste0(output_path,'\\','附加條件\\整體\\',job_only[job_i],'_附加條件wordcloud.png'), width=800,height=800)
-      
-      if(length(d$freq)>=100){
-        wordcloud(d$word[1:100], d$freq[1:100], random.order = F, scale=c(10, .5), colors=brewer.pal(6, "Dark2"))
-      }else{
-        wordcloud(d$word, d$freq, random.order = F, scale=c(10, .5), colors=brewer.pal(6, "Dark2"))
-      }
-      dev.off()
-      jgc()
-      
-      ##抓出前10名字串對應至附加條件
-      for(i in 1:10){
-        word.to.handle <- d$word[i]
-        people_sep$附加條件處理過 <- people_sep$附加條件
-        people_sep$附加條件處理過 <- tolower(people_sep$附加條件處理過)
-        
-        people_sep <- people_sep[order(-as.numeric(people_sep$資本金額),-as.numeric(people_sep$員工人數)),]
-        job_description <- people_sep$附加條件處理過
-        job_description = unlist(strsplit(job_description, "[。●;；]"))
-        job_description = unlist(strsplit(job_description, "  "))
-        job_description = unlist(strsplit(job_description  , "[(][0-9][)]"))
-        job_description = unlist(strsplit(job_description  , "[（][0-9][）]"))
-        job_description = unlist(strsplit(job_description  , "[0-9][.]"))
-        job_description = unlist(strsplit(job_description  , "[0-9][、]"))
-        
-        job_description = trim(job_description)
-        job.describe.df <- job_description[which(grepl(word.to.handle,job_description))]
-        job.describe <- unique(job.describe.df)
-        
-        if(toString(job.describe)!=''){
+        delete.word.vector <- c('以上','年以上','經驗','工作','公司','企業','加班','負責','配合','完成','地區','相關','與','完成','work','experience','進行','擔任','will','能力','基本','興趣','主要','具有','具備','面試','下班','上班','內容','薪資','完整','優先','自行','統一')
+        for(delete.word.index in 1:length(delete.word.vector)){
+          if(toString(which(d$word==delete.word.vector[delete.word.index]))!=''){
+            d <- d[-which(d$word==delete.word.vector[delete.word.index]),]
+          }
           
-          ##抓1~5大的公司的描述
-          job.describe <- job.describe[1:5]
+        }
+        
+        write.csv(d,paste0('附加條件\\整體\\',job_only[job_i],'附加條件文字Freq.csv'),row.names=F)
+        
+        png(paste0(output_path,'\\','附加條件\\整體\\',job_only[job_i],'_附加條件wordcloud.png'), width=800,height=800)
+        
+        if(length(d$freq)>=100){
+          wordcloud(d$word[1:100], d$freq[1:100], random.order = F, scale=c(10, .5), colors=brewer.pal(6, "Dark2"))
+        }else{
+          wordcloud(d$word, d$freq, random.order = F, scale=c(10, .5), colors=brewer.pal(6, "Dark2"))
+        }
+        dev.off()
+        jgc()
+        
+        ##抓出前10名字串對應至附加條件
+        for(i in 1:10){
+          word.to.handle <- d$word[i]
+          people_sep$附加條件處理過 <- people_sep$附加條件
+          people_sep$附加條件處理過 <- tolower(people_sep$附加條件處理過)
           
-          job.describe <- as.data.frame(job.describe)
-          job.describe$word <- word.to.handle
-          job.describe <- job.describe[,c('word','job.describe')]
+          people_sep <- people_sep[order(-as.numeric(people_sep$資本金額),-as.numeric(people_sep$員工人數)),]
+          job_description <- people_sep$附加條件處理過
+          job_description = unlist(strsplit(job_description, "[。●;；]"))
+          job_description = unlist(strsplit(job_description, "  "))
+          job_description = unlist(strsplit(job_description  , "[(][0-9][)]"))
+          job_description = unlist(strsplit(job_description  , "[（][0-9][）]"))
+          job_description = unlist(strsplit(job_description  , "[0-9][.]"))
+          job_description = unlist(strsplit(job_description  , "[0-9][、]"))
           
-          if(i==1){
-            write.table(job.describe, paste0('附加條件\\整體\\',job_only[job_i],'附加條件詞彙與內容對應結果.csv'), row.names=F, col.names=TRUE, sep=",")
+          job_description = trim(job_description)
+          job.describe.df <- job_description[which(grepl(word.to.handle,job_description))]
+          job.describe <- unique(job.describe.df)
+          
+          if(toString(job.describe)!=''){
             
-          }else{
-            write.table(job.describe, paste0('附加條件\\整體\\',job_only[job_i],'附加條件詞彙與內容對應結果.csv'), row.names=F,col.names=F, sep=",", append=TRUE)
+            ##抓1~5大的公司的描述
+            job.describe <- job.describe[1:5]
             
+            job.describe <- as.data.frame(job.describe)
+            job.describe$word <- word.to.handle
+            job.describe <- job.describe[,c('word','job.describe')]
+            
+            if(i==1){
+              write.table(job.describe, paste0('附加條件\\整體\\',job_only[job_i],'附加條件詞彙與內容對應結果.csv'), row.names=F, col.names=TRUE, sep=",")
+              
+            }else{
+              write.table(job.describe, paste0('附加條件\\整體\\',job_only[job_i],'附加條件詞彙與內容對應結果.csv'), row.names=F,col.names=F, sep=",", append=TRUE)
+              
+            }
           }
         }
+        
+        print(paste0(format(round(job_i/length(job)*100,2),2),'%'))
+        print(paste0(job_only[job_i],' 附加條件計算完成'))
+      }else{
+        print(paste0(job_only[job_i],' 樣本不足',min_n_sample,'，不予計算'))
       }
       
-      print(paste0(format(round(job_i/length(job)*100,2),2),'%'))
-      print(paste0(job_only[job_i],' 附加條件計算完成'))
-    }else{
-      print(paste0(job_only[job_i],' 樣本不足',min_n_sample,'，不予計算'))
-    }
-    
-    
+      
+    }, error=function(e){
+      all_other_needs_error = c(all_other_needs_error, job[job_i] , e)
+    })
     
   }
   
