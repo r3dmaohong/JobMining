@@ -79,10 +79,15 @@ source(paste0(path,'\\rscript\\function\\jobwiki_text_mining.R'), print.eval  = 
 output_path<-paste0(path,"\\分行業別output")
 setwd(output_path)
 
-
-
-
-
+people$syear = NULL
+people$smonth = NULL
+people$統一編號 = NULL
+people$公司名稱 = NULL
+people$職務名稱 = NULL
+people$職務中類 = NULL
+people$工作地點 = NULL
+people$學歷限制 = NULL
+people$科系限制 = NULL
 
 ##取出要處理的資料
 job <- data_processing_job()
