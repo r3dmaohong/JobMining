@@ -48,7 +48,7 @@ job_discription <-function(){
     
     tryCatch({
       jgc()
-      print(paste0(job[job_i],' 進行工作說明文字探勘與計算中'))
+      print(paste0(job_i, ' ',job[job_i],' 進行工作說明文字探勘與計算中'))
       people_sep <- people[which(people$行業與職務==job[job_i]),]
       
       people_sep$工作說明 = gsub('\x9e','  ', people_sep$工作說明)
@@ -194,7 +194,7 @@ other_needs <-function(){
   for(job_i in 1:length(job)){
     tryCatch({
       jgc()
-      print(paste0(job[job_i],' 進行附加條件文字探勘與計算中'))
+      print(paste0(job_i, ' ',job[job_i],' 進行附加條件文字探勘與計算中'))
       people_sep <- people[which(people$行業與職務==job[job_i]),]
       
       people_sep$附加條件 = gsub('\x9e','  ', people_sep$附加條件)
@@ -457,7 +457,7 @@ all_job_discription <-function(){
   for(job_i in 1:length(job_only)){
     tryCatch({
       jgc()
-      print(paste0(job_only[job_i],' 進行工作說明文字探勘與計算中'))
+      print(paste0(job_i, ' ',job_only[job_i],' 進行工作說明文字探勘與計算中'))
       people_sep <- people[which(people$職務小類==job_only[job_i]),]
       
       people_sep$工作說明 = gsub('\x9e','  ', people_sep$工作說明)
@@ -597,7 +597,7 @@ all_other_needs <-function(){
   for(job_i in 1:length(job_only)){
     tryCatch({
       jgc()
-      print(paste0(job_only[job_i],' 進行附加條件文字探勘與計算中'))
+      print(paste0(job_i, ' ',job_only[job_i],' 進行附加條件文字探勘與計算中'))
       people_sep <- people[which(people$職務小類==job_only[job_i]),]
       
       people_sep$附加條件 = gsub('\x9e','  ', people_sep$附加條件)
@@ -725,7 +725,7 @@ all_other_needs <-function(){
     })
     
   }
-  }
+}
 
 ##apriori 電腦專長
 arule_computer_skills <- function(){
