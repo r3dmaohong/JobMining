@@ -40,7 +40,6 @@ data_processing_job_only <- function(){
   
 }
 
-job_discription_error <- {}
 ##工作說明
 job_discription <-function(){
   
@@ -175,14 +174,15 @@ job_discription <-function(){
         print(paste0(job[job_i],' 樣本不足',min_n_sample,'，不予計算'))
       }
     }, error=function(e){
-      job_discription_error = c(job_discription_error, job[job_i] , e)
+      sink("D:\\abc\\wjhong\\projects\\廠商版職務大蒐秘\\jobwiki\\分行業別output\\分行業工作說明錯誤訊息.txt",append=TRUE)                      
+      print(paste0(job[job_i] ,'  ', e))
+      sink()
     })
     
   }
   
 }
 
-other_needs_error <- {}
 ##附加條件
 other_needs <-function(){
   #job_and_undustry = as.data.frame(table(people$行業與職務),stringsAsFactors=F)
@@ -317,7 +317,9 @@ other_needs <-function(){
       
       
     }, error=function(e){
-      other_needs_error = c(other_needs_error, job[job_i] , e)
+      sink("D:\\abc\\wjhong\\projects\\廠商版職務大蒐秘\\jobwiki\\分行業別output\\分行業附加說明錯誤訊息.txt",append=TRUE)                      
+      print(paste0(job[job_i] ,'  ', e))
+      sink()
     })
     
   }
@@ -448,7 +450,7 @@ pro_certificate <- function(){
   path_output<-"D:\\abc\\wjhong\\projects\\廠商版職務大蒐秘\\jobwiki\\分行業別output"
   setwd(path_output)
 }
-all_job_discription_error = {}
+
 ##整體工作說明
 all_job_discription <-function(){
   
@@ -579,7 +581,9 @@ all_job_discription <-function(){
         print(paste0(job_only[job_i],' 樣本不足',min_n_sample,'，不予計算'))
       }
     }, error=function(e){
-      all_job_discription_error = c(all_job_discription_error, job[job_i] , e)
+      sink("D:\\abc\\wjhong\\projects\\廠商版職務大蒐秘\\jobwiki\\分行業別output\\整體工作說明錯誤訊息.txt",append=TRUE)                      
+      print(paste0(job_only[job_i] ,'  ', e))
+      sink()
     })
     
     
@@ -587,7 +591,6 @@ all_job_discription <-function(){
   
 }
 
-all_other_needs_error = {}
 ##整體附加條件
 all_other_needs <-function(){
   
@@ -716,12 +719,13 @@ all_other_needs <-function(){
       
       
     }, error=function(e){
-      all_other_needs_error = c(all_other_needs_error, job[job_i] , e)
+      sink("D:\\abc\\wjhong\\projects\\廠商版職務大蒐秘\\jobwiki\\分行業別output\\整體附加說明錯誤訊息.txt",append=TRUE)                      
+      print(paste0(job_only[job_i] ,'  ', e))
+      sink()
     })
     
   }
-  
-}
+  }
 
 ##apriori 電腦專長
 arule_computer_skills <- function(){
