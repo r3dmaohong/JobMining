@@ -138,11 +138,11 @@ job_discription <-function(){
         if(length(d$word)>=10){
           for(i in 1:10){
             word.to.handle <- d$word[i]
-            people_sep$附加條件處理過 <- people_sep$附加條件
-            #people_sep$附加條件處理過 <- tolower(people_sep$附加條件處理過)
+            people_sep$工作說明處理過 <- people_sep$工作說明
+            #people_sep$工作說明處理過 <- tolower(people_sep$工作說明處理過)
             
             people_sep <- people_sep[order(-as.numeric(people_sep$資本金額),-as.numeric(people_sep$員工人數)),]
-            job_description <- people_sep$附加條件處理過
+            job_description <- people_sep$工作說明處理過
             job_description = unlist(strsplit(job_description, "[。●;；]"))
             job_description = unlist(strsplit(job_description, "  "))
             job_description = unlist(strsplit(job_description  , "[(][0-9][)]"))
@@ -164,10 +164,10 @@ job_discription <-function(){
               job.describe <- job.describe[,c('word','job.describe')]
               
               if(i==1){
-                write.table(job.describe, paste0('附加條件\\',job[job_i],'附加條件詞彙與內容對應結果.csv'), row.names=F, col.names=TRUE, sep=",")
+                write.table(job.describe, paste0('工作說明\\',job[job_i],'工作說明詞彙與內容對應結果.csv'), row.names=F, col.names=TRUE, sep=",")
                 
               }else{
-                write.table(job.describe, paste0('附加條件\\',job[job_i],'附加條件詞彙與內容對應結果.csv'), row.names=F,col.names=F, sep=",", append=TRUE)
+                write.table(job.describe, paste0('工作說明\\',job[job_i],'工作說明詞彙與內容對應結果.csv'), row.names=F,col.names=F, sep=",", append=TRUE)
                 
               }
             }
@@ -175,11 +175,11 @@ job_discription <-function(){
         }else{
           for(i in 1:length(d$word)){
             word.to.handle <- d$word[i]
-            people_sep$附加條件處理過 <- people_sep$附加條件
-            #people_sep$附加條件處理過 <- tolower(people_sep$附加條件處理過)
+            people_sep$工作說明處理過 <- people_sep$工作說明
+            #people_sep$工作說明處理過 <- tolower(people_sep$工作說明處理過)
             
             people_sep <- people_sep[order(-as.numeric(people_sep$資本金額),-as.numeric(people_sep$員工人數)),]
-            job_description <- people_sep$附加條件處理過
+            job_description <- people_sep$工作說明處理過
             job_description = unlist(strsplit(job_description, "[。●;；]"))
             job_description = unlist(strsplit(job_description, "  "))
             job_description = unlist(strsplit(job_description  , "[(][0-9][)]"))
@@ -201,10 +201,10 @@ job_discription <-function(){
               job.describe <- job.describe[,c('word','job.describe')]
               
               if(i==1){
-                write.table(job.describe, paste0('附加條件\\',job[job_i],'附加條件詞彙與內容對應結果.csv'), row.names=F, col.names=TRUE, sep=",")
+                write.table(job.describe, paste0('工作說明\\',job[job_i],'工作說明詞彙與內容對應結果.csv'), row.names=F, col.names=TRUE, sep=",")
                 
               }else{
-                write.table(job.describe, paste0('附加條件\\',job[job_i],'附加條件詞彙與內容對應結果.csv'), row.names=F,col.names=F, sep=",", append=TRUE)
+                write.table(job.describe, paste0('工作說明\\',job[job_i],'工作說明詞彙與內容對應結果.csv'), row.names=F,col.names=F, sep=",", append=TRUE)
                 
               }
             }
@@ -629,11 +629,11 @@ all_job_discription <-function(){
         if(length(d$word)>=10){
           for(i in 1:10){
             word.to.handle <- d$word[i]
-            people_sep$附加條件處理過 <- people_sep$附加條件
-            #people_sep$附加條件處理過 <- tolower(people_sep$附加條件處理過)
+            people_sep$工作說明處理過 <- people_sep$工作說明
+            #people_sep$工作說明處理過 <- tolower(people_sep$工作說明處理過)
             
             people_sep <- people_sep[order(-as.numeric(people_sep$資本金額),-as.numeric(people_sep$員工人數)),]
-            job_description <- people_sep$附加條件處理過
+            job_description <- people_sep$工作說明處理過
             job_description = unlist(strsplit(job_description, "[。●;；]"))
             job_description = unlist(strsplit(job_description, "  "))
             job_description = unlist(strsplit(job_description  , "[(][0-9][)]"))
@@ -655,10 +655,10 @@ all_job_discription <-function(){
               job.describe <- job.describe[,c('word','job.describe')]
               
               if(i==1){
-                write.table(job.describe, paste0('附加條件\\',job[job_i],'附加條件詞彙與內容對應結果.csv'), row.names=F, col.names=TRUE, sep=",")
+                write.table(job.describe, paste0('工作說明\\整體\\',job_only[job_i],'工作說明詞彙與內容對應結果.csv'), row.names=F, col.names=TRUE, sep=",")
                 
               }else{
-                write.table(job.describe, paste0('附加條件\\',job[job_i],'附加條件詞彙與內容對應結果.csv'), row.names=F,col.names=F, sep=",", append=TRUE)
+                write.table(job.describe, paste0('工作說明\\整體\\',job_only[job_i],'工作說明詞彙與內容對應結果.csv'), row.names=F,col.names=F, sep=",", append=TRUE)
                 
               }
             }
@@ -666,11 +666,11 @@ all_job_discription <-function(){
         }else{
           for(i in 1:length(d$word)){
             word.to.handle <- d$word[i]
-            people_sep$附加條件處理過 <- people_sep$附加條件
-            #people_sep$附加條件處理過 <- tolower(people_sep$附加條件處理過)
+            people_sep$工作說明處理過 <- people_sep$工作說明
+            #people_sep$工作說明處理過 <- tolower(people_sep$工作說明處理過)
             
             people_sep <- people_sep[order(-as.numeric(people_sep$資本金額),-as.numeric(people_sep$員工人數)),]
-            job_description <- people_sep$附加條件處理過
+            job_description <- people_sep$工作說明處理過
             job_description = unlist(strsplit(job_description, "[。●;；]"))
             job_description = unlist(strsplit(job_description, "  "))
             job_description = unlist(strsplit(job_description  , "[(][0-9][)]"))
@@ -692,10 +692,10 @@ all_job_discription <-function(){
               job.describe <- job.describe[,c('word','job.describe')]
               
               if(i==1){
-                write.table(job.describe, paste0('附加條件\\',job[job_i],'附加條件詞彙與內容對應結果.csv'), row.names=F, col.names=TRUE, sep=",")
+                write.table(job.describe, paste0('工作說明\\整體\\',job_only[job_i],'工作說明件詞彙與內容對應結果.csv'), row.names=F, col.names=TRUE, sep=",")
                 
               }else{
-                write.table(job.describe, paste0('附加條件\\',job[job_i],'附加條件詞彙與內容對應結果.csv'), row.names=F,col.names=F, sep=",", append=TRUE)
+                write.table(job.describe, paste0('工作說明\\整體\\',job_only[job_i],'工作說明詞彙與內容對應結果.csv'), row.names=F,col.names=F, sep=",", append=TRUE)
                 
               }
             }
@@ -830,10 +830,10 @@ all_other_needs <-function(){
               job.describe <- job.describe[,c('word','job.describe')]
               
               if(i==1){
-                write.table(job.describe, paste0('附加條件\\',job[job_i],'附加條件詞彙與內容對應結果.csv'), row.names=F, col.names=TRUE, sep=",")
+                write.table(job.describe, paste0('附加條件\\整體\\',job_only[job_i],'附加條件詞彙與內容對應結果.csv'), row.names=F, col.names=TRUE, sep=",")
                 
               }else{
-                write.table(job.describe, paste0('附加條件\\',job[job_i],'附加條件詞彙與內容對應結果.csv'), row.names=F,col.names=F, sep=",", append=TRUE)
+                write.table(job.describe, paste0('附加條件\\整體\\',job_only[job_i],'附加條件詞彙與內容對應結果.csv'), row.names=F,col.names=F, sep=",", append=TRUE)
                 
               }
             }
@@ -867,10 +867,10 @@ all_other_needs <-function(){
               job.describe <- job.describe[,c('word','job.describe')]
               
               if(i==1){
-                write.table(job.describe, paste0('附加條件\\',job[job_i],'附加條件詞彙與內容對應結果.csv'), row.names=F, col.names=TRUE, sep=",")
+                write.table(job.describe, paste0('附加條件\\整體\\',job_only[job_i],'附加條件詞彙與內容對應結果.csv'), row.names=F, col.names=TRUE, sep=",")
                 
               }else{
-                write.table(job.describe, paste0('附加條件\\',job[job_i],'附加條件詞彙與內容對應結果.csv'), row.names=F,col.names=F, sep=",", append=TRUE)
+                write.table(job.describe, paste0('附加條件\\整體\\',job_only[job_i],'附加條件詞彙與內容對應結果.csv'), row.names=F,col.names=F, sep=",", append=TRUE)
                 
               }
             }
