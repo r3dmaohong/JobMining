@@ -121,6 +121,12 @@ all_job_discription()
 ##整體附加條件
 all_other_needs()
 
+#系統時間
+end.time <- Sys.time()
+#記錄一段程序結束執行時間
+run.time <- end.time - start.time
+run.time
+
 ##職務類別
 ##找出各職務的詞
 ##找出整體高頻詞

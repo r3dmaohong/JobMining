@@ -43,7 +43,6 @@ data_processing_job_only <- function(){
 ##工作說明
 job_discription <-function(){
   
-  
   for(job_i in 1:length(job)){
     
     tryCatch({
@@ -51,11 +50,16 @@ job_discription <-function(){
       print(paste0(job_i, ' ',job[job_i],' 進行工作說明文字探勘與計算中'))
       people_sep <- people[which(people$行業與職務==job[job_i]),]
       
+      ##電腦無法負荷大量文字...如果超過25000筆就sample吧..
+      if(nrow(people_sep)>25000){
+        people_sep = people_sep[sample(1:nrow(people_sep),25000),]
+      }
+      
       people_sep$工作說明 = gsub('\x9e','  ', people_sep$工作說明)
       ##去除英文工作說明
       en_remove_index <-{}
       for(en.remove in 1:length(people_sep$工作說明)){
-        if(length(gregexpr(pattern ='[a-z]',people_sep$工作說明)[[en.remove]])/nchar(people_sep$工作說明[en.remove])>0.5){
+        if(length(gregexpr(pattern ='[a-z]',people_sep$工作說明)[[en.remove]])/nchar(gsub('\x9f','  ',people_sep$工作說明[en.remove]))>0.5){
           en_remove_index <- c(en_remove_index,en.remove)
         }
       }
@@ -120,50 +124,89 @@ job_discription <-function(){
         
         write.csv(d,paste0('工作說明\\',job[job_i],'工作說明文字Freq.csv'),row.names=F)
         
-        png(paste0(output_path,'\\','工作說明\\',job[job_i],'_工作說明wordcloud.png'), width=800,height=800)
+        #png(paste0(output_path,'\\','工作說明\\',job[job_i],'_工作說明wordcloud.png'), width=800,height=800)
         
-        if(length(d$freq)>=100){
-          wordcloud(d$word[1:100], d$freq[1:100], random.order = F, scale=c(10, .5), colors=brewer.pal(6, "Dark2"))
-        }else{
-          wordcloud(d$word, d$freq, random.order = F, scale=c(10, .5), colors=brewer.pal(6, "Dark2"))
-        }
-        dev.off()
+        #if(length(d$freq)>=100){
+        #  wordcloud(d$word[1:100], d$freq[1:100], random.order = F, scale=c(10, .5), colors=brewer.pal(6, "Dark2"))
+        #}else{
+        #  wordcloud(d$word, d$freq, random.order = F, scale=c(10, .5), colors=brewer.pal(6, "Dark2"))
+        #}
+        #dev.off()
         jgc()
         
         ##抓出前10名字串對應至工作說明
-        for(i in 1:10){
-          word.to.handle <- d$word[i]
-          people_sep$工作說明處理過 <- people_sep$工作說明
-          people_sep$工作說明處理過 <- tolower(people_sep$工作說明處理過)
-          
-          people_sep <- people_sep[order(-as.numeric(people_sep$資本金額),-as.numeric(people_sep$員工人數)),]
-          job_description <- people_sep$工作說明處理過
-          job_description = unlist(strsplit(job_description, "[。●;；]"))
-          job_description = unlist(strsplit(job_description, "  "))
-          job_description = unlist(strsplit(job_description  , "[(][0-9][)]"))
-          job_description = unlist(strsplit(job_description  , "[（][0-9][）]"))
-          job_description = unlist(strsplit(job_description  , "[0-9][.]"))
-          job_description = unlist(strsplit(job_description  , "[0-9][、]"))
-          job_description = trim(job_description)
-          
-          job.describe.df <- job_description[which(grepl(word.to.handle,job_description))]
-          job.describe <- unique(job.describe.df)
-          
-          if(toString(job.describe)!=''){
+        if(length(d$word)>=10){
+          for(i in 1:10){
+            word.to.handle <- d$word[i]
+            people_sep$附加條件處理過 <- people_sep$附加條件
+            #people_sep$附加條件處理過 <- tolower(people_sep$附加條件處理過)
             
-            ##抓1~5大的公司的描述
-            job.describe <- job.describe[1:5]
+            people_sep <- people_sep[order(-as.numeric(people_sep$資本金額),-as.numeric(people_sep$員工人數)),]
+            job_description <- people_sep$附加條件處理過
+            job_description = unlist(strsplit(job_description, "[。●;；]"))
+            job_description = unlist(strsplit(job_description, "  "))
+            job_description = unlist(strsplit(job_description  , "[(][0-9][)]"))
+            job_description = unlist(strsplit(job_description  , "[（][0-9][）]"))
+            job_description = unlist(strsplit(job_description  , "[0-9][.]"))
+            job_description = unlist(strsplit(job_description  , "[0-9][、]"))
             
-            job.describe <- as.data.frame(job.describe)
-            job.describe$word <- word.to.handle
-            job.describe <- job.describe[,c('word','job.describe')]
+            job_description = trim(job_description)
+            job.describe.df <- job_description[which(grepl(word.to.handle,tolower(job_description)))]
+            job.describe <- unique(job.describe.df)
             
-            if(i==1){
-              write.table(job.describe, paste0('工作說明\\',job[job_i],'工作說明詞彙與內容對應結果.csv'), row.names=F, col.names=TRUE, sep=",")
+            if(toString(job.describe)!=''){
               
-            }else{
-              write.table(job.describe, paste0('工作說明\\',job[job_i],'工作說明詞彙與內容對應結果.csv'), row.names=F,col.names=F, sep=",", append=TRUE)
+              ##抓1~5大的公司的描述
+              job.describe <- job.describe[1:5]
               
+              job.describe <- as.data.frame(job.describe)
+              job.describe$word <- word.to.handle
+              job.describe <- job.describe[,c('word','job.describe')]
+              
+              if(i==1){
+                write.table(job.describe, paste0('附加條件\\',job[job_i],'附加條件詞彙與內容對應結果.csv'), row.names=F, col.names=TRUE, sep=",")
+                
+              }else{
+                write.table(job.describe, paste0('附加條件\\',job[job_i],'附加條件詞彙與內容對應結果.csv'), row.names=F,col.names=F, sep=",", append=TRUE)
+                
+              }
+            }
+          }
+        }else{
+          for(i in 1:length(d$word)){
+            word.to.handle <- d$word[i]
+            people_sep$附加條件處理過 <- people_sep$附加條件
+            #people_sep$附加條件處理過 <- tolower(people_sep$附加條件處理過)
+            
+            people_sep <- people_sep[order(-as.numeric(people_sep$資本金額),-as.numeric(people_sep$員工人數)),]
+            job_description <- people_sep$附加條件處理過
+            job_description = unlist(strsplit(job_description, "[。●;；]"))
+            job_description = unlist(strsplit(job_description, "  "))
+            job_description = unlist(strsplit(job_description  , "[(][0-9][)]"))
+            job_description = unlist(strsplit(job_description  , "[（][0-9][）]"))
+            job_description = unlist(strsplit(job_description  , "[0-9][.]"))
+            job_description = unlist(strsplit(job_description  , "[0-9][、]"))
+            
+            job_description = trim(job_description)
+            job.describe.df <- job_description[which(grepl(word.to.handle,tolower(job_description)))]
+            job.describe <- unique(job.describe.df)
+            
+            if(toString(job.describe)!=''){
+              
+              ##抓1~5大的公司的描述
+              job.describe <- job.describe[1:5]
+              
+              job.describe <- as.data.frame(job.describe)
+              job.describe$word <- word.to.handle
+              job.describe <- job.describe[,c('word','job.describe')]
+              
+              if(i==1){
+                write.table(job.describe, paste0('附加條件\\',job[job_i],'附加條件詞彙與內容對應結果.csv'), row.names=F, col.names=TRUE, sep=",")
+                
+              }else{
+                write.table(job.describe, paste0('附加條件\\',job[job_i],'附加條件詞彙與內容對應結果.csv'), row.names=F,col.names=F, sep=",", append=TRUE)
+                
+              }
             }
           }
         }
@@ -175,7 +218,7 @@ job_discription <-function(){
       }
     }, error=function(e){
       sink("D:\\abc\\wjhong\\projects\\廠商版職務大蒐秘\\jobwiki\\分行業別output\\分行業工作說明錯誤訊息.txt",append=TRUE)                      
-      print(paste0(job[job_i] ,'  ', e))
+      print(paste0(job_i, ' ',job[job_i] ,'  ', e))
       sink()
     })
     
@@ -260,53 +303,93 @@ other_needs <-function(){
         
         write.csv(d,paste0('附加條件\\',job[job_i],'附加條件文字Freq.csv'),row.names=F)
         
-        png(paste0(output_path,'\\','附加條件\\',job[job_i],'_附加條件wordcloud.png'), width=800,height=800)
+        #png(paste0(output_path,'\\','附加條件\\',job[job_i],'_附加條件wordcloud.png'), width=800,height=800)
         
-        if(length(d$freq)>=100){
-          wordcloud(d$word[1:100], d$freq[1:100], random.order = F, scale=c(10, .5), colors=brewer.pal(6, "Dark2"))
-        }else{
-          wordcloud(d$word, d$freq, random.order = F, scale=c(10, .5), colors=brewer.pal(6, "Dark2"))
-        }
-        dev.off()
+        #if(length(d$freq)>=100){
+        #  wordcloud(d$word[1:100], d$freq[1:100], random.order = F, scale=c(10, .5), colors=brewer.pal(6, "Dark2"))
+        #}else{
+        #  wordcloud(d$word, d$freq, random.order = F, scale=c(10, .5), colors=brewer.pal(6, "Dark2"))
+        #}
+        #dev.off()
         jgc()
         
         ##抓出前10名字串對應至附加條件
-        for(i in 1:10){
-          word.to.handle <- d$word[i]
-          people_sep$附加條件處理過 <- people_sep$附加條件
-          people_sep$附加條件處理過 <- tolower(people_sep$附加條件處理過)
-          
-          people_sep <- people_sep[order(-as.numeric(people_sep$資本金額),-as.numeric(people_sep$員工人數)),]
-          job_description <- people_sep$附加條件處理過
-          job_description = unlist(strsplit(job_description, "[。●;；]"))
-          job_description = unlist(strsplit(job_description, "  "))
-          job_description = unlist(strsplit(job_description  , "[(][0-9][)]"))
-          job_description = unlist(strsplit(job_description  , "[（][0-9][）]"))
-          job_description = unlist(strsplit(job_description  , "[0-9][.]"))
-          job_description = unlist(strsplit(job_description  , "[0-9][、]"))
-          
-          job_description = trim(job_description)
-          job.describe.df <- job_description[which(grepl(word.to.handle,job_description))]
-          job.describe <- unique(job.describe.df)
-          
-          if(toString(job.describe)!=''){
+        if(length(d$word)>=10){
+          for(i in 1:10){
+            word.to.handle <- d$word[i]
+            people_sep$附加條件處理過 <- people_sep$附加條件
+            #people_sep$附加條件處理過 <- tolower(people_sep$附加條件處理過)
             
-            ##抓1~5大的公司的描述
-            job.describe <- job.describe[1:5]
+            people_sep <- people_sep[order(-as.numeric(people_sep$資本金額),-as.numeric(people_sep$員工人數)),]
+            job_description <- people_sep$附加條件處理過
+            job_description = unlist(strsplit(job_description, "[。●;；]"))
+            job_description = unlist(strsplit(job_description, "  "))
+            job_description = unlist(strsplit(job_description  , "[(][0-9][)]"))
+            job_description = unlist(strsplit(job_description  , "[（][0-9][）]"))
+            job_description = unlist(strsplit(job_description  , "[0-9][.]"))
+            job_description = unlist(strsplit(job_description  , "[0-9][、]"))
             
-            job.describe <- as.data.frame(job.describe)
-            job.describe$word <- word.to.handle
-            job.describe <- job.describe[,c('word','job.describe')]
+            job_description = trim(job_description)
+            job.describe.df <- job_description[which(grepl(word.to.handle,tolower(job_description)))]
+            job.describe <- unique(job.describe.df)
             
-            if(i==1){
-              write.table(job.describe, paste0('附加條件\\',job[job_i],'附加條件詞彙與內容對應結果.csv'), row.names=F, col.names=TRUE, sep=",")
+            if(toString(job.describe)!=''){
               
-            }else{
-              write.table(job.describe, paste0('附加條件\\',job[job_i],'附加條件詞彙與內容對應結果.csv'), row.names=F,col.names=F, sep=",", append=TRUE)
+              ##抓1~5大的公司的描述
+              job.describe <- job.describe[1:5]
               
+              job.describe <- as.data.frame(job.describe)
+              job.describe$word <- word.to.handle
+              job.describe <- job.describe[,c('word','job.describe')]
+              
+              if(i==1){
+                write.table(job.describe, paste0('附加條件\\',job[job_i],'附加條件詞彙與內容對應結果.csv'), row.names=F, col.names=TRUE, sep=",")
+                
+              }else{
+                write.table(job.describe, paste0('附加條件\\',job[job_i],'附加條件詞彙與內容對應結果.csv'), row.names=F,col.names=F, sep=",", append=TRUE)
+                
+              }
+            }
+          }
+        }else{
+          for(i in 1:length(d$word)){
+            word.to.handle <- d$word[i]
+            people_sep$附加條件處理過 <- people_sep$附加條件
+            #people_sep$附加條件處理過 <- tolower(people_sep$附加條件處理過)
+            
+            people_sep <- people_sep[order(-as.numeric(people_sep$資本金額),-as.numeric(people_sep$員工人數)),]
+            job_description <- people_sep$附加條件處理過
+            job_description = unlist(strsplit(job_description, "[。●;；]"))
+            job_description = unlist(strsplit(job_description, "  "))
+            job_description = unlist(strsplit(job_description  , "[(][0-9][)]"))
+            job_description = unlist(strsplit(job_description  , "[（][0-9][）]"))
+            job_description = unlist(strsplit(job_description  , "[0-9][.]"))
+            job_description = unlist(strsplit(job_description  , "[0-9][、]"))
+            
+            job_description = trim(job_description)
+            job.describe.df <- job_description[which(grepl(word.to.handle,tolower(job_description)))]
+            job.describe <- unique(job.describe.df)
+            
+            if(toString(job.describe)!=''){
+              
+              ##抓1~5大的公司的描述
+              job.describe <- job.describe[1:5]
+              
+              job.describe <- as.data.frame(job.describe)
+              job.describe$word <- word.to.handle
+              job.describe <- job.describe[,c('word','job.describe')]
+              
+              if(i==1){
+                write.table(job.describe, paste0('附加條件\\',job[job_i],'附加條件詞彙與內容對應結果.csv'), row.names=F, col.names=TRUE, sep=",")
+                
+              }else{
+                write.table(job.describe, paste0('附加條件\\',job[job_i],'附加條件詞彙與內容對應結果.csv'), row.names=F,col.names=F, sep=",", append=TRUE)
+                
+              }
             }
           }
         }
+        
         
         print(paste0(format(round(job_i/length(job)*100,2),2),'%'))
         print(paste0(job[job_i],' 附加條件計算完成'))
@@ -318,7 +401,7 @@ other_needs <-function(){
       
     }, error=function(e){
       sink("D:\\abc\\wjhong\\projects\\廠商版職務大蒐秘\\jobwiki\\分行業別output\\分行業附加說明錯誤訊息.txt",append=TRUE)                      
-      print(paste0(job[job_i] ,'  ', e))
+      print(paste0(job_i,' ',job[job_i] ,'  ', e))
       sink()
     })
     
@@ -460,6 +543,11 @@ all_job_discription <-function(){
       print(paste0(job_i, ' ',job_only[job_i],' 進行工作說明文字探勘與計算中'))
       people_sep <- people[which(people$職務小類==job_only[job_i]),]
       
+      ##電腦無法負荷大量文字...如果超過25000筆就sample吧..
+      if(nrow(people_sep)>25000){
+        people_sep = people_sep[sample(1:nrow(people_sep),25000),]
+      }
+      
       people_sep$工作說明 = gsub('\x9e','  ', people_sep$工作說明)
       ##去除英文工作說明
       en_remove_index <-{}
@@ -527,50 +615,89 @@ all_job_discription <-function(){
         
         write.csv(d,paste0('工作說明\\整體\\',job_only[job_i],'工作說明文字Freq.csv'),row.names=F)
         
-        png(paste0(output_path,'\\','工作說明\\整體\\',job_only[job_i],'_工作說明wordcloud.png'), width=800,height=800)
+        #png(paste0(output_path,'\\','工作說明\\整體\\',job_only[job_i],'_工作說明wordcloud.png'), width=800,height=800)
         
-        if(length(d$freq)>=100){
-          wordcloud(d$word[1:100], d$freq[1:100], random.order = F, scale=c(10, .5), colors=brewer.pal(6, "Dark2"))
-        }else{
-          wordcloud(d$word, d$freq, random.order = F, scale=c(10, .5), colors=brewer.pal(6, "Dark2"))
-        }
-        dev.off()
+        #if(length(d$freq)>=100){
+        #  wordcloud(d$word[1:100], d$freq[1:100], random.order = F, scale=c(10, .5), colors=brewer.pal(6, "Dark2"))
+        #}else{
+        #  wordcloud(d$word, d$freq, random.order = F, scale=c(10, .5), colors=brewer.pal(6, "Dark2"))
+        #}
+        #dev.off()
         jgc()
         
         ##抓出前10名字串對應至工作說明
-        for(i in 1:10){
-          word.to.handle <- d$word[i]
-          people_sep$工作說明處理過 <- people_sep$工作說明
-          people_sep$工作說明處理過 <- tolower(people_sep$工作說明處理過)
-          
-          people_sep <- people_sep[order(-as.numeric(people_sep$資本金額),-as.numeric(people_sep$員工人數)),]
-          job_description <- people_sep$工作說明處理過
-          job_description = unlist(strsplit(job_description, "[。●;；]"))
-          job_description = unlist(strsplit(job_description, "  "))
-          job_description = unlist(strsplit(job_description  , "[(][0-9][)]"))
-          job_description = unlist(strsplit(job_description  , "[（][0-9][）]"))
-          job_description = unlist(strsplit(job_description  , "[0-9][.]"))
-          job_description = unlist(strsplit(job_description  , "[0-9][、]"))
-          job_description = trim(job_description)
-          
-          job.describe.df <- job_description[which(grepl(word.to.handle,job_description))]
-          job.describe <- unique(job.describe.df)
-          
-          if(toString(job.describe)!=''){
+        if(length(d$word)>=10){
+          for(i in 1:10){
+            word.to.handle <- d$word[i]
+            people_sep$附加條件處理過 <- people_sep$附加條件
+            #people_sep$附加條件處理過 <- tolower(people_sep$附加條件處理過)
             
-            ##抓1~5大的公司的描述
-            job.describe <- job.describe[1:5]
+            people_sep <- people_sep[order(-as.numeric(people_sep$資本金額),-as.numeric(people_sep$員工人數)),]
+            job_description <- people_sep$附加條件處理過
+            job_description = unlist(strsplit(job_description, "[。●;；]"))
+            job_description = unlist(strsplit(job_description, "  "))
+            job_description = unlist(strsplit(job_description  , "[(][0-9][)]"))
+            job_description = unlist(strsplit(job_description  , "[（][0-9][）]"))
+            job_description = unlist(strsplit(job_description  , "[0-9][.]"))
+            job_description = unlist(strsplit(job_description  , "[0-9][、]"))
             
-            job.describe <- as.data.frame(job.describe)
-            job.describe$word <- word.to.handle
-            job.describe <- job.describe[,c('word','job.describe')]
+            job_description = trim(job_description)
+            job.describe.df <- job_description[which(grepl(word.to.handle,tolower(job_description)))]
+            job.describe <- unique(job.describe.df)
             
-            if(i==1){
-              write.table(job.describe, paste0('工作說明\\整體\\',job_only[job_i],'工作說明詞彙與內容對應結果.csv'), row.names=F, col.names=TRUE, sep=",")
+            if(toString(job.describe)!=''){
               
-            }else{
-              write.table(job.describe, paste0('工作說明\\整體\\',job_only[job_i],'工作說明詞彙與內容對應結果.csv'), row.names=F,col.names=F, sep=",", append=TRUE)
+              ##抓1~5大的公司的描述
+              job.describe <- job.describe[1:5]
               
+              job.describe <- as.data.frame(job.describe)
+              job.describe$word <- word.to.handle
+              job.describe <- job.describe[,c('word','job.describe')]
+              
+              if(i==1){
+                write.table(job.describe, paste0('附加條件\\',job[job_i],'附加條件詞彙與內容對應結果.csv'), row.names=F, col.names=TRUE, sep=",")
+                
+              }else{
+                write.table(job.describe, paste0('附加條件\\',job[job_i],'附加條件詞彙與內容對應結果.csv'), row.names=F,col.names=F, sep=",", append=TRUE)
+                
+              }
+            }
+          }
+        }else{
+          for(i in 1:length(d$word)){
+            word.to.handle <- d$word[i]
+            people_sep$附加條件處理過 <- people_sep$附加條件
+            #people_sep$附加條件處理過 <- tolower(people_sep$附加條件處理過)
+            
+            people_sep <- people_sep[order(-as.numeric(people_sep$資本金額),-as.numeric(people_sep$員工人數)),]
+            job_description <- people_sep$附加條件處理過
+            job_description = unlist(strsplit(job_description, "[。●;；]"))
+            job_description = unlist(strsplit(job_description, "  "))
+            job_description = unlist(strsplit(job_description  , "[(][0-9][)]"))
+            job_description = unlist(strsplit(job_description  , "[（][0-9][）]"))
+            job_description = unlist(strsplit(job_description  , "[0-9][.]"))
+            job_description = unlist(strsplit(job_description  , "[0-9][、]"))
+            
+            job_description = trim(job_description)
+            job.describe.df <- job_description[which(grepl(word.to.handle,tolower(job_description)))]
+            job.describe <- unique(job.describe.df)
+            
+            if(toString(job.describe)!=''){
+              
+              ##抓1~5大的公司的描述
+              job.describe <- job.describe[1:5]
+              
+              job.describe <- as.data.frame(job.describe)
+              job.describe$word <- word.to.handle
+              job.describe <- job.describe[,c('word','job.describe')]
+              
+              if(i==1){
+                write.table(job.describe, paste0('附加條件\\',job[job_i],'附加條件詞彙與內容對應結果.csv'), row.names=F, col.names=TRUE, sep=",")
+                
+              }else{
+                write.table(job.describe, paste0('附加條件\\',job[job_i],'附加條件詞彙與內容對應結果.csv'), row.names=F,col.names=F, sep=",", append=TRUE)
+                
+              }
             }
           }
         }
@@ -582,7 +709,7 @@ all_job_discription <-function(){
       }
     }, error=function(e){
       sink("D:\\abc\\wjhong\\projects\\廠商版職務大蒐秘\\jobwiki\\分行業別output\\整體工作說明錯誤訊息.txt",append=TRUE)                      
-      print(paste0(job_only[job_i] ,'  ', e))
+      print(paste0(job_i,' ',job_only[job_i] ,'  ', e))
       sink()
     })
     
@@ -663,50 +790,89 @@ all_other_needs <-function(){
         
         write.csv(d,paste0('附加條件\\整體\\',job_only[job_i],'附加條件文字Freq.csv'),row.names=F)
         
-        png(paste0(output_path,'\\','附加條件\\整體\\',job_only[job_i],'_附加條件wordcloud.png'), width=800,height=800)
+        #png(paste0(output_path,'\\','附加條件\\整體\\',job_only[job_i],'_附加條件wordcloud.png'), width=800,height=800)
         
-        if(length(d$freq)>=100){
-          wordcloud(d$word[1:100], d$freq[1:100], random.order = F, scale=c(10, .5), colors=brewer.pal(6, "Dark2"))
-        }else{
-          wordcloud(d$word, d$freq, random.order = F, scale=c(10, .5), colors=brewer.pal(6, "Dark2"))
-        }
-        dev.off()
+        #if(length(d$freq)>=100){
+        #  wordcloud(d$word[1:100], d$freq[1:100], random.order = F, scale=c(10, .5), colors=brewer.pal(6, "Dark2"))
+        #}else{
+        #  wordcloud(d$word, d$freq, random.order = F, scale=c(10, .5), colors=brewer.pal(6, "Dark2"))
+        #}
+        #dev.off()
         jgc()
         
         ##抓出前10名字串對應至附加條件
-        for(i in 1:10){
-          word.to.handle <- d$word[i]
-          people_sep$附加條件處理過 <- people_sep$附加條件
-          people_sep$附加條件處理過 <- tolower(people_sep$附加條件處理過)
-          
-          people_sep <- people_sep[order(-as.numeric(people_sep$資本金額),-as.numeric(people_sep$員工人數)),]
-          job_description <- people_sep$附加條件處理過
-          job_description = unlist(strsplit(job_description, "[。●;；]"))
-          job_description = unlist(strsplit(job_description, "  "))
-          job_description = unlist(strsplit(job_description  , "[(][0-9][)]"))
-          job_description = unlist(strsplit(job_description  , "[（][0-9][）]"))
-          job_description = unlist(strsplit(job_description  , "[0-9][.]"))
-          job_description = unlist(strsplit(job_description  , "[0-9][、]"))
-          
-          job_description = trim(job_description)
-          job.describe.df <- job_description[which(grepl(word.to.handle,job_description))]
-          job.describe <- unique(job.describe.df)
-          
-          if(toString(job.describe)!=''){
+        if(length(d$word)>=10){
+          for(i in 1:10){
+            word.to.handle <- d$word[i]
+            people_sep$附加條件處理過 <- people_sep$附加條件
+            #people_sep$附加條件處理過 <- tolower(people_sep$附加條件處理過)
             
-            ##抓1~5大的公司的描述
-            job.describe <- job.describe[1:5]
+            people_sep <- people_sep[order(-as.numeric(people_sep$資本金額),-as.numeric(people_sep$員工人數)),]
+            job_description <- people_sep$附加條件處理過
+            job_description = unlist(strsplit(job_description, "[。●;；]"))
+            job_description = unlist(strsplit(job_description, "  "))
+            job_description = unlist(strsplit(job_description  , "[(][0-9][)]"))
+            job_description = unlist(strsplit(job_description  , "[（][0-9][）]"))
+            job_description = unlist(strsplit(job_description  , "[0-9][.]"))
+            job_description = unlist(strsplit(job_description  , "[0-9][、]"))
             
-            job.describe <- as.data.frame(job.describe)
-            job.describe$word <- word.to.handle
-            job.describe <- job.describe[,c('word','job.describe')]
+            job_description = trim(job_description)
+            job.describe.df <- job_description[which(grepl(word.to.handle,tolower(job_description)))]
+            job.describe <- unique(job.describe.df)
             
-            if(i==1){
-              write.table(job.describe, paste0('附加條件\\整體\\',job_only[job_i],'附加條件詞彙與內容對應結果.csv'), row.names=F, col.names=TRUE, sep=",")
+            if(toString(job.describe)!=''){
               
-            }else{
-              write.table(job.describe, paste0('附加條件\\整體\\',job_only[job_i],'附加條件詞彙與內容對應結果.csv'), row.names=F,col.names=F, sep=",", append=TRUE)
+              ##抓1~5大的公司的描述
+              job.describe <- job.describe[1:5]
               
+              job.describe <- as.data.frame(job.describe)
+              job.describe$word <- word.to.handle
+              job.describe <- job.describe[,c('word','job.describe')]
+              
+              if(i==1){
+                write.table(job.describe, paste0('附加條件\\',job[job_i],'附加條件詞彙與內容對應結果.csv'), row.names=F, col.names=TRUE, sep=",")
+                
+              }else{
+                write.table(job.describe, paste0('附加條件\\',job[job_i],'附加條件詞彙與內容對應結果.csv'), row.names=F,col.names=F, sep=",", append=TRUE)
+                
+              }
+            }
+          }
+        }else{
+          for(i in 1:length(d$word)){
+            word.to.handle <- d$word[i]
+            people_sep$附加條件處理過 <- people_sep$附加條件
+            #people_sep$附加條件處理過 <- tolower(people_sep$附加條件處理過)
+            
+            people_sep <- people_sep[order(-as.numeric(people_sep$資本金額),-as.numeric(people_sep$員工人數)),]
+            job_description <- people_sep$附加條件處理過
+            job_description = unlist(strsplit(job_description, "[。●;；]"))
+            job_description = unlist(strsplit(job_description, "  "))
+            job_description = unlist(strsplit(job_description  , "[(][0-9][)]"))
+            job_description = unlist(strsplit(job_description  , "[（][0-9][）]"))
+            job_description = unlist(strsplit(job_description  , "[0-9][.]"))
+            job_description = unlist(strsplit(job_description  , "[0-9][、]"))
+            
+            job_description = trim(job_description)
+            job.describe.df <- job_description[which(grepl(word.to.handle,tolower(job_description)))]
+            job.describe <- unique(job.describe.df)
+            
+            if(toString(job.describe)!=''){
+              
+              ##抓1~5大的公司的描述
+              job.describe <- job.describe[1:5]
+              
+              job.describe <- as.data.frame(job.describe)
+              job.describe$word <- word.to.handle
+              job.describe <- job.describe[,c('word','job.describe')]
+              
+              if(i==1){
+                write.table(job.describe, paste0('附加條件\\',job[job_i],'附加條件詞彙與內容對應結果.csv'), row.names=F, col.names=TRUE, sep=",")
+                
+              }else{
+                write.table(job.describe, paste0('附加條件\\',job[job_i],'附加條件詞彙與內容對應結果.csv'), row.names=F,col.names=F, sep=",", append=TRUE)
+                
+              }
             }
           }
         }
@@ -720,7 +886,7 @@ all_other_needs <-function(){
       
     }, error=function(e){
       sink("D:\\abc\\wjhong\\projects\\廠商版職務大蒐秘\\jobwiki\\分行業別output\\整體附加說明錯誤訊息.txt",append=TRUE)                      
-      print(paste0(job_only[job_i] ,'  ', e))
+      print(paste0(job_i,' ',job_only[job_i] ,'  ', e))
       sink()
     })
     
@@ -855,6 +1021,7 @@ arule_pro_certificate <- function(){
   setwd(output_path)
 }
 
+##取交集
 intersect_computer_skills <- function(){
   
   output_path<-paste0(path,"\\分行業別output")
@@ -900,6 +1067,7 @@ intersect_computer_skills <- function(){
   
 }
 
+##取交集
 intersect_pro_certificate <- function(){
   
   output_path<-paste0(path,"\\分行業別output")

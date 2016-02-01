@@ -10,7 +10,7 @@ library("tm")
 ##  注意:載入 Rwordseg 前需要先載入 rJava 套件
 ##設定ram給rjava以處理錯誤
 ##options(java.parameters = "-Xmx2048m")
-options( java.parameters = "-Xmx6g" )
+options( java.parameters = "-Xmx4g" )
 library("rJava")
 library("Rwordseg")
 library("tmcn")
