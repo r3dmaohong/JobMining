@@ -50,9 +50,9 @@ job_discription <-function(){
       print(paste0(job_i, ' ',job[job_i],' 進行工作說明文字探勘與計算中'))
       people_sep <- people[which(people$行業與職務==job[job_i]),]
       
-      ##電腦無法負荷大量文字...如果超過25000筆就sample吧..
-      if(nrow(people_sep)>25000){
-        people_sep = people_sep[sample(1:nrow(people_sep),25000),]
+      ##電腦無法負荷大量文字...如果超過20000筆就sample吧..
+      if(nrow(people_sep)>20000){
+        people_sep = people_sep[sample(1:nrow(people_sep),20000),]
       }
       
       people_sep$工作說明 = gsub('\x9e','  ', people_sep$工作說明)
@@ -73,7 +73,7 @@ job_discription <-function(){
       
       if(nrow(people_sep)>min_n_sample){
         review_text <- paste(people_sep$工作說明, collapse=" ")
-        #review_text =people_sep$工作說明
+        #review_text = people_sep$工作說明
         review_text <- gsub("[\n]", "  ", review_text)
         #review_text = unlist(strsplit(review_text, "[，,。●;；]"))
         #review_text = unlist(strsplit(review_text, "[。●;；]"))
@@ -543,9 +543,9 @@ all_job_discription <-function(){
       print(paste0(job_i, ' ',job_only[job_i],' 進行工作說明文字探勘與計算中'))
       people_sep <- people[which(people$職務小類==job_only[job_i]),]
       
-      ##電腦無法負荷大量文字...如果超過25000筆就sample吧..
-      if(nrow(people_sep)>25000){
-        people_sep = people_sep[sample(1:nrow(people_sep),25000),]
+      ##電腦無法負荷大量文字...如果超過20000筆就sample吧..
+      if(nrow(people_sep)>20000){
+        people_sep = people_sep[sample(1:nrow(people_sep),20000),]
       }
       
       people_sep$工作說明 = gsub('\x9e','  ', people_sep$工作說明)
