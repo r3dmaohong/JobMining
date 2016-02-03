@@ -50,9 +50,9 @@ job_discription <-function(){
       print(paste0(job_i, ' ',job[job_i],' 進行工作說明文字探勘與計算中'))
       people_sep <- people[which(people$行業與職務==job[job_i]),]
       
-      ##電腦無法負荷大量文字...如果超過20000筆就sample吧..
-      if(nrow(people_sep)>20000){
-        people_sep = people_sep[sample(1:nrow(people_sep),20000),]
+      ##電腦無法負荷大量文字...如果超過15000筆就sample吧..
+      if(nrow(people_sep)>15000){
+        people_sep = people_sep[sample(1:nrow(people_sep),15000),]
       }
       
       people_sep$工作說明 = gsub('\x9e','  ', people_sep$工作說明)
@@ -149,9 +149,14 @@ job_discription <-function(){
             job_description = unlist(strsplit(job_description  , "[（][0-9][）]"))
             job_description = unlist(strsplit(job_description  , "[0-9][.]"))
             job_description = unlist(strsplit(job_description  , "[0-9][、]"))
+            job_description = unlist(strsplit(job_description  , "[0-9][，]"))
             
             job_description = trim(job_description)
-            job.describe.df <- job_description[which(grepl(word.to.handle,tolower(job_description)))]
+            if(length(unlist(gregexpr('[a-z]',word.to.handle)))/nchar(word.to.handle)>0.9){
+              job.describe.df <- job_description[which(grepl(paste0('[^a-z]',word.to.handle,'[^a-z]'),tolower(job_description)))]
+            }else{
+              job.describe.df <- job_description[which(grepl(word.to.handle,tolower(job_description)))]
+            }
             job.describe <- unique(job.describe.df)
             
             if(toString(job.describe)!=''){
@@ -186,9 +191,14 @@ job_discription <-function(){
             job_description = unlist(strsplit(job_description  , "[（][0-9][）]"))
             job_description = unlist(strsplit(job_description  , "[0-9][.]"))
             job_description = unlist(strsplit(job_description  , "[0-9][、]"))
+            job_description = unlist(strsplit(job_description  , "[0-9][，]"))
             
             job_description = trim(job_description)
-            job.describe.df <- job_description[which(grepl(word.to.handle,tolower(job_description)))]
+            if(length(unlist(gregexpr('[a-z]',word.to.handle)))/nchar(word.to.handle)>0.9){
+              job.describe.df <- job_description[which(grepl(paste0('[^a-z]',word.to.handle,'[^a-z]'),tolower(job_description)))]
+            }else{
+              job.describe.df <- job_description[which(grepl(word.to.handle,tolower(job_description)))]
+            }
             job.describe <- unique(job.describe.df)
             
             if(toString(job.describe)!=''){
@@ -328,9 +338,14 @@ other_needs <-function(){
             job_description = unlist(strsplit(job_description  , "[（][0-9][）]"))
             job_description = unlist(strsplit(job_description  , "[0-9][.]"))
             job_description = unlist(strsplit(job_description  , "[0-9][、]"))
+            job_description = unlist(strsplit(job_description  , "[0-9][，]"))
             
             job_description = trim(job_description)
-            job.describe.df <- job_description[which(grepl(word.to.handle,tolower(job_description)))]
+            if(length(unlist(gregexpr('[a-z]',word.to.handle)))/nchar(word.to.handle)>0.9){
+              job.describe.df <- job_description[which(grepl(paste0('[^a-z]',word.to.handle,'[^a-z]'),tolower(job_description)))]
+            }else{
+              job.describe.df <- job_description[which(grepl(word.to.handle,tolower(job_description)))]
+            }
             job.describe <- unique(job.describe.df)
             
             if(toString(job.describe)!=''){
@@ -365,9 +380,15 @@ other_needs <-function(){
             job_description = unlist(strsplit(job_description  , "[（][0-9][）]"))
             job_description = unlist(strsplit(job_description  , "[0-9][.]"))
             job_description = unlist(strsplit(job_description  , "[0-9][、]"))
+            job_description = unlist(strsplit(job_description  , "[0-9][，]"))
             
             job_description = trim(job_description)
-            job.describe.df <- job_description[which(grepl(word.to.handle,tolower(job_description)))]
+            
+            if(length(unlist(gregexpr('[a-z]',word.to.handle)))/nchar(word.to.handle)>0.9){
+              job.describe.df <- job_description[which(grepl(paste0('[^a-z]',word.to.handle,'[^a-z]'),tolower(job_description)))]
+            }else{
+              job.describe.df <- job_description[which(grepl(word.to.handle,tolower(job_description)))]
+            }
             job.describe <- unique(job.describe.df)
             
             if(toString(job.describe)!=''){
@@ -543,9 +564,9 @@ all_job_discription <-function(){
       print(paste0(job_i, ' ',job_only[job_i],' 進行工作說明文字探勘與計算中'))
       people_sep <- people[which(people$職務小類==job_only[job_i]),]
       
-      ##電腦無法負荷大量文字...如果超過20000筆就sample吧..
-      if(nrow(people_sep)>20000){
-        people_sep = people_sep[sample(1:nrow(people_sep),20000),]
+      ##電腦無法負荷大量文字...如果超過15000筆就sample吧..
+      if(nrow(people_sep)>15000){
+        people_sep = people_sep[sample(1:nrow(people_sep),15000),]
       }
       
       people_sep$工作說明 = gsub('\x9e','  ', people_sep$工作說明)
@@ -640,9 +661,14 @@ all_job_discription <-function(){
             job_description = unlist(strsplit(job_description  , "[（][0-9][）]"))
             job_description = unlist(strsplit(job_description  , "[0-9][.]"))
             job_description = unlist(strsplit(job_description  , "[0-9][、]"))
+            job_description = unlist(strsplit(job_description  , "[0-9][，]"))
             
             job_description = trim(job_description)
-            job.describe.df <- job_description[which(grepl(word.to.handle,tolower(job_description)))]
+            if(length(unlist(gregexpr('[a-z]',word.to.handle)))/nchar(word.to.handle)>0.9){
+              job.describe.df <- job_description[which(grepl(paste0('[^a-z]',word.to.handle,'[^a-z]'),tolower(job_description)))]
+            }else{
+              job.describe.df <- job_description[which(grepl(word.to.handle,tolower(job_description)))]
+            }
             job.describe <- unique(job.describe.df)
             
             if(toString(job.describe)!=''){
@@ -677,9 +703,14 @@ all_job_discription <-function(){
             job_description = unlist(strsplit(job_description  , "[（][0-9][）]"))
             job_description = unlist(strsplit(job_description  , "[0-9][.]"))
             job_description = unlist(strsplit(job_description  , "[0-9][、]"))
+            job_description = unlist(strsplit(job_description  , "[0-9][，]"))
             
             job_description = trim(job_description)
-            job.describe.df <- job_description[which(grepl(word.to.handle,tolower(job_description)))]
+            if(length(unlist(gregexpr('[a-z]',word.to.handle)))/nchar(word.to.handle)>0.9){
+              job.describe.df <- job_description[which(grepl(paste0('[^a-z]',word.to.handle,'[^a-z]'),tolower(job_description)))]
+            }else{
+              job.describe.df <- job_description[which(grepl(word.to.handle,tolower(job_description)))]
+            }
             job.describe <- unique(job.describe.df)
             
             if(toString(job.describe)!=''){
@@ -815,9 +846,14 @@ all_other_needs <-function(){
             job_description = unlist(strsplit(job_description  , "[（][0-9][）]"))
             job_description = unlist(strsplit(job_description  , "[0-9][.]"))
             job_description = unlist(strsplit(job_description  , "[0-9][、]"))
+            job_description = unlist(strsplit(job_description  , "[0-9][，]"))
             
             job_description = trim(job_description)
-            job.describe.df <- job_description[which(grepl(word.to.handle,tolower(job_description)))]
+            if(length(unlist(gregexpr('[a-z]',word.to.handle)))/nchar(word.to.handle)>0.9){
+              job.describe.df <- job_description[which(grepl(paste0('[^a-z]',word.to.handle,'[^a-z]'),tolower(job_description)))]
+            }else{
+              job.describe.df <- job_description[which(grepl(word.to.handle,tolower(job_description)))]
+            }
             job.describe <- unique(job.describe.df)
             
             if(toString(job.describe)!=''){
@@ -852,9 +888,14 @@ all_other_needs <-function(){
             job_description = unlist(strsplit(job_description  , "[（][0-9][）]"))
             job_description = unlist(strsplit(job_description  , "[0-9][.]"))
             job_description = unlist(strsplit(job_description  , "[0-9][、]"))
+            job_description = unlist(strsplit(job_description  , "[0-9][，]"))
             
             job_description = trim(job_description)
-            job.describe.df <- job_description[which(grepl(word.to.handle,tolower(job_description)))]
+            if(length(unlist(gregexpr('[a-z]',word.to.handle)))/nchar(word.to.handle)>0.9){
+              job.describe.df <- job_description[which(grepl(paste0('[^a-z]',word.to.handle,'[^a-z]'),tolower(job_description)))]
+            }else{
+              job.describe.df <- job_description[which(grepl(word.to.handle,tolower(job_description)))]
+            }
             job.describe <- unique(job.describe.df)
             
             if(toString(job.describe)!=''){
