@@ -150,6 +150,10 @@ job_discription <-function(){
             job_description = unlist(strsplit(job_description  , "[0-9][.]"))
             job_description = unlist(strsplit(job_description  , "[0-9][¡B]"))
             job_description = unlist(strsplit(job_description  , "[0-9][¡A]"))
+            holo_num = c('¢¯','¢°','¢±','¢²','¢³','¢´','¢µ','¢¶','¢·','¢¸')
+            for(i in 1:length(holo_num)){
+              job_description = unlist(strsplit(job_description  , paste0(holo_num[i],'¡D')))
+            }
             
             job_description = trim(job_description)
             if(length(unlist(gregexpr('[a-z]',word.to.handle)))/nchar(word.to.handle)>0.9){
@@ -192,6 +196,10 @@ job_discription <-function(){
             job_description = unlist(strsplit(job_description  , "[0-9][.]"))
             job_description = unlist(strsplit(job_description  , "[0-9][¡B]"))
             job_description = unlist(strsplit(job_description  , "[0-9][¡A]"))
+            holo_num = c('¢¯','¢°','¢±','¢²','¢³','¢´','¢µ','¢¶','¢·','¢¸')
+            for(i in 1:length(holo_num)){
+              job_description = unlist(strsplit(job_description  , paste0(holo_num[i],'¡D')))
+            }
             
             job_description = trim(job_description)
             if(length(unlist(gregexpr('[a-z]',word.to.handle)))/nchar(word.to.handle)>0.9){
@@ -339,6 +347,10 @@ other_needs <-function(){
             job_description = unlist(strsplit(job_description  , "[0-9][.]"))
             job_description = unlist(strsplit(job_description  , "[0-9][¡B]"))
             job_description = unlist(strsplit(job_description  , "[0-9][¡A]"))
+            holo_num = c('¢¯','¢°','¢±','¢²','¢³','¢´','¢µ','¢¶','¢·','¢¸')
+            for(i in 1:length(holo_num)){
+              job_description = unlist(strsplit(job_description  , paste0(holo_num[i],'¡D')))
+            }
             
             job_description = trim(job_description)
             if(length(unlist(gregexpr('[a-z]',word.to.handle)))/nchar(word.to.handle)>0.9){
@@ -381,6 +393,10 @@ other_needs <-function(){
             job_description = unlist(strsplit(job_description  , "[0-9][.]"))
             job_description = unlist(strsplit(job_description  , "[0-9][¡B]"))
             job_description = unlist(strsplit(job_description  , "[0-9][¡A]"))
+            holo_num = c('¢¯','¢°','¢±','¢²','¢³','¢´','¢µ','¢¶','¢·','¢¸')
+            for(i in 1:length(holo_num)){
+              job_description = unlist(strsplit(job_description  , paste0(holo_num[i],'¡D')))
+            }
             
             job_description = trim(job_description)
             
@@ -662,6 +678,10 @@ all_job_discription <-function(){
             job_description = unlist(strsplit(job_description  , "[0-9][.]"))
             job_description = unlist(strsplit(job_description  , "[0-9][¡B]"))
             job_description = unlist(strsplit(job_description  , "[0-9][¡A]"))
+            holo_num = c('¢¯','¢°','¢±','¢²','¢³','¢´','¢µ','¢¶','¢·','¢¸')
+            for(i in 1:length(holo_num)){
+              job_description = unlist(strsplit(job_description  , paste0(holo_num[i],'¡D')))
+            }
             
             job_description = trim(job_description)
             if(length(unlist(gregexpr('[a-z]',word.to.handle)))/nchar(word.to.handle)>0.9){
@@ -704,6 +724,10 @@ all_job_discription <-function(){
             job_description = unlist(strsplit(job_description  , "[0-9][.]"))
             job_description = unlist(strsplit(job_description  , "[0-9][¡B]"))
             job_description = unlist(strsplit(job_description  , "[0-9][¡A]"))
+            holo_num = c('¢¯','¢°','¢±','¢²','¢³','¢´','¢µ','¢¶','¢·','¢¸')
+            for(i in 1:length(holo_num)){
+              job_description = unlist(strsplit(job_description  , paste0(holo_num[i],'¡D')))
+            }
             
             job_description = trim(job_description)
             if(length(unlist(gregexpr('[a-z]',word.to.handle)))/nchar(word.to.handle)>0.9){
@@ -847,6 +871,10 @@ all_other_needs <-function(){
             job_description = unlist(strsplit(job_description  , "[0-9][.]"))
             job_description = unlist(strsplit(job_description  , "[0-9][¡B]"))
             job_description = unlist(strsplit(job_description  , "[0-9][¡A]"))
+            holo_num = c('¢¯','¢°','¢±','¢²','¢³','¢´','¢µ','¢¶','¢·','¢¸')
+            for(i in 1:length(holo_num)){
+              job_description = unlist(strsplit(job_description  , paste0(holo_num[i],'¡D')))
+            }
             
             job_description = trim(job_description)
             if(length(unlist(gregexpr('[a-z]',word.to.handle)))/nchar(word.to.handle)>0.9){
@@ -889,6 +917,10 @@ all_other_needs <-function(){
             job_description = unlist(strsplit(job_description  , "[0-9][.]"))
             job_description = unlist(strsplit(job_description  , "[0-9][¡B]"))
             job_description = unlist(strsplit(job_description  , "[0-9][¡A]"))
+            holo_num = c('¢¯','¢°','¢±','¢²','¢³','¢´','¢µ','¢¶','¢·','¢¸')
+            for(i in 1:length(holo_num)){
+              job_description = unlist(strsplit(job_description  , paste0(holo_num[i],'¡D')))
+            }
             
             job_description = trim(job_description)
             if(length(unlist(gregexpr('[a-z]',word.to.handle)))/nchar(word.to.handle)>0.9){
