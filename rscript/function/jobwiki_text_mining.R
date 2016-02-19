@@ -97,7 +97,7 @@ job_discription <-function(){
         #問題在這
         d.corpus <- tm_map(d.corpus, segmentCN, nature = TRUE)
         
-        myStopWords <- c(stopwordsCN(), "編輯", "時間", "標題", "發信", "實業", "作者","資料庫管理")
+        myStopWords <- c(stopwordsCN(), "編輯", "時間", "標題", "發信", "實業", "作者")
         d.corpus <- tm_map(d.corpus, removeWords, myStopWords)
         d.corpus <- tm_map(d.corpus, removeWords, stopwords("english")) 
         d.corpus <- tm_map(d.corpus, PlainTextDocument)

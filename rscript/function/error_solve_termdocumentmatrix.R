@@ -1,6 +1,7 @@
 ######################################################################
 ##  注意!
 ##  先安裝好所需的套件
+options( java.parameters = "-Xmx8g" )
 library("tm")
 ##  有關中文的套件: Rwordseg tmcn
 ##  用指令會有無法安裝的可能(滿常發生)
@@ -10,9 +11,11 @@ library("tm")
 ##  注意:載入 Rwordseg 前需要先載入 rJava 套件
 ##設定ram給rjava以處理錯誤
 ##options(java.parameters = "-Xmx2048m")
-options( java.parameters = "-Xmx4g" )
+options( java.parameters = "-Xmx8g" )
 library("rJava")
+options( java.parameters = "-Xmx8g" )
 library("Rwordseg")
+options( java.parameters = "-Xmx8g" )
 library("tmcn")
 library("slam")
 ######################################################################
