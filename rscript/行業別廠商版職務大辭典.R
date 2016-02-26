@@ -158,6 +158,21 @@ arule_pro_certificate()
 intersect_computer_skills()
 intersect_pro_certificate()
 
+temp = read.csv('D:\\abc\\wjhong\\projects\\廠商版職務大蒐秘\\jobwiki\\分行業別output\\專業憑證交集.csv',header = F,stringsAsFactors=F)
+colnames(temp) = c('職務小類名稱',paste0('證照名稱',2:ncol(temp)))
+for(i in 1:ncol(temp)){
+  temp[which(is.na(temp[,i])),i] = ''
+}
+temp = temp[which(temp[,2]!=''),]
+write.csv('專業憑證交集整理後.csv',row.names=F)
+
+temp = read.csv('D:\\abc\\wjhong\\projects\\廠商版職務大蒐秘\\jobwiki\\分行業別output\\電腦專長交集.csv',header = F,stringsAsFactors=F)
+colnames(temp) = c('職務小類名稱',paste0('證照名稱',2:ncol(temp)))
+for(i in 1:ncol(temp)){
+  temp[which(is.na(temp[,i])),i] = ''
+}
+temp = temp[which(temp[,2]!=''),]
+write.csv('電腦專長交集整理後.csv',row.names=F)
 #系統時間
 end.time <- Sys.time()
 #記錄一段程序結束執行時間
