@@ -106,6 +106,8 @@ for(i in 1:length(csv_list)){
   })
   
 }
+print(paste0(nrow(myfiles),'=>',nrow(unique(myfiles))))
+myfiles = unique(myfiles)
 write.csv(myfiles,'D:\\abc\\wjhong\\projects\\廠商版職務大蒐秘\\jobwiki\\分行業別output\\工作說明總表.csv',row.names=F)
 
 
@@ -140,4 +142,6 @@ for(i in 1:length(csv_list)){
   })
   
 }
+print(paste0(nrow(myfiles),'=>',nrow(unique(myfiles))))
+myfiles = unique(myfiles)
 write.csv(myfiles,'D:\\abc\\wjhong\\projects\\廠商版職務大蒐秘\\jobwiki\\分行業別output\\附加條件總表.csv',row.names=F)
