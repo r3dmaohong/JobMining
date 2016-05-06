@@ -17,9 +17,10 @@ trim <- function (x) gsub("^\\s+|\\s+$", "", x)
 job_d <- read.csv('D:\\abc\\wjhong\\projects\\廠商版職務大蒐秘\\jobwiki\\分行業別output\\工作說明總表.csv')
 
 ##excel內 - 開頭會有問題
-job_d$工作說明 = gsub('-','*',job_d$工作說明)
+#job_d$工作說明 = gsub('-','*',job_d$工作說明)
 job_d$工作說明 = trim_punc(job_d$工作說明)
 job_d$工作說明 = trim(job_d$工作說明)
+job_d$工作說明 = gsub(',','，',job_d$工作說明)
 
 if(F){
   ##比較字串，只有一個字有差就踢掉其一
