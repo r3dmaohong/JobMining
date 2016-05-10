@@ -47,6 +47,7 @@ for(i in 1:nrow(job_d_list)){
   
   ##why using tostring and as numeric? because sometimes the comparing is wronge
   fuzzy_matching = fuzzy_matching[which(fuzzy_matching$match_score >=0.9 & fuzzy_matching$match_score < 1),]
+  ##0.9好像太高了...需找時間下修
   fuzzy_matching = fuzzy_matching[which(fuzzy_matching[,1]!=fuzzy_matching[,2]),]
   ##fuzzy_matching[order(fuzzy_matching$match_score),]
   if(nrow(fuzzy_matching)>0){
