@@ -1,3 +1,6 @@
+library(RecordLinkage)
+library(dplyr)
+
 options(stringsAsFactors = FALSE)
 
 trim <- function (x) gsub("^\\s+|\\s+$", "", x)
@@ -31,6 +34,15 @@ for(i in 1:nrow(job_d_list)){
   ord_v = sort(ord_v)
   ord_v = ord_v[!is.na(ord_v)]
   
+  ord_v_rm = c()
+  for(check_i in 1:length(ord_v)){
+    ##找出有grepl的但是又根本身不一樣?
+    if(length(which(grepl(ord_v[check_i],ord_v,fixed=TRUE)))==1){
+      ord_v_rm = c(ord_v_rm, ord_v[check_i])
+    }
+  }
+  ord_v = ord_v_rm
+  
   new_job_df[x:(x+length(ord_v)-1),1:2] = tmp[1:(length(ord_v)),1:2]
   new_job_df[x:(x+length(ord_v)-1),3] = ord_v
   
@@ -38,4 +50,4 @@ for(i in 1:nrow(job_d_list)){
   x = x + length(ord_v)
 }
 
-write.csv(new_job_df,'D:\\abc\\wjhong\\projects\\廠商版職務大蒐秘\\jobwiki\\分行業別output\\[篩選後]整體工作說明fuzzymatch後整理結果.csv',row.names=F)
+write.csv(new_job_df,'D:\\abc\\wjhong\\projects\\廠商版職務大蒐秘\\jobwiki\\分行業別output\\[篩選後2]整體工作說明fuzzymatch後整理結果.csv',row.names=F)
