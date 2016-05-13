@@ -50,4 +50,14 @@ for(i in 1:nrow(job_d_list)){
   x = x + length(ord_v)
 }
 
+
+##
+##最後提供10筆?
+##該random?
+##或是再一次挑不相關者?
+##還是全上?
+
+##random後蒐集常被用的
+##然後把順序條上去?
+
 write.csv(new_job_df,'D:\\abc\\wjhong\\projects\\廠商版職務大蒐秘\\jobwiki\\分行業別output\\[篩選後2]整體工作說明fuzzymatch後整理結果.csv',row.names=F)
