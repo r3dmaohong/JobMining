@@ -60,4 +60,9 @@ for(i in 1:nrow(job_d_list)){
 ##random後蒐集常被用的
 ##然後把順序條上去?
 
+##或是把相似的抓出來!?
+##第一波篩過了
+##那第二波是否相似反而證明這些能力是主要的?
+
+
 write.csv(new_job_df,'D:\\abc\\wjhong\\projects\\廠商版職務大蒐秘\\jobwiki\\分行業別output\\[篩選後2]整體工作說明fuzzymatch後整理結果.csv',row.names=F)
