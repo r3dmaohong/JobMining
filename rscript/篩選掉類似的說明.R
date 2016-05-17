@@ -4,6 +4,7 @@ library(dplyr)
 options(stringsAsFactors = FALSE)
 
 trim <- function (x) gsub("^\\s+|\\s+$", "", x)
+trim_star <- function (x) gsub("^[*]+|[*]+$", "", x)
 
 job_d  = read.csv(file.choose())
 
@@ -63,6 +64,9 @@ for(i in 1:nrow(job_d_list)){
 ##或是把相似的抓出來!?
 ##第一波篩過了
 ##那第二波是否相似反而證明這些能力是主要的?
+new_job_df$附加條件 = trim_star(new_job_df$附加條件)
+new_job_df = new_job_df[which(!grepl('.com',new_job_df$附加條件,fixed=T)),]
 
+#write.csv(new_job_df,'D:\\abc\\wjhong\\projects\\廠商版職務大蒐秘\\jobwiki\\分行業別output\\[篩選後2]整體工作說明fuzzymatch後整理結果.csv',row.names=F)
 
-write.csv(new_job_df,'D:\\abc\\wjhong\\projects\\廠商版職務大蒐秘\\jobwiki\\分行業別output\\[篩選後2]整體工作說明fuzzymatch後整理結果.csv',row.names=F)
+#write.csv(new_job_df,'D:\\abc\\wjhong\\projects\\廠商版職務大蒐秘\\jobwiki\\分行業別output\\[篩選後2]整體附加條件fuzzymatch後整理結果.csv',row.names=F)
