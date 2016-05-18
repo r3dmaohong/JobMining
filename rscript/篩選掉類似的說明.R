@@ -18,6 +18,7 @@ trim_mix = function(x){
   ##trim要重複用
   ##才刪個乾淨
   
+  x = gsub("～",' ',x)
   x = gsub("^[0-9０-９a-zA-Z一-十四√]+[:、，,-‧ ．)）.]",'',x)
   
   ##..國字也可以?真是驚奇的發現
@@ -26,8 +27,8 @@ trim_mix = function(x){
   
   x = gsub("^◎",'',x)
   
-  if(grepl('^[(（＜]+',x) &　grepl('[)）＞]+$',x)){
-    x = gsub("^[(（＜]+|[(（＜]+$",'',x)
+  if(grepl('^[(（＜]+',x) & grepl('[)）＞]+$',x)){
+    x = gsub("^[(（＜]+|[)）＞]+$",'',x)
   }
   x = gsub("^[0-9０-９]+[-][0-9０-９]+",'',x)
   
@@ -52,7 +53,6 @@ trim_du <- function(x){
   #if(length(unlist(gregexpr(pattern ="[0-9０-９a-zA-Z一-十四√]+[:、，,-‧ ．)）.]",x)))>1 | length(unlist(gregexpr(pattern ="[0-9０-９a-zA-Z]+[.]",x)))>1){
   if(grepl("[0-9０-９a-zA-Z一-十四√]+[:、，,-‧ ．)）.]",x)){
     x = '' 
-  }
   }else{
     x = x
   }
@@ -122,10 +122,10 @@ new_job_df[,3] = trim(new_job_df[,3])
 new_job_df[,3] = trim_star(new_job_df[,3])
 new_job_df[,3] = trim_punc(new_job_df[,3])
 new_job_df[,3] = trim_mix(new_job_df[,3])
-for(i in 1:nrow(new_job_df)){
-  new_job_df[i,3] = trim_du(new_job_df[i,3])
-}
-
+#for(i in 1:nrow(new_job_df)){
+#  new_job_df[i,3] = trim_du(new_job_df[i,3])
+#}
+new_job_df[,3] = unlist(lapply(new_job_df[,3],trim_du))
 
 new_job_df[,3] = trim(new_job_df[,3])
 new_job_df[,3] = trim_star(new_job_df[,3])
@@ -133,8 +133,13 @@ new_job_df[,3] = trim_punc(new_job_df[,3])
 new_job_df[,3] = trim_mix(new_job_df[,3])
 new_job_df[,3] = unlist(lapply(new_job_df[,3],trim_du))
 
-new_job_df = new_job_df[which(!grepl('.com',new_job_df[,3],fixed=T) & !grepl('電話',new_job_df[,3]) & !grepl('來電',new_job_df[,3]) & !grepl('font',new_job_df[,3]) & !grepl('電話',new_job_df[,3]) & !grepl('e-mail',new_job_df[,3]) & !grepl('【',new_job_df[,3]) & !grepl('★',new_job_df[,3]) & !grepl('☆',new_job_df[,3]) & !grepl('◆',new_job_df[,3]) & !grepl('■',new_job_df[,3]) & !grepl('】',new_job_df[,3])),]
+##附加再用這個
+#new_job_df = new_job_df[which(!grepl('.com',new_job_df[,3],fixed=T) & !grepl('電話',new_job_df[,3]) & !grepl('來電',new_job_df[,3]) & !grepl('font',new_job_df[,3]) & !grepl('電話',new_job_df[,3]) & !grepl('e-mail',new_job_df[,3]) & !grepl('【',new_job_df[,3]) & !grepl('★',new_job_df[,3]) & !grepl('☆',new_job_df[,3]) & !grepl('◆',new_job_df[,3]) & !grepl('■',new_job_df[,3]) & !grepl('】',new_job_df[,3])),]
+new_job_df = new_job_df[which(!grepl('.com',new_job_df[,3],fixed=T) & !grepl('font',new_job_df[,3]) & !grepl('【',new_job_df[,3]) & !grepl('★',new_job_df[,3]) & !grepl('☆',new_job_df[,3]) & !grepl('◆',new_job_df[,3]) & !grepl('■',new_job_df[,3]) & !grepl('】',new_job_df[,3])),]
+
 new_job_df = new_job_df[which(new_job_df[,3]!=''),]
+
+new_job_df = new_job_df[which(!grepl('^[(（＜]+',new_job_df[,3])),]
 
 #write.csv(new_job_df,'D:\\abc\\wjhong\\projects\\廠商版職務大蒐秘\\jobwiki\\分行業別output\\[篩選後2]整體工作說明fuzzymatch後整理結果.csv',row.names=F)
 
