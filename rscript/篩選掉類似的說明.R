@@ -1,10 +1,16 @@
+rm(list = ls()) #¥h°£¤u§@ªÅ¶¡¤¤©Ò¦³ª«¥ó
+gc() #°O¾ÐÅéÄÀ©ñ
+path<-"D:\\abc\\wjhong\\projects\\¼t°Óª©Â¾°È¤j»`¯µ\\jobwiki\\¤À¦æ·~§Ooutput"
+setwd(path)
+
 library(RecordLinkage)
 library(dplyr)
-
+library(jiebaR)
+cutter = worker()
 options(stringsAsFactors = FALSE)
 
 trim <- function (x){
-  gsub("^[¡@ƒÜ//s]+|[¡@ƒÜ//s]+$", "",gsub("^\\s+|\\s+$", "", x))
+  gsub("^[¡@ƒÜ„P¡Ö¡N£_//s]+|[¡@ƒÜ„P£_¡N//s]+$", "",gsub("^\\s+|\\s+$", "", x))
 } 
 trim_star <- function (x) gsub("^[*]+|[*]+$", "", x)
 ##¥h°£«e«á¼ÐÂI°£¤F¤Þ¸¹
@@ -19,18 +25,19 @@ trim_mix = function(x){
   ##¤~§R­Ó°®²b
   
   x = gsub("¡ã",' ',x)
-  x = gsub("^[0-9¢¯-¢¸a-zA-Z¤@-¤Q¥|¡Ô]{1,3}[:¡B¡A,-¡E ¡D)¡^.¡Ö]",'',x)
-  
+  x = gsub("^[0-9¢¯-¢¸a-zA-Z¤@-¤Q¥|¡Ô]{1,2}[:¡B¡N¡A,¡E ¡D)¡^-¡Ö]",'',x)
+  x = gsub("^[0-9¢¯-¢¸a-zA-Z¤@-¤Q¥|¡Ô]{1,2}[.]",'',x)
+  x = gsub("^[0-9¢¯-¢¸a-zA-Z¤@-¤Q¥|¡Ô]{1,2}-",'',x)
   ##..°ê¦r¤]¥i¥H?¯u¬OÅå©_ªºµo²{
   ##¯u©Ç ¥|¨S¦Û°Ê³B²z±¼
-  x = gsub("^[(¡]][0-9¢¯-¢¸a-zA-Z¤@-¤Q¥|£¸]+[)¡^]",'',x)
+  x = gsub("^[(¡]][0-9¢¯-¢¸a-zA-Z¤@-¤Q¥|£¸]{1,2}[)¡^]",'',x)
   
   x = gsub("^¡·",'',x)
   
   if(grepl('^[(¡]¡Õ]+',x) & grepl('[)¡^¡Ö]+$',x)){
     x = gsub("^[(¡]¡Õ]+|[)¡^¡Ö]+$",'',x)
   }
-  x = gsub("^[0-9¢¯-¢¸]+[-][0-9¢¯-¢¸]+",'',x)
+  x = gsub("^[0-9¢¯-¢¸]{1,2}[-][0-9¢¯-¢¸]{1,2}",'',x)
   
   if(grepl('\\)',x) & grepl('\\(',x) & length(unlist(gregexpr('\\)',x)))==1 & length(unlist(gregexpr('\\(',x)))==1){
     if(unlist(gregexpr('\\)',x)) < unlist(gregexpr('\\(',x))){
@@ -63,7 +70,8 @@ trim_mix = function(x){
 trim_du <- function(x){
   ##¦¸¼Æ¤j©ó1²¾°£?
   #if(length(unlist(gregexpr(pattern ="[0-9¢¯-¢¸a-zA-Z¤@-¤Q¥|¡Ô]+[:¡B¡A,-¡E ¡D)¡^.]",x)))>1 | length(unlist(gregexpr(pattern ="[0-9¢¯-¢¸a-zA-Z]+[.]",x)))>1){
-  if(grepl("[0-9¢¯-¢¸a-zA-Z¤@-¤Q¥|¡Ô]+[:¡B¡A,-¡E ¡D)¡^.¡Ö]",x)){
+  ##if(grepl("[0-9¢¯-¢¸a-zA-Z¤@-¤Q¥|¡Ô]+[:¡B¡A,-¡E ¡D)¡^.¡Ö]",x)){
+  if(grepl("[0-9¢¯-¢¸a-zA-Z¤@-¤Q¥|¡Ô]{1,2}[:¡E¡D¡Ö]",x) | grepl("[0-9¢¯-¢¸a-zA-Z¤@-¤Q¥|¡Ô]{1,2}-",x) | grepl("[0-9¢¯-¢¸a-zA-Z¤@-¤Q¥|¡Ô]{1,2}[.]",x)){
     x = '' 
   }else{
     x = x
@@ -90,6 +98,14 @@ remove_head_num_jiebar <- function(x){
 }
 
 job_d  = read.csv(file.choose())
+
+toMatch= c('¤p®É','¤u§@«Ý¹J','¤ëÁ~','¤u§@®É¬q','¤È¥ð','®ÉÁ~','¤u§@¦a°Ï','¤u§@¦aÂI','®É¬q','Åwªï', '¼i¾ú', '¤u§@¤º®e', '¥»¤½¥q','¥Ø«e', '§A¦n', '¤j®a¦n','¤u§@®É¶¡','¼úª÷','¦a§}','¤W¯Z®É¶¡','·Ç®É¶}©l','­p¶O¤è¦¡')
+job_d = job_d[which(!grepl(paste(toMatch,collapse="|"),job_d[,3])),]
+job_d = job_d[which(!grepl('[0-9¢¯-¢¸]{4}',job_d[,3]),]
+job_d = job_d[which(!grepl('[0-9¢¯-¢¸]ÂI[0-9¢¯-9]',job_d[,3]),]
+job_d = job_d[which(!grepl('[0-9¢¯-¢¸]¡G[0-9¢¯-9]',job_d[,3]),]
+job_d = job_d[which(!grepl('[0-9¢¯-¢¸]:[0-9¢¯-9]',job_d[,3]),]
+job_d = job_d[which(!grepl('^[0-9¢¯-¢¸]{3}',job_d[,3]),]
 
 ##fuzzy matching
 job_d_list = job_d[,1:2]
@@ -126,6 +142,11 @@ if(T){
   job_d[,3] = unlist(lapply(job_d[,3],remove_head_num_jiebar))
   job_d = job_d[which(!grepl('^[(¡]]',job_d[,3])),]
   job_d = job_d[which(!grepl('^ªº',job_d[,3])),]
+  job_d = job_d[which(!grepl('^¤Î',job_d[,3])),]
+  job_d[,3] = gsub('¡@',' ',job_d[,3])
+  job_d[,3] = gsub('[~]+','¡A',job_d[,3])
+  job_d[,3] = gsub('¡¯','¡B',job_d[,3])
+  job_d[which(grepl('­p®ÉªA°È­û',job_d[,3])),3] = '­p®ÉªA°È­û'
 }
 
 
@@ -134,44 +155,49 @@ if(T){
 x = 1
 for(i in 1:nrow(job_d_list)){
   tmp = job_d[which(job_d[,1]==job_d_list[i,1] & job_d[,2]==job_d_list[i,2]),]
-  wordlist <- expand.grid(words = tmp[,3], ref = tmp[,3], stringsAsFactors = FALSE)
-  fuzzy_matching = wordlist %>% mutate(match_score = jarowinkler(words, ref))
-  
-  fuzzy_matching = fuzzy_matching[order(fuzzy_matching$match_score),]
-  fuzzy_matching = fuzzy_matching[which(fuzzy_matching[,3]<0.9999),]
-  #fuzzy_matching[,1]  
-  #fuzzy_matching[,2]
-  #ord_v = unique(trim(unlist(strsplit(paste(fuzzy_matching[,1],'¡C', fuzzy_matching[,2]),'¡C'))))
-  
-  ##±N°ªªº¨º¬°ÀY§ì¥X¨Ó¡A¬D¥X¤À¼Æunique±¼ªº,¥Nªí
-  #unique(rev(fuzzy_matching[seq(1, nrow(fuzzy_matching), 2),1]))
-  ord_v=unique(rev(fuzzy_matching[,1]))
-  
-  temp = c()
-  for(j in 1:length(unique(substr(ord_v,1,5)))){
-    temp = c(temp, ord_v[which(unique(substr(ord_v,1,5))[j]==substr(ord_v,1,5))][1])
-  }
+  if(nrow(tmp)<6){
+    job_d =  job_d[which(!(job_d[,1]==job_d_list[i,1] & job_d[,2]==job_d_list[i,2])),]
+  }else{
+    wordlist <- expand.grid(words = tmp[,3], ref = tmp[,3], stringsAsFactors = FALSE)
+    fuzzy_matching = wordlist %>% mutate(match_score = jarowinkler(words, ref))
     
-  ord_v = temp[1:20]
-  ord_v = sort(ord_v)
-  ord_v = ord_v[!is.na(ord_v)]
-  
-  ord_v_rm = c()
-  for(check_i in 1:length(ord_v)){
-    ##§ä¥X¦³greplªº¦ý¬O¤S®Ú¥»¨­¤£¤@¼Ë?
-    if(length(which(grepl(ord_v[check_i],ord_v,fixed=TRUE)))==1){
-      ord_v_rm = c(ord_v_rm, ord_v[check_i])
+    fuzzy_matching = fuzzy_matching[order(fuzzy_matching$match_score),]
+    fuzzy_matching = fuzzy_matching[which(fuzzy_matching[,3]<0.9999),]
+    #fuzzy_matching[,1]  
+    #fuzzy_matching[,2]
+    #ord_v = unique(trim(unlist(strsplit(paste(fuzzy_matching[,1],'¡C', fuzzy_matching[,2]),'¡C'))))
+    
+    ##±N°ªªº¨º¬°ÀY§ì¥X¨Ó¡A¬D¥X¤À¼Æunique±¼ªº,¥Nªí
+    #unique(rev(fuzzy_matching[seq(1, nrow(fuzzy_matching), 2),1]))
+    ord_v=unique(rev(fuzzy_matching[,1]))
+    
+    temp = c()
+    for(j in 1:length(unique(substr(ord_v,1,5)))){
+      temp = c(temp, ord_v[which(unique(substr(ord_v,1,5))[j]==substr(ord_v,1,5))][1])
     }
+    
+    ord_v = temp[1:20]
+    ord_v = sort(ord_v)
+    ord_v = ord_v[!is.na(ord_v)]
+    
+    ord_v_rm = c()
+    for(check_i in 1:length(ord_v)){
+      ##§ä¥X¦³greplªº¦ý¬O¤S®Ú¥»¨­¤£¤@¼Ë?
+      if(length(which(grepl(ord_v[check_i],ord_v,fixed=TRUE)))==1){
+        ord_v_rm = c(ord_v_rm, ord_v[check_i])
+      }
+    }
+    ord_v = ord_v_rm
+    
+    new_job_df[x:(x+length(ord_v)-1),1:2] = tmp[1:(length(ord_v)),1:2]
+    new_job_df[x:(x+length(ord_v)-1),3] = ord_v
+    
+    cat(paste0('\r',format(round(i/nrow(job_d_list)*100,3),nsmall=3),'%'))
+    x = x + length(ord_v)
   }
-  ord_v = ord_v_rm
-  
-  new_job_df[x:(x+length(ord_v)-1),1:2] = tmp[1:(length(ord_v)),1:2]
-  new_job_df[x:(x+length(ord_v)-1),3] = ord_v
-  
-  cat(paste0('\r',format(round(i/nrow(job_d_list)*100,3),nsmall=3),'%'))
-  x = x + length(ord_v)
+ 
 }
-
+new_job_df = new_job_df[which(!grepl('^[0-9¢¯-¢¸]{3}',new_job_df[,3]),]
 
 ##
 ##³Ì«á´£¨Ñ10µ§?
@@ -185,37 +211,40 @@ for(i in 1:nrow(job_d_list)){
 ##©Î¬O§â¬Û¦üªº§ì¥X¨Ó!?
 ##²Ä¤@ªi¿z¹L¤F
 ##¨º²Ä¤Gªi¬O§_¬Û¦ü¤Ï¦ÓÃÒ©ú³o¨Ç¯à¤O¬O¥D­nªº?
-new_job_df[,3] = trim(new_job_df[,3])
-new_job_df[,3] = trim_star(new_job_df[,3])
-new_job_df[,3] = trim_punc(new_job_df[,3])
-new_job_df[,3] = trim_mix(new_job_df[,3])
-#for(i in 1:nrow(new_job_df)){
-#  new_job_df[i,3] = trim_du(new_job_df[i,3])
-#}
-new_job_df[,3] = unlist(lapply(new_job_df[,3],trim_du))
+if(F){
+  new_job_df[,3] = trim(new_job_df[,3])
+  new_job_df[,3] = trim_star(new_job_df[,3])
+  new_job_df[,3] = trim_punc(new_job_df[,3])
+  new_job_df[,3] = trim_mix(new_job_df[,3])
+  #for(i in 1:nrow(new_job_df)){
+  #  new_job_df[i,3] = trim_du(new_job_df[i,3])
+  #}
+  new_job_df[,3] = unlist(lapply(new_job_df[,3],trim_du))
+  
+  new_job_df[,3] = trim(new_job_df[,3])
+  new_job_df[,3] = trim_star(new_job_df[,3])
+  new_job_df[,3] = trim_punc(new_job_df[,3])
+  new_job_df[,3] = trim_mix(new_job_df[,3])
+  new_job_df[,3] = unlist(lapply(new_job_df[,3],trim_du))
+  
+  ##ªþ¥[¦A¥Î³o­Ó
+  #new_job_df = new_job_df[which(!grepl('.com',new_job_df[,3],fixed=T) & !grepl('¹q¸Ü',new_job_df[,3]) & !grepl('¨Ó¹q',new_job_df[,3]) & !grepl('font',new_job_df[,3]) & !grepl('¹q¸Ü',new_job_df[,3]) & !grepl('e-mail',new_job_df[,3]) & !grepl('¡i',new_job_df[,3]) & !grepl('¡¹',new_job_df[,3]) & !grepl('¡¸',new_job_df[,3]) & !grepl('¡»',new_job_df[,3]) & !grepl('¡½',new_job_df[,3]) & !grepl('¡j',new_job_df[,3])),]
+  new_job_df = new_job_df[which(!grepl('.com',new_job_df[,3],fixed=T) & !grepl('font',new_job_df[,3]) & !grepl('¡i',new_job_df[,3]) & !grepl('¡¹',new_job_df[,3]) & !grepl('¡¸',new_job_df[,3]) & !grepl('¡»',new_job_df[,3]) & !grepl('¡½',new_job_df[,3]) & !grepl('¡j',new_job_df[,3])),]
+  
+  new_job_df = new_job_df[which(new_job_df[,3]!=''),]
+  
+  new_job_df = new_job_df[which(!grepl('^[(¡]¡Õ?¡H]+',new_job_df[,3])),]
+  new_job_df = new_job_df[which(!grepl('[?¡H]+',new_job_df[,3])),]
+  new_job_df = new_job_df[which(nchar(new_job_df[,3]) > 4),]
+  
+  new_job_df[,3] = unlist(lapply(new_job_df[,3],remove_head_num_jiebar))
+  new_job_df = new_job_df[which(!grepl('^[(¡]]',new_job_df[,3])),]
+  new_job_df = new_job_df[which(!grepl('^ªº',new_job_df[,3])),]
+}
 
-new_job_df[,3] = trim(new_job_df[,3])
-new_job_df[,3] = trim_star(new_job_df[,3])
-new_job_df[,3] = trim_punc(new_job_df[,3])
-new_job_df[,3] = trim_mix(new_job_df[,3])
-new_job_df[,3] = unlist(lapply(new_job_df[,3],trim_du))
-
-##ªþ¥[¦A¥Î³o­Ó
-#new_job_df = new_job_df[which(!grepl('.com',new_job_df[,3],fixed=T) & !grepl('¹q¸Ü',new_job_df[,3]) & !grepl('¨Ó¹q',new_job_df[,3]) & !grepl('font',new_job_df[,3]) & !grepl('¹q¸Ü',new_job_df[,3]) & !grepl('e-mail',new_job_df[,3]) & !grepl('¡i',new_job_df[,3]) & !grepl('¡¹',new_job_df[,3]) & !grepl('¡¸',new_job_df[,3]) & !grepl('¡»',new_job_df[,3]) & !grepl('¡½',new_job_df[,3]) & !grepl('¡j',new_job_df[,3])),]
-new_job_df = new_job_df[which(!grepl('.com',new_job_df[,3],fixed=T) & !grepl('font',new_job_df[,3]) & !grepl('¡i',new_job_df[,3]) & !grepl('¡¹',new_job_df[,3]) & !grepl('¡¸',new_job_df[,3]) & !grepl('¡»',new_job_df[,3]) & !grepl('¡½',new_job_df[,3]) & !grepl('¡j',new_job_df[,3])),]
-
-new_job_df = new_job_df[which(new_job_df[,3]!=''),]
-
-new_job_df = new_job_df[which(!grepl('^[(¡]¡Õ?¡H]+',new_job_df[,3])),]
-new_job_df = new_job_df[which(!grepl('[?¡H]+',new_job_df[,3])),]
-new_job_df = new_job_df[which(nchar(new_job_df[,3]) > 4),]
-
-new_job_df[,3] = unlist(lapply(new_job_df[,3],remove_head_num_jiebar))
-new_job_df = new_job_df[which(!grepl('^[(¡]]',new_job_df[,3])),]
-new_job_df = new_job_df[which(!grepl('^ªº',new_job_df[,3])),]
 
 
 
-#write.csv(new_job_df,'D:\\abc\\wjhong\\projects\\¼t°Óª©Â¾°È¤j»`¯µ\\jobwiki\\¤À¦æ·~§Ooutput\\[¿z¿ï«á2]¾ãÅé¤u§@»¡©úfuzzymatch«á¾ã²zµ²ªG.csv',row.names=F)
+#write.csv(new_job_df,'D:\\abc\\wjhong\\projects\\¼t°Óª©Â¾°È¤j»`¯µ\\jobwiki\\¤À¦æ·~§Ooutput\\[edit¿z¿ï«á4]¾ãÅé¤u§@»¡©úfuzzymatch«á¾ã²zµ²ªG.csv',row.names=F)
 
 #write.csv(new_job_df,'D:\\abc\\wjhong\\projects\\¼t°Óª©Â¾°È¤j»`¯µ\\jobwiki\\¤À¦æ·~§Ooutput\\[¿z¿ï«á2]¾ãÅéªþ¥[±ø¥ófuzzymatch«á¾ã²zµ²ªG.csv',row.names=F)
