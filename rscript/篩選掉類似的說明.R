@@ -99,18 +99,42 @@ remove_head_num_jiebar <- function(x){
 
 job_d  = read.csv(file.choose())
 
-toMatch= c('店',"熱情招募","日薪",  "我們公司",	"月休",	"待遇佳",	"底薪",	"營業時間",	"來電",	"培訓期間薪資",	"面試時間",	"有限公司",	"津貼",	"誠徵",'小時','工作待遇','月薪','工作時段','午休','時薪','工作地區','工作地點','時段','歡迎', '履歷', '工作內容', '本公司','目前', '你好', '大家好','工作時間','獎金','地址','上班時間','準時開始','計費方式')
-job_d = job_d[which(!grepl(paste(toMatch,collapse="|"),job_d[,3])),]
-job_d = job_d[which(!grepl('[0-9０-９]{4}',job_d[,3]),]
-job_d = job_d[which(!grepl('[0-9０-９]點[0-9０-9]',job_d[,3]),]
-job_d = job_d[which(!grepl('[0-9０-９]：[0-9０-9]',job_d[,3]),]
-job_d = job_d[which(!grepl('[0-9０-９]:[0-9０-9]',job_d[,3]),]
-job_d = job_d[which(!grepl('^[0-9０-９]{3}',job_d[,3]),]
+job_d = job_d[which(!grepl('[0-9]+$',job_d[,3])),]
+toMatch= c('口試',"簡章","台中",  "台北",	"台東",	"台南",	"宜蘭",	"東沙",	"花蓮",	"金門",	"南投",	"南沙",	"屏東",	"苗栗",	"桃園",	"烏坵",	"馬祖",	"高雄",	"基隆",	"雲林",	"新竹",	"嘉義",	"彰化",	"澎湖",	"臺中",	"臺北",	"臺東",	"臺南",'捷運','嘉裕','先生','小姐','？','?','$','短期','報名時間','www','@','com','面試地點','意者','速洽','待優','上班日','連絡電話','聯絡方式','均薪','保底','創立於','1111','asp','店',"熱情招募","日薪",  "我們公司",	"月休",	"待遇佳",	"底薪",	"營業時間",	"來電",	"培訓期間薪資",	"面試時間",	"有限公司",	"津貼",	"誠徵",'小時','工作待遇','月薪','工作時段','午休','時薪','工作地區','工作地點','時段','歡迎', '履歷', '工作內容', '本公司','目前', '你好', '大家好','工作時間','獎金','地址','上班時間','準時開始','計費方式')
+for(i in 1:length(toMatch)){
+  job_d = job_d[which(!grepl(toMatch[i],job_d[,3],fixed=T)),]
+}
 
-job_d = job_d[which(!grepl('[0-9０-９]{5,}',job_d[,3]) & !grepl('[a-zA-Z]',job_d[,3])),]
-job_d = job_d[which(!grepl('[0-9０-９]{5,}',job_d[,3]) & grepl('元',job_d[,3])),]
-job_d = job_d[which(!grepl('[0-9０-９]{5,}',job_d[,3]) & grepl('薪',job_d[,3])),]
+##job_d = job_d[which(!grepl('[0-9０-９]{4}',job_d[,3])),]
+job_d = job_d[which(!grepl('[0-9]點[0-9]',job_d[,3])),]
+job_d = job_d[which(!grepl('[０-９]點[０-９]',job_d[,3])),]
+job_d = job_d[which(!grepl('[0-9０-９]：[0-9０-９]',job_d[,3])),]
+job_d = job_d[which(!grepl('[０-９]：[０-９]',job_d[,3])),]
+job_d = job_d[which(!grepl('[0-9０-９]:[0-9０-９]',job_d[,3])),]
+job_d = job_d[which(!grepl('^[0-9０-９]{3}',job_d[,3])),]
+job_d = job_d[which(!grepl('[0-9０-９]{2}年',job_d[,3])),]
 
+job_d = job_d[which(!(grepl('[0-9０-９]{5,}',job_d[,3]) & grepl('[a-zA-Z]',job_d[,3]))),]
+
+toMatch = c("面試", "班",	"聯絡",	"金",	"日",	"休",	"手機",	"週",	"起",	"~",	"-",	"line",	"電",'元','薪')
+for(i in 1:length(toMatch)){
+  if(grepl('[a-z]',tolower(toMatch[i]))){
+    job_d = job_d[which(!(grepl('[0-9０-９]{3,}',job_d[,3]) & !grepl('0800',job_d[,3]) & grepl(tolower(toMatch[i]),tolower(job_d[,3]),fixed=T))),]
+  }else{
+    job_d = job_d[which(!(grepl('[0-9０-９]{3,}',job_d[,3]) & !grepl('0800',job_d[,3]) & grepl(toMatch[i],job_d[,3],fixed=T))),]
+  }
+}
+job_d = job_d[which(!(grepl('[0-9０-９]{3,}',job_d[,3]) & !grepl('0800',job_d[,3]) & !grepl('[a-zA-Z]',job_d[,3]))),]
+job_d = job_d[which(!(grepl('[0-9０-９]{3,}',job_d[,3]) & grepl('班',job_d[,3]))),]
+
+#tmp = job_d[which(grepl('[(（]',job_d[,3]) & !grepl('[)）]',job_d[,3])),3]
+job_d[which(grepl('[(（]',job_d[,3]) & !grepl('[)）]',job_d[,3])),3] = unlist(lapply(job_d[which(grepl('[(（]',job_d[,3]) & !grepl('[)）]',job_d[,3])),3],function(x){
+  x = trim(substr(x,1,unlist(gregexpr(pattern ='[(（]',x))[length(unlist(gregexpr(pattern ='[(（]',x)))]-1))
+  if(nchar(x)<=4){
+    x=''
+  }
+  return(x)
+}))
 
 ##fuzzy matching
 job_d_list = job_d[,1:2]
