@@ -99,13 +99,18 @@ remove_head_num_jiebar <- function(x){
 
 job_d  = read.csv(file.choose())
 
-toMatch= c('小時','工作待遇','月薪','工作時段','午休','時薪','工作地區','工作地點','時段','歡迎', '履歷', '工作內容', '本公司','目前', '你好', '大家好','工作時間','獎金','地址','上班時間','準時開始','計費方式')
+toMatch= c('店',"熱情招募","日薪",  "我們公司",	"月休",	"待遇佳",	"底薪",	"營業時間",	"來電",	"培訓期間薪資",	"面試時間",	"有限公司",	"津貼",	"誠徵",'小時','工作待遇','月薪','工作時段','午休','時薪','工作地區','工作地點','時段','歡迎', '履歷', '工作內容', '本公司','目前', '你好', '大家好','工作時間','獎金','地址','上班時間','準時開始','計費方式')
 job_d = job_d[which(!grepl(paste(toMatch,collapse="|"),job_d[,3])),]
 job_d = job_d[which(!grepl('[0-9０-９]{4}',job_d[,3]),]
 job_d = job_d[which(!grepl('[0-9０-９]點[0-9０-9]',job_d[,3]),]
 job_d = job_d[which(!grepl('[0-9０-９]：[0-9０-9]',job_d[,3]),]
 job_d = job_d[which(!grepl('[0-9０-９]:[0-9０-9]',job_d[,3]),]
 job_d = job_d[which(!grepl('^[0-9０-９]{3}',job_d[,3]),]
+
+job_d = job_d[which(!grepl('[0-9０-９]{5,}',job_d[,3]) & !grepl('[a-zA-Z]',job_d[,3])),]
+job_d = job_d[which(!grepl('[0-9０-９]{5,}',job_d[,3]) & grepl('元',job_d[,3])),]
+job_d = job_d[which(!grepl('[0-9０-９]{5,}',job_d[,3]) & grepl('薪',job_d[,3])),]
+
 
 ##fuzzy matching
 job_d_list = job_d[,1:2]
@@ -197,8 +202,9 @@ for(i in 1:nrow(job_d_list)){
   }
  
 }
-new_job_df = new_job_df[which(!grepl('^[0-9０-９]{3}',new_job_df[,3]),]
-
+##年度
+new_job_df = new_job_df[which(!grepl('^[0-9０-９]{3}',new_job_df[,3])),]
+new_job_df[which(grepl('年度',new_job_df[,3]) & grepl('[0-9]',new_job_df[,3])),]
 ##
 ##最後提供10筆?
 ##該random?
