@@ -116,7 +116,7 @@ job_d = job_d[which(!grepl('[0-9０-９]{2}年',job_d[,3])),]
 
 job_d = job_d[which(!(grepl('[0-9０-９]{5,}',job_d[,3]) & grepl('[a-zA-Z]',job_d[,3]))),]
 
-toMatch = c("面試", "班",	"聯絡",	"金",	"日",	"休",	"手機",	"週",	"起",	"~",	"-",	"line",	"電",'元','薪')
+toMatch = c('玉山','信義','吉源',"面試", "班",	"聯絡",	"金",	"日",	"休",	"手機",	"週",	"起",	"~",	"-",	"line",	"電",'元','薪')
 for(i in 1:length(toMatch)){
   if(grepl('[a-z]',tolower(toMatch[i]))){
     job_d = job_d[which(!(grepl('[0-9０-９]{3,}',job_d[,3]) & !grepl('0800',job_d[,3]) & grepl(tolower(toMatch[i]),tolower(job_d[,3]),fixed=T))),]
