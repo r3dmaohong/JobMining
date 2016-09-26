@@ -1,57 +1,84 @@
 ##source('D:\\abc\\wjhong\\projects\\廠商版職務大蒐秘\\jobwiki\\rscript\\廠商版職務大辭典.R', print.eval  = TRUE)
 
 ##廠商版職務大辭典
-rm(list = ls()) #去除工作空間中所有物件
+rm(list = ls()) #Remove all objects in the environment
+gc() ##Free up the memory 
 
 library(XML)
 library(RCurl)
-options( java.parameters = "-Xmx8g" )
 library(tm)
-options( java.parameters = "-Xmx8g" )
+options(java.parameters = "-Xmx8g" )
 library(tmcn)
-options( java.parameters = "-Xmx8g" )
 library(Rwordseg)
-#library(wordcloud)
-options( java.parameters = "-Xmx8g" )
 library(SnowballC)
-options( java.parameters = "-Xmx8g" )
 library(cluster)   
 library(ggplot2) 
 library(data.table) 
+library(doSNOW)
+library(foreach)
+library(dplyr)
+library(stringr)
 
-gc() #記憶體釋放 
 
-path<-"D:\\abc\\wjhong\\projects\\廠商版職務大蒐秘\\jobwiki"
-#讀取多個csv至df
-data_path<-paste0(path,"\\撈取資料")
-setwd(data_path)
- 
-files = list.files(pattern="*.csv")
-print('讀取資料中')
+setwd(".\\廠商版職務大蒐秘\\jobwiki")
+
+#Read mutiple csv files and convert them to one data frame
+files <- list.files("撈取資料", pattern="*.csv", full.names = TRUE)
+cat("\n讀取資料中")
 temp <- lapply(files, fread, sep=",")
 people <- rbindlist(temp)
-print('讀取資料完畢')
+cat("\n讀取資料完畢")
 ##text mining
 #path<-"D:\\abc\\wjhong\\projects\\廠商版職務大蒐秘\\jobwiki"
-setwd(path)
-start.time<-Sys.time()
 
-##去除職搜推薦內容
-jobwiki_old_discription = read.csv('jobwiki_discription.csv',stringsAsFactors=F)
-jobwiki_old_discription = unlist(strsplit(jobwiki_old_discription$工作內容  , "[0-9][.]"))
-jobwiki_old_discription = unlist(strsplit(jobwiki_old_discription  , "[（][0-9][）]"))
-jobwiki_old_discription = unlist(strsplit(jobwiki_old_discription  , "[(][0-9][)]"))
-jobwiki_old_discription <- gsub(' ','',jobwiki_old_discription)
-jobwiki_old_discription <- gsub('<br>','',jobwiki_old_discription)
+#Record time
+start.time <- Sys.time()
+
+##Remove original jobwiki's content
+#Code in this paragraph may be WEIRD.., but it's writen long time ago, just don't touch it currently...
+jobwiki_old_discription <- read.csv("jobwiki_discription.csv", stringsAsFactors=F)
+jobwiki_old_discription <- unlist(strsplit(jobwiki_old_discription$工作內容  , "[0-9][.]"))
+jobwiki_old_discription <- unlist(strsplit(jobwiki_old_discription  , "[（][0-9][）]"))
+jobwiki_old_discription <- unlist(strsplit(jobwiki_old_discription  , "[(][0-9][)]"))
+jobwiki_old_discription <- gsub(" ", "", jobwiki_old_discription)
+jobwiki_old_discription <- gsub("<br>", "",jobwiki_old_discription)
 jobwiki_old_discription <- sort(jobwiki_old_discription)
 jobwiki_old_discription <- gsub("^[.]", "", jobwiki_old_discription)
 jobwiki_old_discription <- gsub("A.工作內容", "", jobwiki_old_discription)
 jobwiki_old_discription <- gsub("A.工作內容:", "", jobwiki_old_discription)
-jobwiki_old_discription <- jobwiki_old_discription[-which(jobwiki_old_discription=='')]
+jobwiki_old_discription <- jobwiki_old_discription[-which(jobwiki_old_discription=="")]
+
+#people$工作說明 <- sapply(jobwiki_old_discription, function(x){
+#  gsub(x, "", people$工作說明)
+#})
+#number of CPU cores
+#cl <- makeCluster(2)
+#registerDoSNOW(cl)
+
+##Remove original jobwiki's content
+#foreach is much slower...!?
 for(i in 1:length(jobwiki_old_discription)){
-  people$工作說明 = gsub(jobwiki_old_discription[i],'',people$工作說明)
-  print(paste0('剔除勾選之工作說明',i/length(jobwiki_old_discription) * 100,'%'))
-}
+  ##str_replace_all is faster than gsub.
+  #people$工作說明 <- gsub(jobwiki_old_discription[i], "", people$工作說明)
+  #people$工作說明 <- str_replace_all(people$工作說明, jobwiki_old_discription[i], "")
+  people$工作說明 <- str_replace_all(people$工作說明, jobwiki_old_discription[i] %>% gsub("（", "\\（", fixed=TRUE), "")
+  
+  cat("\r Job discription processing... : ", (i/length(jobwiki_old_discription)*100) %>% round(., 3) %>% format(nsmall=3), "%", rep(" ", 50))
+  gc()
+} 
+
+###save.image("WordDiscriptionProcessed")
+
+#####################
+########part2########
+#####################
+
+#讀取part1變數轉換結果
+
+gc() #記憶體釋放
+getwd() #可以查看當前R的工作目錄
+
+##load("D:\\Desktop\\薪資預測模型\\part1變數轉換")
 
 
 job_type <- as.data.frame(table(people$職務小類),stringsAsFactors=F)
