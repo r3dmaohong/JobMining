@@ -22,6 +22,12 @@ library(stringr)
 
 setwd(".\\廠商版職務大蒐秘\\jobwiki")
 
+##Part1 or Part2?
+
+#######################
+######## Part1 ########
+#######################
+
 #Read mutiple csv files and convert them to one data frame
 files <- list.files("撈取資料", pattern="*.csv", full.names = TRUE)
 cat("\n讀取資料中")
@@ -65,69 +71,53 @@ for(i in 1:length(jobwiki_old_discription)){
   
   cat("\r Job discription processing... : ", (i/length(jobwiki_old_discription)*100) %>% round(., 3) %>% format(nsmall=3), "%", rep(" ", 50))
   gc()
-} 
+}
 
-###save.image("WordDiscriptionProcessed")
+job_type <- as.data.frame(table(people$職務小類), stringsAsFactors=F)
+job_type <- job_type[order(rank(-job_type$Freq)), ]
 
-#####################
-########part2########
-#####################
-
-#讀取part1變數轉換結果
-
-gc() #記憶體釋放
-getwd() #可以查看當前R的工作目錄
-
-##load("D:\\Desktop\\薪資預測模型\\part1變數轉換")
-
-
-job_type <- as.data.frame(table(people$職務小類),stringsAsFactors=F)
-job_type <- job_type[order(rank(-job_type$Freq)),]
-
-industry_list <- read.csv('產業中類名稱.csv',stringsAsFactors=F)
-industry_list <- industry_list[order(industry_list[,1]),]
+industry_list <- read.csv("產業中類名稱.csv", stringsAsFactors=F)
+industry_list <- industry_list[order(industry_list[,1]), ]
 industry_list <- c(industry_list)
-
-error_industry <- as.data.frame(table(people$行業別),stringsAsFactors=F)
-
+  
+error_industry <- as.data.frame(table(people$行業別), stringsAsFactors=F)
+  
 ##兩個階段處理比單一for直接處理較快
+##In error_industry, names of industry are wrong...
 for(i in 1:nrow(error_industry)){
   for(j in 1:length(industry_list)){
     if(grepl(industry_list[j],error_industry$Var1[i])){
       error_industry$Var2[i] = industry_list[j]
-      print(paste0(error_industry$Var1[i],"==>",industry_list[j]))
+      print(paste0(error_industry$Var1[i]," ==> ",industry_list[j]))
     }
   }
-  
-  print(paste0('行業別轉換階段一 第',i,'筆，',round(i/nrow(error_industry)*100,3),' %'))
+  cat("\rIndustry correction - First stage: ", i, " => ", round(i/nrow(error_industry)*100,3) %>% format(., nsmall=3), " %", rep(" ", 50))
 }
-
-gc() #記憶體釋放 
+  
+##Free up the memory 
+gc()
 
 people$產業中類 <- people$行業別
 
+start.time <- Sys.time()
 for(i in 1:nrow(error_industry)){
-  people$產業中類[which(people$產業中類==error_industry$Var1[i])]=error_industry$Var2[i]
-  print(paste0('行業別轉換階段二 第',i,'筆，',round(i/nrow(error_industry)*100,3),' %'))
+  people$產業中類[which(people$產業中類==error_industry$Var1[i])] <- error_industry$Var2[i]
+  cat("\rIndustry correction - Second stage: ", i, " => ", round(i/nrow(error_industry)*100,3) %>% format(., nsmall=3), " %", rep(" ", 50))
 }
-gc() #記憶體釋放 
+Sys.time() - start.time
 
-##避免斜線輸出檔案錯誤
-people$職務小類 <- gsub('/','／',people$職務小類)
-people$行業與職務 = paste0(people$職務小類,' - ',people$產業中類)
+gc() 
 
-print('行業別處理完成')
+people$職務小類   <- str_replace_all(people$職務小類, "/", "／")
+people$行業與職務 <- paste0(people$職務小類, " - ", people$產業中類)
+
+print("Industry correction process complete")
 
 ##
-##修正termdocumentmatrix問題用
-source(paste0(path,'\\rscript\\function\\error_solve_termdocumentmatrix.R'), print.eval  = TRUE)
-##分析相關function
-source(paste0(path,'\\rscript\\function\\jobwiki_text_mining.R'), print.eval  = TRUE)
-
-
-##從這設定儲存位置好了
-output_path<-paste0(path,"\\分行業別output")
-setwd(output_path)
+##Solving termdocumentmatrix error
+source("rscript\\function\\error_solve_termdocumentmatrix.R", print.eval  = TRUE)
+##main analysis function
+source("rscript\\function\\jobwiki_text_mining.R", print.eval  = TRUE)
 
 people$syear = NULL
 people$smonth = NULL
@@ -138,6 +128,14 @@ people$職務中類 = NULL
 people$工作地點 = NULL
 people$學歷限制 = NULL
 people$科系限制 = NULL
+
+###save.image("DataProcessed")
+
+#######################
+######## Part2 ########
+#######################
+
+##load("DataProcessed")
 
 ##取出要處理的資料
 job <- data_processing_job()
