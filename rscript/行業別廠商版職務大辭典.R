@@ -116,8 +116,6 @@ print("Industry correction process complete")
 ##
 ##Solving termdocumentmatrix error
 source("rscript\\function\\error_solve_termdocumentmatrix.R", print.eval  = TRUE)
-##main analysis function
-source("rscript\\function\\jobwiki_text_mining.R", print.eval  = TRUE)
 
 people$syear = NULL
 people$smonth = NULL
@@ -137,17 +135,22 @@ people$科系限制 = NULL
 
 ##load("DataProcessed")
 
+##main analysis function
+source("rscript\\function\\jobwiki_text_mining.R", print.eval  = TRUE)
+
 ##取出要處理的資料
-job <- data_processing_job()
+job      <- jobDataExtraction(total=F)
+job_only <- jobDataExtraction(total=T)
 
 ##工作說明
-job_discription()
+discriptionMining("工作說明", total=F)
+discriptionMining("工作說明", total=T)
 
 ##附加條件
 other_needs()
 
 ##取出要處理的資料
-job_only <- data_processing_job_only()
+#job_only <- data_processing_job_only()
 
 ##整體工作說明
 all_job_discription()
