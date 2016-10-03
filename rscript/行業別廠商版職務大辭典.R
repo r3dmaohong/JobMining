@@ -1,6 +1,6 @@
 ##source('D:\\abc\\wjhong\\projects\\廠商版職務大蒐秘\\jobwiki\\rscript\\廠商版職務大辭典.R', print.eval  = TRUE)
 
-##廠商版職務大辭典
+##Jobwiki of companys
 rm(list = ls()) #Remove all objects in the environment
 gc() ##Free up the memory 
 
@@ -81,8 +81,7 @@ industry_list <- industry_list[order(industry_list[,1]), ]
 industry_list <- c(industry_list)
   
 error_industry <- as.data.frame(table(people$行業別), stringsAsFactors=F)
-  
-##兩個階段處理比單一for直接處理較快
+
 ##In error_industry, names of industry are wrong...
 for(i in 1:nrow(error_industry)){
   for(j in 1:length(industry_list)){
@@ -135,28 +134,26 @@ people$科系限制 = NULL
 
 ##load("DataProcessed")
 
-##main analysis function
+##Main functions
 source("rscript\\function\\jobwiki_text_mining.R", print.eval  = TRUE)
 
-##取出要處理的資料
-job      <- jobDataExtraction(total=F)
-job_only <- jobDataExtraction(total=T)
+##Data Extraction
+job      <- jobDataExtraction(people, total=F)
+job_only <- jobDataExtraction(people, total=T)
 
-##工作說明
-discriptionMining("工作說明", total=F)
-discriptionMining("工作說明", total=T)
+##Job with industry
+discriptionMining(people, job, "工作說明", total=F)
+##Job with no industry
+discriptionMining(people, job_only, "工作說明", total=T)
 
-##附加條件
-other_needs()
+##Other needs..
 
-##取出要處理的資料
-#job_only <- data_processing_job_only()
 
-##整體工作說明
-all_job_discription()
+##Computer skills and certification
+specialtyMining(people, job_only, "電腦專長")
+specialtyMining(people, job_only, "專業憑證")
 
-##整體附加條件
-all_other_needs()
+
 
 #系統時間
 end.time <- Sys.time()
