@@ -356,7 +356,7 @@ specialtyMAI <- function(type){
       }
       specialty_df <- read.csv(paste0(".\\分行業別output\\", type, "\\", job, "高頻", type, ".csv"), stringsAsFactors=F)
      
-      print(paste0(job, ",", paste(intersect(arule_specialty_df$項目名稱, as.character(specialty_df[1,])), collapse = ","), "\n")) 
+      cat(paste0(job, ",", paste(intersect(arule_specialty_df$項目名稱, as.character(specialty_df[1,])), collapse = ","), "\n")) 
     }, error=function(e){
       #cat("ERROR :",conditionMessage(e), "\n")
     })
