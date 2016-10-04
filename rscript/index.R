@@ -1,4 +1,4 @@
-##source('D:\\abc\\wjhong\\projects\\¼t°Óª©Â¾°È¤j»`¯µ\\jobwiki\\rscript\\¼t°Óª©Â¾°È¤jÃã¨å.R', print.eval  = TRUE)
+##source('D:\\abc\\wjhong\\projects\\å» å•†ç‰ˆè·å‹™å¤§è’ç§˜\\jobwiki\\rscript\\å» å•†ç‰ˆè·å‹™å¤§è¾­å…¸.R', print.eval  = TRUE)
 
 ##Jobwiki of companys
 rm(list = ls()) #Remove all objects in the environment
@@ -20,7 +20,7 @@ library(dplyr)
 library(stringr)
 
 
-setwd(".\\¼t°Óª©Â¾°È¤j»`¯µ\\jobwiki")
+setwd(".\\å» å•†ç‰ˆè·å‹™å¤§è’ç§˜\\jobwiki")
 
 ##Part1 or Part2?
 
@@ -29,13 +29,13 @@ setwd(".\\¼t°Óª©Â¾°È¤j»`¯µ\\jobwiki")
 #######################
 
 #Read mutiple csv files and convert them to one data frame
-files <- list.files("¼´¨ú¸ê®Æ", pattern="*.csv", full.names = TRUE)
-cat("\nÅª¨ú¸ê®Æ¤¤")
+files <- list.files("æ’ˆå–è³‡æ–™", pattern="*.csv", full.names = TRUE)
+cat("\nè®€å–è³‡æ–™ä¸­")
 temp <- lapply(files, fread, sep=",")
 people <- rbindlist(temp)
-cat("\nÅª¨ú¸ê®Æ§¹²¦")
+cat("\nè®€å–è³‡æ–™å®Œç•¢")
 ##text mining
-#path<-"D:\\abc\\wjhong\\projects\\¼t°Óª©Â¾°È¤j»`¯µ\\jobwiki"
+#path<-"D:\\abc\\wjhong\\projects\\å» å•†ç‰ˆè·å‹™å¤§è’ç§˜\\jobwiki"
 
 #Record time
 start.time <- Sys.time()
@@ -43,19 +43,19 @@ start.time <- Sys.time()
 ##Remove original jobwiki's content
 #Code in this paragraph may be WEIRD.., but it's writen long time ago, just don't touch it currently...
 jobwiki_old_discription <- read.csv("jobwiki_discription.csv", stringsAsFactors=F)
-jobwiki_old_discription <- unlist(strsplit(jobwiki_old_discription$¤u§@¤º®e  , "[0-9][.]"))
-jobwiki_old_discription <- unlist(strsplit(jobwiki_old_discription  , "[¡]][0-9][¡^]"))
+jobwiki_old_discription <- unlist(strsplit(jobwiki_old_discription$å·¥ä½œå…§å®¹  , "[0-9][.]"))
+jobwiki_old_discription <- unlist(strsplit(jobwiki_old_discription  , "[ï¼ˆ][0-9][ï¼‰]"))
 jobwiki_old_discription <- unlist(strsplit(jobwiki_old_discription  , "[(][0-9][)]"))
 jobwiki_old_discription <- gsub(" ", "", jobwiki_old_discription)
 jobwiki_old_discription <- gsub("<br>", "",jobwiki_old_discription)
 jobwiki_old_discription <- sort(jobwiki_old_discription)
 jobwiki_old_discription <- gsub("^[.]", "", jobwiki_old_discription)
-jobwiki_old_discription <- gsub("A.¤u§@¤º®e", "", jobwiki_old_discription)
-jobwiki_old_discription <- gsub("A.¤u§@¤º®e:", "", jobwiki_old_discription)
+jobwiki_old_discription <- gsub("A.å·¥ä½œå…§å®¹", "", jobwiki_old_discription)
+jobwiki_old_discription <- gsub("A.å·¥ä½œå…§å®¹:", "", jobwiki_old_discription)
 jobwiki_old_discription <- jobwiki_old_discription[-which(jobwiki_old_discription=="")]
 
-#people$¤u§@»¡©ú <- sapply(jobwiki_old_discription, function(x){
-#  gsub(x, "", people$¤u§@»¡©ú)
+#people$å·¥ä½œèªªæ˜ <- sapply(jobwiki_old_discription, function(x){
+#  gsub(x, "", people$å·¥ä½œèªªæ˜)
 #})
 #number of CPU cores
 #cl <- makeCluster(2)
@@ -65,22 +65,22 @@ jobwiki_old_discription <- jobwiki_old_discription[-which(jobwiki_old_discriptio
 #foreach is much slower...!?
 for(i in 1:length(jobwiki_old_discription)){
   ##str_replace_all is faster than gsub.
-  #people$¤u§@»¡©ú <- gsub(jobwiki_old_discription[i], "", people$¤u§@»¡©ú)
-  #people$¤u§@»¡©ú <- str_replace_all(people$¤u§@»¡©ú, jobwiki_old_discription[i], "")
-  people$¤u§@»¡©ú <- str_replace_all(people$¤u§@»¡©ú, jobwiki_old_discription[i] %>% gsub("¡]", "\\¡]", fixed=TRUE), "")
+  #people$å·¥ä½œèªªæ˜ <- gsub(jobwiki_old_discription[i], "", people$å·¥ä½œèªªæ˜)
+  #people$å·¥ä½œèªªæ˜ <- str_replace_all(people$å·¥ä½œèªªæ˜, jobwiki_old_discription[i], "")
+  people$å·¥ä½œèªªæ˜ <- str_replace_all(people$å·¥ä½œèªªæ˜, jobwiki_old_discription[i] %>% gsub("ï¼ˆ", "\\ï¼ˆ", fixed=TRUE), "")
   
   cat("\r Job discription processing... : ", (i/length(jobwiki_old_discription)*100) %>% round(., 3) %>% format(nsmall=3), "%", rep(" ", 50))
   gc()
 }
 
-job_type <- as.data.frame(table(people$Â¾°È¤pÃş), stringsAsFactors=F)
+job_type <- as.data.frame(table(people$è·å‹™å°é¡), stringsAsFactors=F)
 job_type <- job_type[order(rank(-job_type$Freq)), ]
 
-industry_list <- read.csv("²£·~¤¤Ãş¦WºÙ.csv", stringsAsFactors=F)
+industry_list <- read.csv("ç”¢æ¥­ä¸­é¡åç¨±.csv", stringsAsFactors=F)
 industry_list <- industry_list[order(industry_list[,1]), ]
 industry_list <- c(industry_list)
   
-error_industry <- as.data.frame(table(people$¦æ·~§O), stringsAsFactors=F)
+error_industry <- as.data.frame(table(people$è¡Œæ¥­åˆ¥), stringsAsFactors=F)
 
 ##In error_industry, names of industry are wrong...
 for(i in 1:nrow(error_industry)){
@@ -96,19 +96,19 @@ for(i in 1:nrow(error_industry)){
 ##Free up the memory 
 gc()
 
-people$²£·~¤¤Ãş <- people$¦æ·~§O
+people$ç”¢æ¥­ä¸­é¡ <- people$è¡Œæ¥­åˆ¥
 
 start.time <- Sys.time()
 for(i in 1:nrow(error_industry)){
-  people$²£·~¤¤Ãş[which(people$²£·~¤¤Ãş==error_industry$Var1[i])] <- error_industry$Var2[i]
+  people$ç”¢æ¥­ä¸­é¡[which(people$ç”¢æ¥­ä¸­é¡==error_industry$Var1[i])] <- error_industry$Var2[i]
   cat("\rIndustry correction - Second stage: ", i, " => ", round(i/nrow(error_industry)*100,3) %>% format(., nsmall=3), " %", rep(" ", 50))
 }
 Sys.time() - start.time
 
 gc() 
 
-people$Â¾°È¤pÃş   <- str_replace_all(people$Â¾°È¤pÃş, "/", "¡ş")
-people$¦æ·~»PÂ¾°È <- paste0(people$Â¾°È¤pÃş, " - ", people$²£·~¤¤Ãş)
+people$è·å‹™å°é¡   <- str_replace_all(people$è·å‹™å°é¡, "/", "ï¼")
+people$è¡Œæ¥­èˆ‡è·å‹™ <- paste0(people$è·å‹™å°é¡, " - ", people$ç”¢æ¥­ä¸­é¡)
 
 print("Industry correction process complete")
 
@@ -118,13 +118,13 @@ source("rscript\\function\\error_solve_termdocumentmatrix.R", print.eval  = TRUE
 
 people$syear = NULL
 people$smonth = NULL
-people$²Î¤@½s¸¹ = NULL
-people$¤½¥q¦WºÙ = NULL
-people$Â¾°È¦WºÙ = NULL
-people$Â¾°È¤¤Ãş = NULL
-people$¤u§@¦aÂI = NULL
-people$¾Ç¾ú­­¨î = NULL
-people$¬ì¨t­­¨î = NULL
+people$çµ±ä¸€ç·¨è™Ÿ = NULL
+people$å…¬å¸åç¨± = NULL
+people$è·å‹™åç¨± = NULL
+people$è·å‹™ä¸­é¡ = NULL
+people$å·¥ä½œåœ°é» = NULL
+people$å­¸æ­·é™åˆ¶ = NULL
+people$ç§‘ç³»é™åˆ¶ = NULL
 
 ###save.image("DataProcessed")
 
@@ -142,64 +142,34 @@ job      <- jobDataExtraction(people, total=F)
 job_only <- jobDataExtraction(people, total=T)
 
 ##Job with industry
-discriptionMining(people, job, "¤u§@»¡©ú", total=F)
+discriptionMining(people, job, "å·¥ä½œèªªæ˜", total=F)
 ##Job with no industry
-discriptionMining(people, job_only, "¤u§@»¡©ú", total=T)
+discriptionMining(people, job_only, "å·¥ä½œèªªæ˜", total=T)
 
 ##Other needs..
-
+##Job with industry
+#discriptionMining(people, job, "é™„åŠ æ¢ä»¶", total=F)
+##Job with no industry
+#discriptionMining(people, job_only, "é™„åŠ æ¢ä»¶", total=T)
 
 ##Computer skills and certification
-specialtyMining(people, job_only, "¹q¸£±Mªø")
-specialtyMining(people, job_only, "±M·~¾ÌÃÒ")
+specialtyAnalysis(people, job_only, "å°ˆæ¥­æ†‘è­‰")
+specialtyAnalysis(people, job_only, "é›»è…¦å°ˆé•·")
 
 
 
-#¨t²Î®É¶¡
-end.time <- Sys.time()
-#°O¿ı¤@¬qµ{§Çµ²§ô°õ¦æ®É¶¡
-run.time <- end.time - start.time
-run.time
-
-##Â¾°ÈÃş§O
-##§ä¥X¦UÂ¾°Èªºµü
-##§ä¥X¾ãÅé°ªÀWµü
-##±N¦UÂ¾°Èªºµü¥h°£°ªÀWµü >0.5?
-##¦A§ä¥X¦UÂ¾°Èªº°ªÀWµü >0.5?
-
-
-##¹q¸£±Mªø
-##§ï¥ı§ì¦@¦P°ªªº¡A§â³o¨Ç´À°£¡A±ÀÂË¯S®íªº
-computer_skills()
-
-##±M·~¾ÌÃÒ
-pro_certificate()
-
-##§Q¥Îapriori§ì¥X¬ÛÃöÃÒ·Ó
-arule_computer_skills()
-arule_pro_certificate()
-
-##±N¨âªÌ§ì¥X¤§ÃÒ·Ó¨ú¥æ¶°
-intersect_computer_skills()
-intersect_pro_certificate()
-
-temp = read.csv('D:\\abc\\wjhong\\projects\\¼t°Óª©Â¾°È¤j»`¯µ\\jobwiki\\¤À¦æ·~§Ooutput\\±M·~¾ÌÃÒ¥æ¶°.csv',header = F,stringsAsFactors=F)
-colnames(temp) = c('Â¾°È¤pÃş¦WºÙ',paste0('ÃÒ·Ó¦WºÙ',2:ncol(temp)))
+temp = read.csv('D:\\abc\\wjhong\\projects\\å» å•†ç‰ˆè·å‹™å¤§è’ç§˜\\jobwiki\\åˆ†è¡Œæ¥­åˆ¥output\\å°ˆæ¥­æ†‘è­‰äº¤é›†.csv',header = F,stringsAsFactors=F)
+colnames(temp) = c('è·å‹™å°é¡åç¨±',paste0('è­‰ç…§åç¨±',2:ncol(temp)))
 for(i in 1:ncol(temp)){
   temp[which(is.na(temp[,i])),i] = ''
 }
 temp = temp[which(temp[,2]!=''),]
-write.csv('±M·~¾ÌÃÒ¥æ¶°¾ã²z«á.csv',row.names=F)
+write.csv('å°ˆæ¥­æ†‘è­‰äº¤é›†æ•´ç†å¾Œ.csv',row.names=F)
 
-temp = read.csv('D:\\abc\\wjhong\\projects\\¼t°Óª©Â¾°È¤j»`¯µ\\jobwiki\\¤À¦æ·~§Ooutput\\¹q¸£±Mªø¥æ¶°.csv',header = F,stringsAsFactors=F)
-colnames(temp) = c('Â¾°È¤pÃş¦WºÙ',paste0('ÃÒ·Ó¦WºÙ',2:ncol(temp)))
+temp = read.csv('D:\\abc\\wjhong\\projects\\å» å•†ç‰ˆè·å‹™å¤§è’ç§˜\\jobwiki\\åˆ†è¡Œæ¥­åˆ¥output\\é›»è…¦å°ˆé•·äº¤é›†.csv',header = F,stringsAsFactors=F)
+colnames(temp) = c('è·å‹™å°é¡åç¨±',paste0('è­‰ç…§åç¨±',2:ncol(temp)))
 for(i in 1:ncol(temp)){
   temp[which(is.na(temp[,i])),i] = ''
 }
 temp = temp[which(temp[,2]!=''),]
-write.csv('¹q¸£±Mªø¥æ¶°¾ã²z«á.csv',row.names=F)
-#¨t²Î®É¶¡
-end.time <- Sys.time()
-#°O¿ı¤@¬qµ{§Çµ²§ô°õ¦æ®É¶¡
-run.time <- end.time - start.time
-run.time
+write.csv('é›»è…¦å°ˆé•·äº¤é›†æ•´ç†å¾Œ.csv',row.names=F)
