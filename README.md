@@ -1,4 +1,1 @@
-# jobwiki
-jobwiki analysis
-
-using 'R'
+# JobMining
