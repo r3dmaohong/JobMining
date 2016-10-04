@@ -1,6 +1,6 @@
-##source('D:\\abc\\wjhong\\projects\\廠商版職務大蒐秘\\jobwiki\\rscript\\廠商版職務大辭典.R', print.eval  = TRUE)
+##source('D:\\abc\\wjhong\\projects\\JobMining\\rscript\\index.R', print.eval  = TRUE)
 
-##Jobwiki of companys
+##JobMining of companys
 rm(list = ls()) #Remove all objects in the environment
 gc() ##Free up the memory 
 
@@ -20,7 +20,7 @@ library(dplyr)
 library(stringr)
 
 
-setwd(".\\廠商版職務大蒐秘\\jobwiki")
+setwd(".\\JobMining")
 
 ##Part1 or Part2?
 
@@ -35,12 +35,11 @@ temp <- lapply(files, fread, sep=",")
 people <- rbindlist(temp)
 cat("\n讀取資料完畢")
 ##text mining
-#path<-"D:\\abc\\wjhong\\projects\\廠商版職務大蒐秘\\jobwiki"
 
 #Record time
-start.time <- Sys.time()
+#start.time <- Sys.time()
 
-##Remove original jobwiki's content
+##Remove original Jobwiki's content
 #Code in this paragraph may be WEIRD.., but it's writen long time ago, just don't touch it currently...
 jobwiki_old_discription <- read.csv("jobwiki_discription.csv", stringsAsFactors=F)
 jobwiki_old_discription <- unlist(strsplit(jobwiki_old_discription$工作內容  , "[0-9][.]"))
@@ -98,12 +97,12 @@ gc()
 
 people$產業中類 <- people$行業別
 
-start.time <- Sys.time()
+#start.time <- Sys.time()
 for(i in 1:nrow(error_industry)){
   people$產業中類[which(people$產業中類==error_industry$Var1[i])] <- error_industry$Var2[i]
   cat("\rIndustry correction - Second stage: ", i, " => ", round(i/nrow(error_industry)*100,3) %>% format(., nsmall=3), " %", rep(" ", 50))
 }
-Sys.time() - start.time
+#Sys.time() - start.time
 
 gc() 
 
@@ -135,7 +134,7 @@ people$科系限制 = NULL
 ##load("DataProcessed")
 
 ##Main functions
-source("rscript\\function\\jobwiki_text_mining.R", print.eval  = TRUE)
+source("rscript\\function\\JobMining_main.R", print.eval  = TRUE)
 
 ##Data Extraction
 job      <- jobDataExtraction(people, total=F)
@@ -157,19 +156,7 @@ specialtyAnalysis(people, job_only, "專業憑證")
 specialtyAnalysis(people, job_only, "電腦專長")
 
 
-
-temp = read.csv('D:\\abc\\wjhong\\projects\\廠商版職務大蒐秘\\jobwiki\\分行業別output\\專業憑證交集.csv',header = F,stringsAsFactors=F)
-colnames(temp) = c('職務小類名稱',paste0('證照名稱',2:ncol(temp)))
-for(i in 1:ncol(temp)){
-  temp[which(is.na(temp[,i])),i] = ''
-}
-temp = temp[which(temp[,2]!=''),]
-write.csv('專業憑證交集整理後.csv',row.names=F)
-
-temp = read.csv('D:\\abc\\wjhong\\projects\\廠商版職務大蒐秘\\jobwiki\\分行業別output\\電腦專長交集.csv',header = F,stringsAsFactors=F)
-colnames(temp) = c('職務小類名稱',paste0('證照名稱',2:ncol(temp)))
-for(i in 1:ncol(temp)){
-  temp[which(is.na(temp[,i])),i] = ''
-}
-temp = temp[which(temp[,2]!=''),]
-write.csv('電腦專長交集整理後.csv',row.names=F)
+##
+##
+##
+##
