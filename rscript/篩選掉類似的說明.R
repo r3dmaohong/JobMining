@@ -1,7 +1,6 @@
-rm(list = ls()) #¥h°£¤u§@ªÅ¶¡¤¤©Ò¦³ª«¥ó
-gc() #°O¾ÐÅéÄÀ©ñ
-path<-"D:\\abc\\wjhong\\projects\\¼t°Óª©Â¾°È¤j»`¯µ\\jobwiki\\¤À¦æ·~§Ooutput"
-setwd(path)
+rm(list = ls()) 
+gc()
+setwd("JobMining")
 
 library(RecordLinkage)
 library(dplyr)
@@ -9,59 +8,57 @@ library(jiebaR)
 cutter = worker()
 options(stringsAsFactors = FALSE)
 
+##Custom trim function
 trim <- function (x){
   gsub("^[¡@ƒÜ„P¡Ö¡N£_//s]+|[¡@ƒÜ„P£_¡N//s]+$", "",gsub("^\\s+|\\s+$", "", x))
 } 
 
+##triming star symbols
 trim_star <- function (x) gsub("^[*]+|[*]+$", "", x)
-##¥h°£«e«á¼ÐÂI°£¤F¤Þ¸¹
+##Trimming punctuations except quotation marks : () ¡]¡^
 trim_punc <- function (x){
   #gsub("^[[:punct:]]+|[[:punct:]]+$", "", x)
   gsub("([()¡]¡^])|^[[:punct:]]+|[[:punct:]]+$", "\\1", x)
 }
-
-trim_mix = function(x){
-  x = gsub("^\\)+|\\(+$",'',x)
-  ##trim­n­«½Æ¥Î
-  ##¤~§R­Ó°®²b
+##Custom trim with mixed factors
+trim_mix <- function(x){
+  x <- gsub("^\\)+|\\(+$", "", x)
+  ##Sometimes have to trim multiple times...
+  x <- gsub("¡ã", " ", x)
+  x <- gsub("^[0-9¢¯-¢¸a-zA-Z¤@-¤Q¥|¡Ô]{1,2}[:¡B¡N¡A,¡E ¡D)¡^-¡Ö]", "", x)
+  x <- gsub("^[0-9¢¯-¢¸a-zA-Z¤@-¤Q¥|¡Ô]{1,2}[.]", "", x)
+  x <-  gsub("^[0-9¢¯-¢¸a-zA-Z¤@-¤Q¥|¡Ô]{1,2}-", "", x)
+  ##New discovery!! Numbers used by Chinese is functional.
+  ##But the word "¥|" has failed.
+  x <- gsub("^[(¡]][0-9¢¯-¢¸a-zA-Z¤@-¤Q¥|£¸]{1,2}[)¡^]", "", x)
+  x <- gsub("^¡·", "", x)
   
-  x = gsub("¡ã",' ',x)
-  x = gsub("^[0-9¢¯-¢¸a-zA-Z¤@-¤Q¥|¡Ô]{1,2}[:¡B¡N¡A,¡E ¡D)¡^-¡Ö]",'',x)
-  x = gsub("^[0-9¢¯-¢¸a-zA-Z¤@-¤Q¥|¡Ô]{1,2}[.]",'',x)
-  x = gsub("^[0-9¢¯-¢¸a-zA-Z¤@-¤Q¥|¡Ô]{1,2}-",'',x)
-  ##..°ê¦r¤]¥i¥H?¯u¬OÅå©_ªºµo²{
-  ##¯u©Ç ¥|¨S¦Û°Ê³B²z±¼
-  x = gsub("^[(¡]][0-9¢¯-¢¸a-zA-Z¤@-¤Q¥|£¸]{1,2}[)¡^]",'',x)
-  
-  x = gsub("^¡·",'',x)
-  
-  if(grepl('^[(¡]¡Õ]+',x) & grepl('[)¡^¡Ö]+$',x)){
-    x = gsub("^[(¡]¡Õ]+|[)¡^¡Ö]+$",'',x)
+  if(grepl("^[(¡]¡Õ]+", x) & grepl("[)¡^¡Ö]+$", x)){
+    x <- gsub("^[(¡]¡Õ]+|[)¡^¡Ö]+$", "", x)
   }
-  x = gsub("^[0-9¢¯-¢¸]{1,2}[-][0-9¢¯-¢¸]{1,2}",'',x)
+  x <- gsub("^[0-9¢¯-¢¸]{1,2}[-][0-9¢¯-¢¸]{1,2}", "", x)
   
-  if(grepl('\\)',x) & grepl('\\(',x) & length(unlist(gregexpr('\\)',x)))==1 & length(unlist(gregexpr('\\(',x)))==1){
-    if(unlist(gregexpr('\\)',x)) < unlist(gregexpr('\\(',x))){
-      x='' ##³Ì«á­n²¾°£
+  if(grepl("\\)", x) & grepl("\\(", x) & length(unlist(gregexpr("\\)", x)))==1 & length(unlist(gregexpr("\\(", x)))==1){
+    if(unlist(gregexpr("\\)", x)) < unlist(gregexpr("\\(", x))){
+      x <- "" ##It will be removed at the final stage...
     }
   }
-  
-  if(grepl('[0-9][0-9]:[0-9][0-9]',x)){
-    x = ''
+  if(grepl("[0-9][0-9]:[0-9][0-9]", x)){
+    x <- ""
   }
-  ##¦³®É¶¡´N²¾°£
-  if(grepl('[0-9][/][0-9]',x)){
-    x = ''
+  ##Remove Date
+  if(grepl("[0-9][/][0-9]", x)){
+    x <- ""
   }
   ##¡n but no ¡m, or ¡m but no ¡n
-  if(grepl('¡m',x) & !grepl('¡n',x)){
-    x = unlist(strsplit(x,'¡m'))[1]
-  }else if(!grepl('¡m',x) & grepl('¡n',x)){
-    x = unlist(strsplit(x,'¡n'))[length(unlist(strsplit(x,'¡n')))]
+  if(grepl("¡m", x) & !grepl("¡n", x)){
+    x <- unlist(strsplit(x, "¡m"))[1]
+  }else if(!grepl("¡m", x) & grepl("¡n", x)){
+    x <- unlist(strsplit(x, "¡n"))[length(unlist(strsplit(x, "¡n")))]
   }else{
     ##
   }
-#  ³o¦³°ÝÃD
+  # Their's problem
   #if(length(nchar(unlist(lapply(strsplit(x,','),trim)))[which(nchar(unlist(lapply(strsplit(x,','),trim)))==1)])>0){
   #  x = unlist(lapply(strsplit(x,','),trim))[which(nchar(unlist(lapply(strsplit(x,','),trim)))==max(nchar(unlist(lapply(strsplit(x,','),trim)))))][1]
   #}
@@ -69,36 +66,36 @@ trim_mix = function(x){
 }
 
 trim_du <- function(x){
-  ##¦¸¼Æ¤j©ó1²¾°£?
+  ##Removed when occur multiple times?
   #if(length(unlist(gregexpr(pattern ="[0-9¢¯-¢¸a-zA-Z¤@-¤Q¥|¡Ô]+[:¡B¡A,-¡E ¡D)¡^.]",x)))>1 | length(unlist(gregexpr(pattern ="[0-9¢¯-¢¸a-zA-Z]+[.]",x)))>1){
   ##if(grepl("[0-9¢¯-¢¸a-zA-Z¤@-¤Q¥|¡Ô]+[:¡B¡A,-¡E ¡D)¡^.¡Ö]",x)){
-  if(grepl("[0-9¢¯-¢¸a-zA-Z¤@-¤Q¥|¡Ô]{1,2}[:¡E¡D¡Ö]",x) | grepl("[0-9¢¯-¢¸a-zA-Z¤@-¤Q¥|¡Ô]{1,2}-",x) | grepl("[0-9¢¯-¢¸a-zA-Z¤@-¤Q¥|¡Ô]{1,2}[.]",x)){
-    x = '' 
+  if(grepl("[0-9¢¯-¢¸a-zA-Z¤@-¤Q¥|¡Ô]{1,2}[:¡E¡D¡Ö]", x) | grepl("[0-9¢¯-¢¸a-zA-Z¤@-¤Q¥|¡Ô]{1,2}-", x) | grepl("[0-9¢¯-¢¸a-zA-Z¤@-¤Q¥|¡Ô]{1,2}[.]", x)){
+    x <- ""
   }else{
-    x = x
+    #x <- x
   }
   return(x)
 }
 
-##¦p¦ó´À°£©O ¥Îjiebar¬Ý¬Ý
+##Using jiebaR to remove words?
 remove_head_num_jiebar <- function(x){
-  if(grepl('^[0-9]',x)){
-    if(substr(x,2,2) %in% c('¦~', '¸U', '¾·', '¹y', '·³', '¤p')){
-      
-    }else if(substr(x,2,2) %in% c('¨ã')){
-      x = gsub('^[0-9]','',x)
+  if(grepl("^[0-9]", x)){
+    if(substr(x,2,2) %in% c("¦~", "¸U", "¾·", "¹y", "·³", "¤p")){
+    }else if(substr(x,2,2) %in% c("¨ã")){
+      x <- gsub("^[0-9]", "", x)
     }else{
       tmp = cutter <= x
-      if(nchar(tmp[2])!=1){
-        x = gsub('^[0-9]','',x)
+      if(nchar(tmp[2]) != 1){
+        x <- gsub("^[0-9]", "", x)
       }
-      
     }
   }
   return(x)
 }
 
-job_d  = read.csv(file.choose())
+##What file!?
+##I forgot...
+job_d  <- read.csv(file.choose())
 
 job_d = job_d[which(!grepl('[0-9]+$',job_d[,3])),]
 toMatch= c('¤f¸Õ',"Â²³¹","¥x¤¤", "¥x¥_",	"¥xªF",	"¥x«n",	"©yÄõ",	"ªF¨F",	"ªá½¬",	"ª÷ªù",	"«n§ë",	"«n¨F",	"«ÌªF",	"­]®ß",	"®ç¶é",	"¯QËú",	"°¨¯ª",	"°ª¶¯",	"°ò¶©",	"¶³ªL",	"·s¦Ë",	"¹Å¸q",	"¹ü¤Æ",	"¼ê´ò",	"»O¤¤",	"»O¥_",	"»OªF",	"»O«n",'±¶¹B','¹Å¸Î','¥ý¥Í','¤p©j','¡H','?','$','µu´Á','³ø¦W®É¶¡','www','@','com','­±¸Õ¦aÂI','·NªÌ','³t¬¢','«ÝÀu','¤W¯Z¤é','³sµ¸¹q¸Ü','Ápµ¸¤è¦¡','§¡Á~','«O©³','³Ð¥ß©ó','1111','asp','©±',"¼ö±¡©Û¶Ò","¤éÁ~",  "§Ú­Ì¤½¥q",	"¤ë¥ð",	"«Ý¹J¨Î",	"©³Á~",	"Àç·~®É¶¡",	"¨Ó¹q",	"°ö°V´Á¶¡Á~¸ê",	"­±¸Õ®É¶¡",	"¦³­­¤½¥q",	"¬z¶K",	"¸Û¼x",'¤p®É','¤u§@«Ý¹J','¤ëÁ~','¤u§@®É¬q','¤È¥ð','®ÉÁ~','¤u§@¦a°Ï','¤u§@¦aÂI','®É¬q','Åwªï', '¼i¾ú', '¤u§@¤º®e', '¥»¤½¥q','¥Ø«e', '§A¦n', '¤j®a¦n','¤u§@®É¶¡','¼úª÷','¦a§}','¤W¯Z®É¶¡','·Ç®É¶}©l','­p¶O¤è¦¡')

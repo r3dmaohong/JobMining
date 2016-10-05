@@ -29,11 +29,11 @@ setwd(".\\JobMining")
 #######################
 
 #Read mutiple csv files and convert them to one data frame
-files <- list.files("ÊíàÂèñË≥áÊñô", pattern="*.csv", full.names = TRUE)
-cat("\nËÆÄÂèñË≥áÊñô‰∏≠")
+files <- list.files("º¥®˙∏ÍÆ∆", pattern="*.csv", full.names = TRUE)
+cat("\n≈™®˙∏ÍÆ∆§§")
 temp <- lapply(files, fread, sep=",")
 people <- rbindlist(temp)
-cat("\nËÆÄÂèñË≥áÊñôÂÆåÁï¢")
+cat("\n≈™®˙∏ÍÆ∆ßπ≤¶")
 ##text mining
 
 #Record time
@@ -42,19 +42,19 @@ cat("\nËÆÄÂèñË≥áÊñôÂÆåÁï¢")
 ##Remove original Jobwiki's content
 #Code in this paragraph may be WEIRD.., but it's writen long time ago, just don't touch it currently...
 jobwiki_old_discription <- read.csv("jobwiki_discription.csv", stringsAsFactors=F)
-jobwiki_old_discription <- unlist(strsplit(jobwiki_old_discription$Â∑•‰ΩúÂÖßÂÆπ  , "[0-9][.]"))
-jobwiki_old_discription <- unlist(strsplit(jobwiki_old_discription  , "[Ôºà][0-9][Ôºâ]"))
+jobwiki_old_discription <- unlist(strsplit(jobwiki_old_discription$§uß@§∫Æe  , "[0-9][.]"))
+jobwiki_old_discription <- unlist(strsplit(jobwiki_old_discription  , "[°]][0-9][°^]"))
 jobwiki_old_discription <- unlist(strsplit(jobwiki_old_discription  , "[(][0-9][)]"))
 jobwiki_old_discription <- gsub(" ", "", jobwiki_old_discription)
 jobwiki_old_discription <- gsub("<br>", "",jobwiki_old_discription)
 jobwiki_old_discription <- sort(jobwiki_old_discription)
 jobwiki_old_discription <- gsub("^[.]", "", jobwiki_old_discription)
-jobwiki_old_discription <- gsub("A.Â∑•‰ΩúÂÖßÂÆπ", "", jobwiki_old_discription)
-jobwiki_old_discription <- gsub("A.Â∑•‰ΩúÂÖßÂÆπ:", "", jobwiki_old_discription)
+jobwiki_old_discription <- gsub("A.§uß@§∫Æe", "", jobwiki_old_discription)
+jobwiki_old_discription <- gsub("A.§uß@§∫Æe:", "", jobwiki_old_discription)
 jobwiki_old_discription <- jobwiki_old_discription[-which(jobwiki_old_discription=="")]
 
-#people$Â∑•‰ΩúË™™Êòé <- sapply(jobwiki_old_discription, function(x){
-#  gsub(x, "", people$Â∑•‰ΩúË™™Êòé)
+#people$§uß@ª°©˙ <- sapply(jobwiki_old_discription, function(x){
+#  gsub(x, "", people$§uß@ª°©˙)
 #})
 #number of CPU cores
 #cl <- makeCluster(2)
@@ -64,22 +64,22 @@ jobwiki_old_discription <- jobwiki_old_discription[-which(jobwiki_old_discriptio
 #foreach is much slower...!?
 for(i in 1:length(jobwiki_old_discription)){
   ##str_replace_all is faster than gsub.
-  #people$Â∑•‰ΩúË™™Êòé <- gsub(jobwiki_old_discription[i], "", people$Â∑•‰ΩúË™™Êòé)
-  #people$Â∑•‰ΩúË™™Êòé <- str_replace_all(people$Â∑•‰ΩúË™™Êòé, jobwiki_old_discription[i], "")
-  people$Â∑•‰ΩúË™™Êòé <- str_replace_all(people$Â∑•‰ΩúË™™Êòé, jobwiki_old_discription[i] %>% gsub("Ôºà", "\\Ôºà", fixed=TRUE), "")
+  #people$§uß@ª°©˙ <- gsub(jobwiki_old_discription[i], "", people$§uß@ª°©˙)
+  #people$§uß@ª°©˙ <- str_replace_all(people$§uß@ª°©˙, jobwiki_old_discription[i], "")
+  people$§uß@ª°©˙ <- str_replace_all(people$§uß@ª°©˙, jobwiki_old_discription[i] %>% gsub("°]", "\\°]", fixed=TRUE), "")
   
   cat("\r Job discription processing... : ", (i/length(jobwiki_old_discription)*100) %>% round(., 3) %>% format(nsmall=3), "%", rep(" ", 50))
   gc()
 }
 
-job_type <- as.data.frame(table(people$ËÅ∑ÂãôÂ∞èÈ°û), stringsAsFactors=F)
+job_type <- as.data.frame(table(people$¬æ∞»§p√˛), stringsAsFactors=F)
 job_type <- job_type[order(rank(-job_type$Freq)), ]
 
-industry_list <- read.csv("Áî¢Ê•≠‰∏≠È°ûÂêçÁ®±.csv", stringsAsFactors=F)
+industry_list <- read.csv("≤£∑~§§√˛¶W∫Ÿ.csv", stringsAsFactors=F)
 industry_list <- industry_list[order(industry_list[,1]), ]
 industry_list <- c(industry_list)
   
-error_industry <- as.data.frame(table(people$Ë°åÊ•≠Âà•), stringsAsFactors=F)
+error_industry <- as.data.frame(table(people$¶Ê∑~ßO), stringsAsFactors=F)
 
 ##In error_industry, names of industry are wrong...
 for(i in 1:nrow(error_industry)){
@@ -95,19 +95,19 @@ for(i in 1:nrow(error_industry)){
 ##Free up the memory 
 gc()
 
-people$Áî¢Ê•≠‰∏≠È°û <- people$Ë°åÊ•≠Âà•
+people$≤£∑~§§√˛ <- people$¶Ê∑~ßO
 
 #start.time <- Sys.time()
 for(i in 1:nrow(error_industry)){
-  people$Áî¢Ê•≠‰∏≠È°û[which(people$Áî¢Ê•≠‰∏≠È°û==error_industry$Var1[i])] <- error_industry$Var2[i]
+  people$≤£∑~§§√˛[which(people$≤£∑~§§√˛==error_industry$Var1[i])] <- error_industry$Var2[i]
   cat("\rIndustry correction - Second stage: ", i, " => ", round(i/nrow(error_industry)*100,3) %>% format(., nsmall=3), " %", rep(" ", 50))
 }
 #Sys.time() - start.time
 
 gc() 
 
-people$ËÅ∑ÂãôÂ∞èÈ°û   <- str_replace_all(people$ËÅ∑ÂãôÂ∞èÈ°û, "/", "Ôºè")
-people$Ë°åÊ•≠ËàáËÅ∑Âãô <- paste0(people$ËÅ∑ÂãôÂ∞èÈ°û, " - ", people$Áî¢Ê•≠‰∏≠È°û)
+people$¬æ∞»§p√˛   <- str_replace_all(people$¬æ∞»§p√˛, "/", "°˛")
+people$¶Ê∑~ªP¬æ∞» <- paste0(people$¬æ∞»§p√˛, " - ", people$≤£∑~§§√˛)
 
 print("Industry correction process complete")
 
@@ -117,13 +117,13 @@ source("rscript\\function\\error_solve_termdocumentmatrix.R", print.eval  = TRUE
 
 people$syear = NULL
 people$smonth = NULL
-people$Áµ±‰∏ÄÁ∑®Ëôü = NULL
-people$ÂÖ¨Âè∏ÂêçÁ®± = NULL
-people$ËÅ∑ÂãôÂêçÁ®± = NULL
-people$ËÅ∑Âãô‰∏≠È°û = NULL
-people$Â∑•‰ΩúÂú∞Èªû = NULL
-people$Â≠∏Ê≠∑ÈôêÂà∂ = NULL
-people$ÁßëÁ≥ªÈôêÂà∂ = NULL
+people$≤Œ§@Ωs∏π = NULL
+people$§Ω•q¶W∫Ÿ = NULL
+people$¬æ∞»¶W∫Ÿ = NULL
+people$¬æ∞»§§√˛ = NULL
+people$§uß@¶a¬I = NULL
+people$æ«æ˙≠≠®Ó = NULL
+people$¨Ï®t≠≠®Ó = NULL
 
 ###save.image("DataProcessed")
 
@@ -132,6 +132,7 @@ people$ÁßëÁ≥ªÈôêÂà∂ = NULL
 #######################
 
 ##load("DataProcessed")
+##detach("package:tmcn", unload=TRUE)
 
 ##Main functions
 source("rscript\\function\\JobMining_main.R", print.eval  = TRUE)
@@ -141,19 +142,19 @@ job      <- jobDataExtraction(people, total=F)
 job_only <- jobDataExtraction(people, total=T)
 
 ##Job with industry
-discriptionMining(people, job, "Â∑•‰ΩúË™™Êòé", total=F)
+discriptionMining(people, job, "§uß@ª°©˙", total=F)
 ##Job with no industry
-discriptionMining(people, job_only, "Â∑•‰ΩúË™™Êòé", total=T)
+discriptionMining(people, job_only, "§uß@ª°©˙", total=T)
 
 ##Other needs..
 ##Job with industry
-#discriptionMining(people, job, "ÈôÑÂä†Ê¢ù‰ª∂", total=F)
+#discriptionMining(people, job, "™˛•[±¯•Û", total=F)
 ##Job with no industry
-#discriptionMining(people, job_only, "ÈôÑÂä†Ê¢ù‰ª∂", total=T)
+#discriptionMining(people, job_only, "™˛•[±¯•Û", total=T)
 
 ##Computer skills and certification
-specialtyAnalysis(people, job_only, "Â∞àÊ•≠ÊÜëË≠â")
-specialtyAnalysis(people, job_only, "ÈõªËÖ¶Â∞àÈï∑")
+specialtyAnalysis(people, job_only, "±M∑~æÃ√“")
+specialtyAnalysis(people, job_only, "πq∏£±M™¯")
 
 
 ##
