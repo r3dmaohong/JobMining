@@ -137,32 +137,38 @@ discriptionMining <- function(people, jobVector, type, total = F){
         jgc()
         
         ##抓出前10名字串對應至col:type
+        people_sep[,paste0(type, "處理過")] <- people_sep[,type]
+        #people_sep[,paste0(type, "處理過")] <- tolower(people_sep[,paste0(type, "處理過")])
+        
+        ##order by their capital and number of employees
+        people_sep      <- people_sep[order(-as.numeric(people_sep$資本金額), -as.numeric(people_sep$員工人數)), ]
+        job_description <- people_sep[,paste0(type, "處理過")]
+        job_description <- unlist(strsplit(job_description, "[。●;；]"))
+        job_description <- unlist(strsplit(job_description, "  "))
+        job_description <- unlist(strsplit(job_description, "[(][0-9][)]"))
+        job_description <- unlist(strsplit(job_description, "[（][0-9][）]"))
+        job_description <- unlist(strsplit(job_description, "[0-9][.]"))
+        job_description <- unlist(strsplit(job_description, "[0-9][、]"))
+        job_description <- unlist(strsplit(job_description, "[0-9][，]"))
+        holo_num = c("０","１","２","３","４","５","６","７","８","９")
+        for(i in 1:length(holo_num)){
+          job_description <- unlist(strsplit(job_description, paste0(holo_num[i],"．")))
+        }
+        
+        job_description <- trim(job_description)
+        filter_words    <- c("研發替代役", "研替", "口試", "簡章", "台中", "台北", "台東", "台南",  "宜蘭",  "東沙",  "花蓮",	"金門",	"南投",	"南沙",	"屏東",	"苗栗",	"桃園",	"烏坵",	"馬祖",	"高雄",	"基隆",	"雲林",	"新竹",	"嘉義",	"彰化",	"澎湖",	"臺中",	"臺北",	"臺東",	"臺南", "捷運", "嘉裕", "先生", "小姐", "？", "?", "$", "短期", "報名時間", "www", "@", "com", "面試地點", "意者", "速洽", "待優", "上班日", "連絡電話", "聯絡方式", "均薪", "保底", "創立於", "1111", "asp", "店", "熱情招募", "日薪", "我們公司",	"月休",	"待遇佳",	"底薪",	"營業時間",	"來電",	"培訓期間薪資",	"面試時間",	"有限公司",	"津貼",	"誠徵", "小時", "工作待遇", "月薪", "工作時段", "午休", "時薪", "工作地區", "工作地點", "時段", "歡迎", "履歷", "工作內容", "本公司", "目前", "你好", "大家好", "工作時間", "獎金", "地址", "上班時間", "準時開始", "計費方式")
+        for(fwords in filter_words){
+          job_description <- job_description[!grepl(fwords, tolower(job_description), fixed=T)]
+        }
+        filter_words    <- c("[0-9]點[0-9]", "[０-９]點[０-９]", "[0-9０-９]：[0-9０-９]", "[０-９]：[０-９]", "[0-9０-９]:[0-9０-９]", "^[0-9０-９]{3}", "[0-9０-９]{2}年", "^[(（＜?？]+", "[?？]+", "^[(（]", "^的", "^及", "^[0-9０-９]{3}")
+        for(fwords in filter_words){
+          job_description <- job_description[!grepl(fwords, tolower(job_description))]
+        }
+        job_description <- job_description[job_description!=""]
+    
         wordlen <- ifelse(length(d$word)>=10, 10, length(d$word))
         for(i in 1:wordlen){
           word.to.handle <- d$word[i]
-          people_sep[,paste0(type, "處理過")] <- people_sep[,type]
-          #people_sep[,paste0(type, "處理過")] <- tolower(people_sep[,paste0(type, "處理過")])
-          
-          ##order by their capital and number of employees
-          people_sep      <- people_sep[order(-as.numeric(people_sep$資本金額), -as.numeric(people_sep$員工人數)), ]
-          job_description <- people_sep[,paste0(type, "處理過")]
-          job_description <- unlist(strsplit(job_description, "[。●;；]"))
-          job_description <- unlist(strsplit(job_description, "  "))
-          job_description <- unlist(strsplit(job_description, "[(][0-9][)]"))
-          job_description <- unlist(strsplit(job_description, "[（][0-9][）]"))
-          job_description <- unlist(strsplit(job_description, "[0-9][.]"))
-          job_description <- unlist(strsplit(job_description, "[0-9][、]"))
-          job_description <- unlist(strsplit(job_description, "[0-9][，]"))
-          holo_num = c("０","１","２","３","４","５","６","７","８","９")
-          for(i in 1:length(holo_num)){
-            job_description <- unlist(strsplit(job_description, paste0(holo_num[i],"．")))
-          }
-          
-          job_description <- trim(job_description)
-          filter_words    <- c("研發替代役", "研替", "口試", "簡章", "台中", "台北", "台東", "台南",  "宜蘭",  "東沙",	"花蓮",	"金門",	"南投",	"南沙",	"屏東",	"苗栗",	"桃園",	"烏坵",	"馬祖",	"高雄",	"基隆",	"雲林",	"新竹",	"嘉義",	"彰化",	"澎湖",	"臺中",	"臺北",	"臺東",	"臺南", "捷運", "嘉裕", "先生", "小姐", "？", "?", "$", "短期", "報名時間", "www", "@", "com", "面試地點", "意者", "速洽", "待優", "上班日", "連絡電話", "聯絡方式", "均薪", "保底", "創立於", "1111", "asp", "店", "熱情招募", "日薪", "我們公司",	"月休",	"待遇佳",	"底薪",	"營業時間",	"來電",	"培訓期間薪資",	"面試時間",	"有限公司",	"津貼",	"誠徵", "小時", "工作待遇", "月薪", "工作時段", "午休", "時薪", "工作地區", "工作地點", "時段", "歡迎", "履歷", "工作內容", "本公司", "目前", "你好", "大家好", "工作時間", "獎金", "地址", "上班時間", "準時開始", "計費方式", "[0-9]點[0-9]", "[０-９]點[０-９]", "[0-9０-９]：[0-9０-９]", "[０-９]：[０-９]", "[0-9０-９]:[0-9０-９]", "^[0-9０-９]{3}", "[0-9０-９]{2}年", "^[(（＜?？]+", "[?？]+", "^[(（]", "^的", "^及", "^[0-9０-９]{3}")
-          for(fwLength in filter_words){
-            job_description <- job_description[!grepl(filter_words[fwLength], job_description, fixed=T)]
-          }
           if(length(unlist(gregexpr("[a-z]",word.to.handle)))/nchar(word.to.handle)>0.9){
             job.describe.df <- job_description[which(grepl(paste0("[^a-z]", word.to.handle, "[^a-z]"), tolower(job_description)))]
           }else{

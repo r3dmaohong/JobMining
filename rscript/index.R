@@ -66,7 +66,7 @@ for(i in 1:length(jobwiki_old_discription)){
   ##str_replace_all is faster than gsub.
   #people$工作說明 <- gsub(jobwiki_old_discription[i], "", people$工作說明)
   #people$工作說明 <- str_replace_all(people$工作說明, jobwiki_old_discription[i], "")
-  people$工作說明 <- str_replace_all(people$工作說明, jobwiki_old_discription[i] %>% gsub("（", "\\（", fixed=TRUE), "")
+  people$工作說明 <- str_replace_all(people$工作說明, gsub("（", "\\（", jobwiki_old_discription[i], fixed=TRUE), "")
   
   cat("\r Job discription processing... : ", (i/length(jobwiki_old_discription)*100) %>% round(., 3) %>% format(nsmall=3), "%", rep(" ", 50))
   gc()
