@@ -1,6 +1,9 @@
-##
-##Word freq to total form.
-##
+#####################################
+#####################################
+##Word Frequency and Wordcloud Export
+#####################################
+#####################################
+
 rm(list = ls()) 
 gc() 
 setwd(".\\分行業別output")
@@ -16,10 +19,10 @@ for(i in 1:length(file_names)){
   ## content with industry.
   if(grepl(" - ", file_names[i])){
     tmp               <- read.csv(file_names[i], stringsAsFactors=F)
-    colnames(tmp)     <- c("詞彙","次數","百分比")
+    colnames(tmp)     <- c("詞彙", "次數", "百分比")
     tmp$職務名稱      <- substr(file_names[i], 1, unlist(gregexpr(pattern =" - ", file_names[i]))-1)
     tmp$行業別        <- substr(file_names[i], unlist(gregexpr(pattern ="- ",file_names[i]))+2, unlist(gregexpr(pattern ="工作說明文字", file_names[i]))-1)
-    tmp               <- tmp[, c("職務名稱","行業別","詞彙","次數")]
+    tmp               <- tmp[, c("職務名稱", "行業別", "詞彙", "次數")]
     tmp$詞彙          <- toupper(tmp$詞彙)
     integrated_output <- rbind(integrated_output, tmp)
     cat(paste0("\r", format(round(i/length(file_names)*100,2), nsmall=2), "%"))
@@ -34,7 +37,7 @@ for(i in 1:length(file_names)){
     colnames(tmp)     <- c("詞彙","次數","百分比")
     tmp$職務名稱      <- substr(file_names[i], 1, unlist(gregexpr(pattern ="工作說明文字", file_names[i]))-1)
     tmp$行業別        <- "整體"
-    tmp               <- tmp[, c("職務名稱","行業別","詞彙","次數")]
+    tmp               <- tmp[, c("職務名稱", "行業別", "詞彙", "次數")]
     tmp$詞彙          <- toupper(tmp$詞彙)
     integrated_output <- rbind(integrated_output, tmp)
     cat(paste0("\r", format(round(i/length(file_names)*100,2), nsmall=2), "%"))

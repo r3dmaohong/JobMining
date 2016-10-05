@@ -140,6 +140,8 @@ source("rscript\\function\\JobMining_main.R", print.eval  = TRUE)
 ##Data Extraction
 job      <- jobDataExtraction(people, total=F)
 job_only <- jobDataExtraction(people, total=T)
+job      <- job[!grepl("工讀生", job)]
+job_only <- job_only[!grepl("工讀生", job_only)]
 
 ##Job with industry
 discriptionMining(people, job, "工作說明", total=F)
@@ -156,8 +158,6 @@ discriptionMining(people, job_only, "工作說明", total=T)
 specialtyAnalysis(people, job_only, "專業憑證")
 specialtyAnalysis(people, job_only, "電腦專長")
 
-
-##
-##
-##
-##
+##########################
+##Next => DiscriptionETL.R
+##########################

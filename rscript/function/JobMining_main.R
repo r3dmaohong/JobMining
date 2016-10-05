@@ -50,7 +50,7 @@ discriptionMining <- function(people, jobVector, type, total = F){
       }else{
         people_sep <- people[which(people$行業與職務==jobVector[job_i]),]
       }        
-            
+      
       if(nrow(people_sep) > min_n_sample){
         ##computer can't support more than 15000 items of data while doing the following analysis...
         if(nrow(people_sep)>15000){
@@ -159,8 +159,12 @@ discriptionMining <- function(people, jobVector, type, total = F){
           }
           
           job_description <- trim(job_description)
+          filter_words    <- c("研發替代役", "研替", "口試", "簡章", "台中", "台北", "台東", "台南",  "宜蘭",  "東沙",	"花蓮",	"金門",	"南投",	"南沙",	"屏東",	"苗栗",	"桃園",	"烏坵",	"馬祖",	"高雄",	"基隆",	"雲林",	"新竹",	"嘉義",	"彰化",	"澎湖",	"臺中",	"臺北",	"臺東",	"臺南", "捷運", "嘉裕", "先生", "小姐", "？", "?", "$", "短期", "報名時間", "www", "@", "com", "面試地點", "意者", "速洽", "待優", "上班日", "連絡電話", "聯絡方式", "均薪", "保底", "創立於", "1111", "asp", "店", "熱情招募", "日薪", "我們公司",	"月休",	"待遇佳",	"底薪",	"營業時間",	"來電",	"培訓期間薪資",	"面試時間",	"有限公司",	"津貼",	"誠徵", "小時", "工作待遇", "月薪", "工作時段", "午休", "時薪", "工作地區", "工作地點", "時段", "歡迎", "履歷", "工作內容", "本公司", "目前", "你好", "大家好", "工作時間", "獎金", "地址", "上班時間", "準時開始", "計費方式", "[0-9]點[0-9]", "[０-９]點[０-９]", "[0-9０-９]：[0-9０-９]", "[０-９]：[０-９]", "[0-9０-９]:[0-9０-９]", "^[0-9０-９]{3}", "[0-9０-９]{2}年", "^[(（＜?？]+", "[?？]+", "^[(（]", "^的", "^及", "^[0-9０-９]{3}")
+          for(fwLength in filter_words){
+            job_description <- job_description[!grepl(filter_words[fwLength], job_description, fixed=T)]
+          }
           if(length(unlist(gregexpr("[a-z]",word.to.handle)))/nchar(word.to.handle)>0.9){
-            job.describe.df <- job_description[which(grepl(paste0("[^a-z]",word.to.handle,"[^a-z]"),tolower(job_description)))]
+            job.describe.df <- job_description[which(grepl(paste0("[^a-z]", word.to.handle, "[^a-z]"), tolower(job_description)))]
           }else{
             job.describe.df <- job_description[which(grepl(word.to.handle,tolower(job_description)))]
           }
@@ -179,12 +183,12 @@ discriptionMining <- function(people, jobVector, type, total = F){
               }else{
                 write.table(job.describe, paste0("分行業別output\\", type, "\\",jobVector[job_i], type, "詞彙與內容對應結果.csv"), row.names=F, col.names=TRUE, sep=",")
               }
-             }else{
-               if(total){
-                 write.table(job.describe, paste0("分行業別output\\", type, "\\整體\\",jobVector[job_i], type, "詞彙與內容對應結果.csv"), row.names=F,col.names=F, sep=",", append=TRUE)
-               }else{
-                 write.table(job.describe, paste0("分行業別output\\", type, "\\",jobVector[job_i], type, "詞彙與內容對應結果.csv"), row.names=F,col.names=F, sep=",", append=TRUE)
-               }              
+            }else{
+              if(total){
+                write.table(job.describe, paste0("分行業別output\\", type, "\\整體\\",jobVector[job_i], type, "詞彙與內容對應結果.csv"), row.names=F,col.names=F, sep=",", append=TRUE)
+              }else{
+                write.table(job.describe, paste0("分行業別output\\", type, "\\",jobVector[job_i], type, "詞彙與內容對應結果.csv"), row.names=F,col.names=F, sep=",", append=TRUE)
+              }              
             }
           }
         }
@@ -193,18 +197,18 @@ discriptionMining <- function(people, jobVector, type, total = F){
       }else{
         print(paste0(jobVector[job_i], " shortage in sample: ", nrow(people_sep), " => Not analyzed"))
       }
-      }, error=function(e){
-        detach("package:Rwordseg", unload=TRUE)
-        library(Rwordseg)
-        ##error memo
-        print(paste0(job_i, " ",jobVector[job_i] ,"  ", e))
-        if(total){
-          sink(paste0("分行業別output\\整體", type, "錯誤訊息.txt"), append=TRUE)
-        }else{
-          sink(paste0("分行業別output\\分行業", type, "錯誤訊息.txt"), append=TRUE)
-        }                     
-        print(paste0(job_i, " ",jobVector[job_i] ,"  ", e))
-        sink()
+    }, error=function(e){
+      detach("package:Rwordseg", unload=TRUE)
+      library(Rwordseg)
+      ##error memo
+      print(paste0(job_i, " ",jobVector[job_i] ,"  ", e))
+      if(total){
+        sink(paste0("分行業別output\\整體", type, "錯誤訊息.txt"), append=TRUE)
+      }else{
+        sink(paste0("分行業別output\\分行業", type, "錯誤訊息.txt"), append=TRUE)
+      }                     
+      print(paste0(job_i, " ",jobVector[job_i] ,"  ", e))
+      sink()
     }) 
   } 
 }
@@ -241,7 +245,7 @@ specialtyMining <- function(people, job_only, type){
           people_specialty <- people_specialty[1:10,]
         }
         colnames(people_specialty)[1] = job_only[job_i]
-
+        
         if(nrow(people_specialty)>0){
           people_specialty <- t(people_specialty)
           colnames(people_specialty) = c(1:ncol(people_specialty))
@@ -356,7 +360,7 @@ specialtyMAI <- function(people, type){
         arule_specialty_df$項目名稱[i] <- substr(arule_specialty_df$arule_specialty_df[i],unlist(gregexpr(pattern ='\\{',arule_specialty_df$arule_specialty_df[i]))[1]+1,unlist(gregexpr(pattern ='\\}',arule_specialty_df$arule_specialty_df[i]))[1]-1)
       }
       specialty_df <- read.csv(paste0(".\\分行業別output\\", type, "\\", job, "高頻", type, ".csv"), stringsAsFactors=F)
-     
+      
       #cat(job, ",", paste(intersect(arule_specialty_df$項目名稱, as.character(specialty_df[1,])), collapse = ","), "\n")
       tmp <- data.frame("Job"=job, "項目名稱"=intersect(arule_specialty_df$項目名稱, as.character(specialty_df[1,])))
       totalSpecilty <- rbind(totalSpecilty, tmp)
