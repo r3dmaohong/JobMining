@@ -198,8 +198,8 @@ discriptionMining <- function(people, jobVector, type, total = F){
         print(paste0(jobVector[job_i], " shortage in sample: ", nrow(people_sep), " => Not analyzed"))
       }
     }, error=function(e){
-      detach("package:Rwordseg", unload=TRUE)
-      library(Rwordseg)
+      #detach("package:Rwordseg", unload=TRUE)
+      #library(Rwordseg)
       ##error memo
       print(paste0(job_i, " ",jobVector[job_i] ,"  ", e))
       if(total){

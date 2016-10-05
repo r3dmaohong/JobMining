@@ -112,8 +112,6 @@ people$行業與職務 <- paste0(people$職務小類, " - ", people$產業中類)
 print("Industry correction process complete")
 
 ##
-##Solving termdocumentmatrix error
-source("rscript\\function\\error_solve_termdocumentmatrix.R", print.eval  = TRUE)
 
 people$syear = NULL
 people$smonth = NULL
@@ -133,8 +131,13 @@ people$科系限制 = NULL
 
 ##load("DataProcessed")
 ##detach("package:tmcn", unload=TRUE)
+##library(tmcn)
+#detach("package:Rwordseg", unload=TRUE)
+#library(Rwordseg)
 
 ##Main functions
+##Solving termdocumentmatrix error
+source("rscript\\function\\error_solve_termdocumentmatrix.R", print.eval  = TRUE)
 source("rscript\\function\\JobMining_main.R", print.eval  = TRUE)
 
 ##Data Extraction
