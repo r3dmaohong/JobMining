@@ -144,6 +144,7 @@ source("rscript\\function\\JobMining_main.R", print.eval  = TRUE)
 job      <- jobDataExtraction(people, total=F)
 job_only <- jobDataExtraction(people, total=T)
 job      <- job[!grepl("工讀生", job)]
+job      <- job[!grepl("人力／仲介／代徵", job)]
 job_only <- job_only[!grepl("工讀生", job_only)]
 
 ##Job with industry
