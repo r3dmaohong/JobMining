@@ -18,6 +18,7 @@ library(doSNOW)
 library(foreach)
 library(dplyr)
 library(stringr)
+library(stringr)
 
 
 setwd(".\\JobMining")
@@ -130,10 +131,10 @@ people$科系限制 = NULL
 #######################
 
 ##load("DataProcessed")
-##detach("package:tmcn", unload=TRUE)
-##library(tmcn)
-#detach("package:Rwordseg", unload=TRUE)
-#library(Rwordseg)
+detach("package:tmcn", unload=TRUE)
+library(tmcn)
+detach("package:Rwordseg", unload=TRUE)
+library(Rwordseg)
 
 ##Main functions
 ##Solving termdocumentmatrix error
@@ -144,7 +145,7 @@ source("rscript\\function\\JobMining_main.R", print.eval  = TRUE)
 job      <- jobDataExtraction(people, total=F)
 job_only <- jobDataExtraction(people, total=T)
 job      <- job[!grepl("工讀生", job)]
-job      <- job[!grepl("人力／仲介／代徵", job)]
+job      <- job[str_count(job, "人力")!=1 | grepl("人事", job)]
 job_only <- job_only[!grepl("工讀生", job_only)]
 
 ##Job with industry
